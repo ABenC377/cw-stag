@@ -6,7 +6,6 @@ digraph layout {
     node [shape = "rect"];
 
     subgraph locations {
-
         subgraph cluster001 {
             node [shape = "none"];
             cabin [description = "A log cabin in the woods"];
