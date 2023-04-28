@@ -288,27 +288,68 @@ public final class GameServer {
     private String handleInstruction(String inst, Player player,
                                      Location playerLocation) throws IOException {
         String[] words = inst.toLowerCase().split(" ");
+        String output = "";
+        Action toPerform = null;
         // TODO need to make sure this handles situations where more than one
         //  outcome is possible!! (i.e., ambiguous commands)
         for (String w : words) {
             if (w.equals("inventory") || w.equals("inv")) {
-                return player.listItems();
+                String commandOutput = player.listItems();
+                if (commandOutput.length() != 0 && output.length() != 0) {
+                    return "ERROR - ambiguous command";
+                } else if (commandOutput.length() != 0) {
+                    output = commandOutput;
+                }
             } else if (w.equals("get")) {
-                return player.getArtefactFromLocation(words,
+                String commandOutput = player.getArtefactFromLocation(words,
                     playerLocation);
+                if (commandOutput.length() != 0 && output.length() != 0) {
+                    return "ERROR - ambiguous command";
+                } else if (commandOutput.length() != 0) {
+                    output = commandOutput;
+                }
             } else if (w.equals("drop")) {
-                return player.dropItem(words, playerLocation);
+                String commandOutput = player.dropItem(words, playerLocation);
+                if (commandOutput.length() != 0 && output.length() != 0) {
+                    return "ERROR - ambiguous command";
+                } else if (commandOutput.length() != 0) {
+                    output = commandOutput;
+                }
             } else if (w.equals("goto")) {
-                return gotoLocation(words, player, playerLocation);
+                String commandOutput = gotoLocation(words, player,
+                    playerLocation);
+                if (commandOutput.length() != 0 && output.length() != 0) {
+                    return "ERROR - ambiguous command";
+                } else if (commandOutput.length() != 0) {
+                    output = commandOutput;
+                }
             } else if (w.equals("look")) {
-                return playerLocation.lookAround(player);
+                String commandOutput = playerLocation.lookAround(player);
+                if (commandOutput.length() != 0 && output.length() != 0) {
+                    return "ERROR - ambiguous command";
+                } else if (commandOutput.length() != 0) {
+                    output = commandOutput;
+                }
+            } else if (w.equals("health")) {
+                String commandOutput = player.reportHealth();
+                if (commandOutput.length() != 0 && output.length() != 0) {
+                    return "ERROR - ambiguous command";
+                } else if (commandOutput.length() != 0) {
+                    output = commandOutput;
+                }
             } else {
                 if (singleTriggerActions.containsKey(w)) {
+                    if (output.length() != 0 && !singleTriggerActions.get(w).contains(toPerform)) {
+                        return "ERROR - ambiguous command";
+                    }
                     for (Action a : singleTriggerActions.get(w)) {
-                        String output = tryAction(a, words, player,
+                        String actionOutput = tryAction(a, words, player,
                             playerLocation);
-                        if (output.length() != 0) {
-                            return output;
+                        if (actionOutput.length() != 0 && output.length() != 0 && a != toPerform) {
+                            return "ERROR - ambiguous command";
+                        } else if (actionOutput.length() != 0) {
+                            output = actionOutput;
+                            toPerform = a;
                         }
                     }
                 }
@@ -316,10 +357,25 @@ public final class GameServer {
         }
         
         for (ActionTuple tup : multiTriggerActions) {
-            // TODO handle multi-word triggers
+            if (inst.contains(tup.getTrigger())) {
+                if (output.length() != 0 && !tup.getActions().contains(toPerform)) {
+                    return "ERROR = ambiguous command";
+                }
+                for (Action a : tup.getActions()) {
+                    String actionOutput = tryAction(a, words, player,
+                        playerLocation);
+                    if (actionOutput.length() != 0 && output.length() != 0 && a != toPerform) {
+                        return "ERROR - ambiguous command";
+                    } else if (actionOutput.length() != 0) {
+                        output = actionOutput;
+                        toPerform = a;
+                    }
+                }
+            }
         }
         
-        return "unable to process that command.  Please try again\n";
+        return ((output.length() == 0) ? "ERROR - command does not contain " +
+            "an executable action\n" : output);
     }
     
     /*
@@ -343,7 +399,7 @@ public final class GameServer {
                 }
             }
         }
-        return (p.getName() + " could not go to any of these locations as not" +
+        return (p.getName() + " could not go to any of these locations as no" +
             " valid path exists\n");
     }
     
@@ -397,13 +453,11 @@ public final class GameServer {
         }
         
         if (p.checkForDeath(l, startLocation)) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(a.getNarration())
-                .append("\nYou pass out from the damage\n")
-                .append("You wake up in ")
-                .append(startLocation.getDescription())
-                .append(" without any of your possessions\n");
-            return builder.toString();
+            return (a.getNarration() +
+                "\nYou pass out from the damage\n" +
+                "You wake up in " +
+                startLocation.getDescription() +
+                " without any of your possessions\n");
         }
         
         return a.getNarration();

@@ -131,4 +131,8 @@ public class Player extends GameCharacter {
             return false;
         }
     }
+    
+    public String reportHealth() {
+        return (this.getName() + "'s health is at " + this.getHealth());
+    }
 }
