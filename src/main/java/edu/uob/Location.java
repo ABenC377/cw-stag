@@ -3,10 +3,10 @@ package edu.uob;
 import java.util.ArrayList;
 
 public class Location extends GameEntity {
-    private ArrayList<Furniture> furniture;
-    private ArrayList<Artefact> artefacts;
-    private ArrayList<GameCharacter> characters;
-    private ArrayList<Location> paths;
+    private final ArrayList<Furniture> furniture;
+    private final ArrayList<Artefact> artefacts;
+    private final ArrayList<GameCharacter> characters;
+    private final ArrayList<Location> paths;
     
     public Location(String name, String description) {
         super(name, description);
@@ -166,6 +166,7 @@ public class Location extends GameEntity {
         builder.append("You are in ");
         builder.append(this.getDescription());
         builder.append(" You can see:\n");
+        builder.append("There are ").append(artefacts.size()).append(" artefacts\n");
         for (Artefact a : artefacts) {
             builder.append(a.getDescription());
             builder.append("\n");

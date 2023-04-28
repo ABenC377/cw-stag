@@ -30,12 +30,13 @@ public final class GameServer {
     
     Location startLocation;
     Location storeRoom;
-    ArrayList<Location> locations;
+    ArrayList<Location> locations = new ArrayList<>();
     
 
     public static void main(String[] args) throws IOException {
         File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
         File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
+        System.out.println("Loading up game server");
         GameServer server = new GameServer(entitiesFile, actionsFile);
         server.blockingListenOn(8888);
     }
@@ -52,6 +53,7 @@ public final class GameServer {
     */
     public GameServer(File entitiesFile, File actionsFile) {
         // TODO implement your server logic here
+        System.out.println("Trying to read Actions file");
         try {
             singleTriggerActions = readActionsFile(actionsFile);
         } catch (ParserConfigurationException | SAXException | IOException e) {
@@ -59,6 +61,7 @@ public final class GameServer {
         }
         
         
+        System.out.println("Trying to read Entities file");
         try {
             readEntitiesFile(entitiesFile);
         } catch (FileNotFoundException | ParseException e) {
@@ -76,95 +79,100 @@ public final class GameServer {
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document d = builder.parse(file);
         Element actions = d.getDocumentElement();
-        Element currentAction = (Element)actions.getFirstChild();
-        while (currentAction != null) {
-            ArrayList<String> subjects = new ArrayList<>();
-            ArrayList<String> consumed = new ArrayList<>();
-            ArrayList<String> produced = new ArrayList<>();
-            String narration;
-            
-            Element subjectsElement =
-                (Element)currentAction.getElementsByTagName("subjects").item(0);
-            NodeList subjectsNL = subjectsElement.getElementsByTagName(
-                "entity");
-            for (int i = 0; i < subjectsNL.getLength(); i++) {
-                Element subjectElement = (Element)subjectsNL.item(i);
-                subjects.add(subjectElement.getTextContent());
-            }
-            
-            Element consumedsElement =
-                (Element)currentAction.getElementsByTagName("consumed").item(0);
-            NodeList consumedsNL = consumedsElement.getElementsByTagName(
-                "entity");
-            for (int i = 0; i < consumedsNL.getLength(); i++) {
-                Element consumedElement = (Element)consumedsNL.item(i);
-                consumed.add(consumedElement.getTextContent());
-            }
-            
-            Element producedsElement =
-                (Element)currentAction.getElementsByTagName("produced").item(0);
-            NodeList producedsNL = producedsElement.getElementsByTagName(
-                "entity");
-            for (int i = 0; i < producedsNL.getLength(); i++) {
-                Element producedElement = (Element)producedsNL.item(i);
-                produced.add(producedElement.getTextContent());
-            }
-            
-            Element narrationElement =
-                (Element)currentAction.getElementsByTagName("narration").item(0);
-            narration = narrationElement.getTextContent();
-            
-            Action current = new Action(id, subjects, consumed, produced,
-                narration);
-            
-            Element triggersElement =
-                (Element)currentAction.getElementsByTagName(
-                "triggers").item(0);
-            NodeList triggers = triggersElement.getElementsByTagName(
-                "keyphrase");
-            for (int i = 0; i < triggers.getLength(); i++) {
-                Element triggerElement = (Element)triggers.item(i);
-                String trigger = triggerElement.getTextContent();
-                if (trigger.indexOf(' ') == -1) {
-                    if (actionsHashMap.containsKey(trigger)) {
-                        actionsHashMap.get(trigger).add(current);
-                    } else {
-                        HashSet<Action> hs = new HashSet<>();
-                        hs.add(current);
-                        actionsHashMap.put(trigger, hs);
-                    }
-                } else {
-                    boolean exists = false;
-                    for (int j = 0; j < multiTriggerActions.size(); j++) {
-                        if (multiTriggerActions.get(j).getTrigger().equals(trigger)) {
-                            multiTriggerActions.get(j).addAction(current);
-                            exists = true;
+        NodeList actionNodeList = actions.getChildNodes();
+        for (int i = 0; i < actionNodeList.getLength(); i++) {
+            if ((i&1) == 1) {
+                Element currentAction = (Element)actionNodeList.item(i);
+                ArrayList<String> subjects = new ArrayList<>();
+                ArrayList<String> consumed = new ArrayList<>();
+                ArrayList<String> produced = new ArrayList<>();
+                String narration;
+                
+                Element subjectsElement =
+                    (Element)currentAction.getElementsByTagName("subjects").item(0);
+                NodeList subjectsNL = subjectsElement.getElementsByTagName(
+                    "entity");
+                for (int j = 0; j < subjectsNL.getLength(); j++) {
+                    Element subjectElement = (Element)subjectsNL.item(j);
+                    subjects.add(subjectElement.getTextContent());
+                }
+                
+                Element consumedsElement =
+                    (Element)currentAction.getElementsByTagName("consumed").item(0);
+                NodeList consumedsNL = consumedsElement.getElementsByTagName(
+                    "entity");
+                for (int j = 0; j < consumedsNL.getLength(); j++) {
+                    Element consumedElement = (Element)consumedsNL.item(j);
+                    consumed.add(consumedElement.getTextContent());
+                }
+                
+                Element producedsElement =
+                    (Element)currentAction.getElementsByTagName("produced").item(0);
+                NodeList producedsNL = producedsElement.getElementsByTagName(
+                    "entity");
+                for (int j = 0; j < producedsNL.getLength(); j++) {
+                    Element producedElement = (Element)producedsNL.item(j);
+                    produced.add(producedElement.getTextContent());
+                }
+                
+                Element narrationElement =
+                    (Element)currentAction.getElementsByTagName("narration").item(0);
+                narration = narrationElement.getTextContent();
+                
+                Action current = new Action(id, subjects, consumed, produced,
+                    narration);
+                
+                Element triggersElement =
+                    (Element)currentAction.getElementsByTagName(
+                        "triggers").item(0);
+                NodeList triggers = triggersElement.getElementsByTagName(
+                    "keyphrase");
+                for (int j = 0; j < triggers.getLength(); j++) {
+                    Element triggerElement = (Element)triggers.item(j);
+                    String trigger = triggerElement.getTextContent();
+                    if (trigger.indexOf(' ') == -1) {
+                        if (actionsHashMap.containsKey(trigger)) {
+                            actionsHashMap.get(trigger).add(current);
+                        } else {
+                            HashSet<Action> hs = new HashSet<>();
+                            hs.add(current);
+                            actionsHashMap.put(trigger, hs);
                         }
-                    }
-                    if (!exists) {
-                        ActionTuple at = new ActionTuple(trigger);
-                        at.addAction(current);
-                        multiTriggerActions.add(at);
+                    } else {
+                        boolean exists = false;
+                        for (ActionTuple multiTriggerAction : multiTriggerActions) {
+                            if (multiTriggerAction.getTrigger().equals(trigger)) {
+                                multiTriggerAction.addAction(current);
+                                exists = true;
+                            }
+                        }
+                        if (!exists) {
+                            ActionTuple at = new ActionTuple(trigger);
+                            at.addAction(current);
+                            multiTriggerActions.add(at);
+                        }
                     }
                 }
             }
-            currentAction = (Element)currentAction.getNextSibling();
         }
         return actionsHashMap;
     }
     
     
     private void readEntitiesFile(File file) throws FileNotFoundException, ParseException {
+        System.out.println("Loading entities file");
         Parser parser = new Parser();
         FileReader reader = new FileReader(file);
         parser.parse(reader);
-        ArrayList<Graph> graphs = parser.getGraphs();
+        ArrayList<Graph> graphs = parser.getGraphs().get(0).getSubgraphs();
+        
         
         // Get the locations to start with
         Graph locationsGraph = graphs.get(0);
         ArrayList<Graph> locationSubGraphs = locationsGraph.getSubgraphs();
         for (int i = 0; i < locationSubGraphs.size(); i++) {
             Graph current = locationSubGraphs.get(i);
+            
             String locationName =
                 current.getNodes(false).get(0).getId().getId();
             String locationDescription =
@@ -173,36 +181,41 @@ public final class GameServer {
             
             ArrayList<Graph> contents = current.getSubgraphs();
             
-            for (int j = 0; j < contents.size(); j++) {
-                String type = contents.get(j).getId().getId();
-                if (type.equals("artefacts")) {
-                    ArrayList<Node> artefactNodes =
-                        contents.get(j).getNodes(false);
-                    for (int k =  0; k < artefactNodes.size(); k++) {
-                        Artefact a =
-                            new Artefact(artefactNodes.get(k).getId().getId(),
-                                artefactNodes.get(k).getAttribute("description"));
-                        l.addArtefact(a);
+            for (Graph content : contents) {
+                String type = content.getId().getId();
+                switch (type) {
+                    case "artefacts" -> {
+                        ArrayList<Node> artefactNodes =
+                            content.getNodes(false);
+                        for (Node artefactNode : artefactNodes) {
+                            Artefact a =
+                                new Artefact(artefactNode.getId().getId(),
+                                    artefactNode.getAttribute("description"));
+                            l.addArtefact(a);
+                            System.out.println("Loaded artefact " + a.getName());
+                        }
                     }
-                } else if (type.equals("furniture")) {
-                    ArrayList<Node> furnitureNodes =
-                        contents.get(j).getNodes(false);
-                    for (int k =  0; k < furnitureNodes.size(); k++) {
-                        Furniture f =
-                            new Furniture(furnitureNodes.get(k).getId().getId(),
-                                furnitureNodes.get(k).getAttribute(
-                                    "description"));
-                        l.addFurniture(f);
+                    case "furniture" -> {
+                        ArrayList<Node> furnitureNodes =
+                            content.getNodes(false);
+                        for (Node furnitureNode : furnitureNodes) {
+                            Furniture f =
+                                new Furniture(furnitureNode.getId().getId(),
+                                    furnitureNode.getAttribute(
+                                        "description"));
+                            l.addFurniture(f);
+                        }
                     }
-                } else if (type.equals("characters")) {
-                    ArrayList<Node> characterNodes =
-                        contents.get(j).getNodes(false);
-                    for (int k =  0; k < characterNodes.size(); k++) {
-                        GameCharacter c =
-                            new GameCharacter(characterNodes.get(k).getId().getId(),
-                                characterNodes.get(k).getAttribute(
-                                    "description"));
-                        l.addCharacter(c);
+                    case "characters" -> {
+                        ArrayList<Node> characterNodes =
+                            content.getNodes(false);
+                        for (Node characterNode : characterNodes) {
+                            GameCharacter c =
+                                new GameCharacter(characterNode.getId().getId(),
+                                    characterNode.getAttribute(
+                                        "description"));
+                            l.addCharacter(c);
+                        }
                     }
                 }
             }
@@ -220,18 +233,18 @@ public final class GameServer {
         // Then handle paths between them
         Graph pathsGraph = graphs.get(1);
         ArrayList<Edge> pathEdges = pathsGraph.getEdges();
-        for (int i = 0; i < pathEdges.size(); i++) {
+        for (Edge pathEdge : pathEdges) {
             String startName =
-                pathEdges.get(i).getSource().getNode().getId().getId();
+                pathEdge.getSource().getNode().getId().getId();
             String endName =
-                pathEdges.get(i).getTarget().getNode().getId().getId();
+                pathEdge.getTarget().getNode().getId().getId();
             Location start = null;
             Location end = null;
-            for (int j = 0; j < locations.size(); j++) {
-                if (locations.get(j).getName().equals(startName)) {
-                    start = locations.get(j);
-                } else if (locations.get(j).getName().equals(endName)) {
-                    end = locations.get(j);
+            for (Location location : locations) {
+                if (location.getName().equals(startName)) {
+                    start = location;
+                } else if (location.getName().equals(endName)) {
+                    end = location;
                 }
             }
             if (start != null) {
@@ -247,6 +260,7 @@ public final class GameServer {
     * <p>This method handles all incoming game commands and carries out the corresponding actions.
     */
     public String handleCommand(String command) throws IOException {
+        return "IS THIS PRINTED?";
         // TODO implement your server logic here
         String[] components = command.split(":", 2);
         String userName = components[0];
@@ -332,8 +346,10 @@ public final class GameServer {
                                            Location l) {
         for (String w : words) {
             Artefact a = l.removeArtefact(w);
-            p.pickUpItem(a);
-            return (p.getName() + " picked up " + a.getName() + "\n");
+            if (a != null) {
+                p.pickUpItem(a);
+                return (p.getName() + " picked up " + a.getName() + "\n");
+            }
         }
         return (p.getName() + " is not holding any such item\n");
     }
@@ -360,6 +376,7 @@ public final class GameServer {
             for (String word : words) {
                 if (subj.equals(word)) {
                     present = true;
+                    break;
                 }
             }
         }
