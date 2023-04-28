@@ -111,4 +111,20 @@ public class Player extends GameCharacter {
         }
         return ("There is no such item in the \n" + l.getName());
     }
+    
+    
+    public boolean checkForDeath(Location current, Location start) throws IOException {
+        if (health == 0) {
+            for (Artefact a : heldItems) {
+                removeItem(a);
+                current.addArtefact(a);
+            }
+            current.removeCharacter(this);
+            start.addCharacter(this);
+            health = 3;
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

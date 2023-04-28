@@ -266,27 +266,20 @@ public final class GameServer {
         
         // Set up player metadata
         Player p = null;
+        Location playerLocation = null;
         for (Location l : locations) {
             ArrayList<GameCharacter> characters = l.getCharacters();
             for (GameCharacter c : characters) {
                 if (c.getName().equals(userName)) {
                     p = (Player)c;
+                    playerLocation = l;
                 }
             }
         }
         if (p == null) {
             p = new Player(userName);
             startLocation.addCharacter(p);
-        }
-        
-        Location playerLocation = null;
-        for (Location l : locations) {
-            if (l.characterIsPresent(p)) {
-                playerLocation = l;
-            }
-        }
-        if (playerLocation == null) {
-            throw new IOException("ERROR: player not in the game");
+            playerLocation = startLocation;
         }
         
         return handleInstruction(instruction, p, playerLocation);
@@ -397,9 +390,20 @@ public final class GameServer {
         for (String s : a.getProduced()) {
             if (s.equals("health")) {
                 p.heal();
+                
             } else {
                 l.produce(s, locations);
             }
+        }
+        
+        if (p.checkForDeath(l, startLocation)) {
+            StringBuilder builder = new StringBuilder();
+            builder.append(a.getNarration())
+                .append("\nYou pass out from the damage\n")
+                .append("You wake up in ")
+                .append(startLocation.getDescription())
+                .append(" without any of your possessions\n");
+            return builder.toString();
         }
         
         return a.getNarration();
