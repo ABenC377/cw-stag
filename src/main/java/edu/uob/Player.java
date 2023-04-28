@@ -115,7 +115,11 @@ public class Player extends GameCharacter {
     
     public boolean checkForDeath(Location current, Location start) throws IOException {
         if (health == 0) {
+            ArrayList<Artefact> toDrop = new ArrayList<>();
             for (Artefact a : heldItems) {
+                toDrop.add(a);
+            }
+            for (Artefact a : toDrop) {
                 removeItem(a);
                 current.addArtefact(a);
             }
