@@ -25,7 +25,7 @@ import com.alexmerz.graphviz.objects.Edge;
 public final class GameServer {
 
     private static final char END_OF_TRANSMISSION = 4;
-    HashMap<String, HashSet<Action>> singleTriggerActions;
+    HashMap<String, HashSet<GameAction>> singleTriggerActions;
     ArrayList<ActionTuple> multiTriggerActions = new ArrayList<>();
     
     Location startLocation;
@@ -69,8 +69,8 @@ public final class GameServer {
     }
     
     // TODO this is filthy long.  Refactor
-    private HashMap<String, HashSet<Action>> readActionsFile(File file) throws ParserConfigurationException, IOException, SAXException {
-        HashMap<String, HashSet<Action>> actionsHashMap = new HashMap<>();
+    private HashMap<String, HashSet<GameAction>> readActionsFile(File file) throws ParserConfigurationException, IOException, SAXException {
+        HashMap<String, HashSet<GameAction>> actionsHashMap = new HashMap<>();
         int id = 1;
         
         DocumentBuilder builder =
@@ -117,7 +117,7 @@ public final class GameServer {
                     (Element)currentAction.getElementsByTagName("narration").item(0);
                 narration = narrationElement.getTextContent();
                 
-                Action current = new Action(id, subjects, consumed, produced,
+                GameAction current = new GameAction(id, subjects, consumed, produced,
                     narration);
                 
                 Element triggersElement =
@@ -132,7 +132,7 @@ public final class GameServer {
                         if (actionsHashMap.containsKey(trigger)) {
                             actionsHashMap.get(trigger).add(current);
                         } else {
-                            HashSet<Action> hs = new HashSet<>();
+                            HashSet<GameAction> hs = new HashSet<>();
                             hs.add(current);
                             actionsHashMap.put(trigger, hs);
                         }
@@ -289,67 +289,75 @@ public final class GameServer {
                                      Location playerLocation) throws IOException {
         String[] words = inst.toLowerCase().split(" ");
         String output = "";
-        Action toPerform = null;
+        GameAction toPerform = null;
         // TODO need to make sure this handles situations where more than one
         //  outcome is possible!! (i.e., ambiguous commands)
         for (String w : words) {
-            if (w.equals("inventory") || w.equals("inv")) {
-                String commandOutput = player.listItems();
-                if (commandOutput.length() != 0 && output.length() != 0) {
-                    return "ERROR - ambiguous command";
-                } else if (commandOutput.length() != 0) {
-                    output = commandOutput;
-                }
-            } else if (w.equals("get")) {
-                String commandOutput = player.getArtefactFromLocation(words,
-                    playerLocation);
-                if (commandOutput.length() != 0 && output.length() != 0) {
-                    return "ERROR - ambiguous command";
-                } else if (commandOutput.length() != 0) {
-                    output = commandOutput;
-                }
-            } else if (w.equals("drop")) {
-                String commandOutput = player.dropItem(words, playerLocation);
-                if (commandOutput.length() != 0 && output.length() != 0) {
-                    return "ERROR - ambiguous command";
-                } else if (commandOutput.length() != 0) {
-                    output = commandOutput;
-                }
-            } else if (w.equals("goto")) {
-                String commandOutput = gotoLocation(words, player,
-                    playerLocation);
-                if (commandOutput.length() != 0 && output.length() != 0) {
-                    return "ERROR - ambiguous command";
-                } else if (commandOutput.length() != 0) {
-                    output = commandOutput;
-                }
-            } else if (w.equals("look")) {
-                String commandOutput = playerLocation.lookAround(player);
-                if (commandOutput.length() != 0 && output.length() != 0) {
-                    return "ERROR - ambiguous command";
-                } else if (commandOutput.length() != 0) {
-                    output = commandOutput;
-                }
-            } else if (w.equals("health")) {
-                String commandOutput = player.reportHealth();
-                if (commandOutput.length() != 0 && output.length() != 0) {
-                    return "ERROR - ambiguous command";
-                } else if (commandOutput.length() != 0) {
-                    output = commandOutput;
-                }
-            } else {
-                if (singleTriggerActions.containsKey(w)) {
-                    if (output.length() != 0 && !singleTriggerActions.get(w).contains(toPerform)) {
+            switch (w) {
+                case "inventory", "inv" -> {
+                    String commandOutput = player.listItems();
+                    if (commandOutput.length() != 0 && output.length() != 0) {
                         return "ERROR - ambiguous command";
+                    } else if (commandOutput.length() != 0) {
+                        output = commandOutput;
                     }
-                    for (Action a : singleTriggerActions.get(w)) {
-                        String actionOutput = tryAction(a, words, player,
-                            playerLocation);
-                        if (actionOutput.length() != 0 && output.length() != 0 && a != toPerform) {
+                }
+                case "get" -> {
+                    String commandOutput = player.getArtefactFromLocation(words,
+                        playerLocation);
+                    if (commandOutput.length() != 0 && output.length() != 0) {
+                        return "ERROR - ambiguous command";
+                    } else if (commandOutput.length() != 0) {
+                        output = commandOutput;
+                    }
+                }
+                case "drop" -> {
+                    String commandOutput = player.dropItem(words, playerLocation);
+                    if (commandOutput.length() != 0 && output.length() != 0) {
+                        return "ERROR - ambiguous command";
+                    } else if (commandOutput.length() != 0) {
+                        output = commandOutput;
+                    }
+                }
+                case "goto" -> {
+                    String commandOutput = gotoLocation(words, player,
+                        playerLocation);
+                    if (commandOutput.length() != 0 && output.length() != 0) {
+                        return "ERROR - ambiguous command";
+                    } else if (commandOutput.length() != 0) {
+                        output = commandOutput;
+                    }
+                }
+                case "look" -> {
+                    String commandOutput = playerLocation.lookAround(player);
+                    if (commandOutput.length() != 0 && output.length() != 0) {
+                        return "ERROR - ambiguous command";
+                    } else if (commandOutput.length() != 0) {
+                        output = commandOutput;
+                    }
+                }
+                case "health" -> {
+                    String commandOutput = player.reportHealth();
+                    if (commandOutput.length() != 0 && output.length() != 0) {
+                        return "ERROR - ambiguous command";
+                    } else if (commandOutput.length() != 0) {
+                        output = commandOutput;
+                    }
+                }
+                default -> {
+                    if (singleTriggerActions.containsKey(w)) {
+                        if (output.length() != 0 && !singleTriggerActions.get(w).contains(toPerform)) {
                             return "ERROR - ambiguous command";
-                        } else if (actionOutput.length() != 0) {
-                            output = actionOutput;
-                            toPerform = a;
+                        }
+                        for (GameAction a : singleTriggerActions.get(w)) {
+                            String actionOutput = tryAction(a, words, player,
+                                playerLocation);
+                            if (actionOutput.length() != 0 && output.length() != 0 && a != toPerform) {
+                                return "ERROR - ambiguous command";
+                            } else if (actionOutput.length() != 0) {
+                                output = actionOutput;
+                                toPerform = a;
+                            }
                         }
                     }
                 }
@@ -361,7 +369,7 @@ public final class GameServer {
                 if (output.length() != 0 && !tup.getActions().contains(toPerform)) {
                     return "ERROR = ambiguous command";
                 }
-                for (Action a : tup.getActions()) {
+                for (GameAction a : tup.getActions()) {
                     String actionOutput = tryAction(a, words, player,
                         playerLocation);
                     if (actionOutput.length() != 0 && output.length() != 0 && a != toPerform) {
@@ -403,7 +411,7 @@ public final class GameServer {
             " valid path exists\n");
     }
     
-    private String tryAction(Action a, String[] words, Player p, Location l) throws IOException {
+    private String tryAction(GameAction a, String[] words, Player p, Location l) throws IOException {
         boolean present = false;
         for (String subj : a.getSubjects()) {
             for (String word : words) {
