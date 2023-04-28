@@ -34,9 +34,10 @@ public final class GameServer {
     
 
     public static void main(String[] args) throws IOException {
-        File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
-        File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
-        System.out.println("Loading up game server");
+        File entitiesFile = Paths.get("config" + File.separator + "extended" +
+            "-entities.dot").toAbsolutePath().toFile();
+        File actionsFile = Paths.get("config" + File.separator + "extended" +
+            "-actions.xml").toAbsolutePath().toFile();
         GameServer server = new GameServer(entitiesFile, actionsFile);
         server.blockingListenOn(8888);
     }
@@ -53,15 +54,12 @@ public final class GameServer {
     */
     public GameServer(File entitiesFile, File actionsFile) {
         // TODO implement your server logic here
-        System.out.println("Trying to read Actions file");
         try {
             singleTriggerActions = readActionsFile(actionsFile);
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new RuntimeException(e);
         }
         
-        
-        System.out.println("Trying to read Entities file");
         try {
             readEntitiesFile(entitiesFile);
         } catch (FileNotFoundException | ParseException e) {
@@ -160,7 +158,6 @@ public final class GameServer {
     
     
     private void readEntitiesFile(File file) throws FileNotFoundException, ParseException {
-        System.out.println("Loading entities file");
         Parser parser = new Parser();
         FileReader reader = new FileReader(file);
         parser.parse(reader);
@@ -192,7 +189,6 @@ public final class GameServer {
                                 new Artefact(artefactNode.getId().getId(),
                                     artefactNode.getAttribute("description"));
                             l.addArtefact(a);
-                            System.out.println("Loaded artefact " + a.getName());
                         }
                     }
                     case "furniture" -> {
@@ -260,7 +256,6 @@ public final class GameServer {
     * <p>This method handles all incoming game commands and carries out the corresponding actions.
     */
     public String handleCommand(String command) throws IOException {
-        return "IS THIS PRINTED?";
         // TODO implement your server logic here
         String[] components = command.split(":", 2);
         String userName = components[0];
@@ -306,7 +301,8 @@ public final class GameServer {
             if (w.equals("inventory") || w.equals("inv")) {
                 return player.listItems();
             } else if (w.equals("get")) {
-                return getArtefactFromLocation(words, player, playerLocation);
+                return player.getArtefactFromLocation(words,
+                    playerLocation);
             } else if (w.equals("drop")) {
                 return player.dropItem(words, playerLocation);
             } else if (w.equals("goto")) {
@@ -342,18 +338,6 @@ public final class GameServer {
 "look": prints names and descriptions of entities in the current location and lists paths to other locations
     * */
     
-    private String getArtefactFromLocation(String[] words, Player p,
-                                           Location l) {
-        for (String w : words) {
-            Artefact a = l.removeArtefact(w);
-            if (a != null) {
-                p.pickUpItem(a);
-                return (p.getName() + " picked up " + a.getName() + "\n");
-            }
-        }
-        return (p.getName() + " is not holding any such item\n");
-    }
-    
     private String gotoLocation(String[] words, Player p, Location l) {
         for (String s : words) {
             if (l.pathToLocationExists(s)) {
@@ -385,7 +369,7 @@ public final class GameServer {
         }
         
         for (String s : a.getConsumed()) {
-            if (!p.itemHeld(s) && !l.artefactIsPresent(s) && !l.furnitureIsPresent(s)) {
+            if (!p.itemHeld(s) && !l.artefactIsPresent(s) && !l.furnitureIsPresent(s) && !s.equals("health")) {
                 return "";
             }
         }
@@ -405,11 +389,17 @@ public final class GameServer {
                 storeRoom.addArtefact(l.removeArtefact(s));
             } else if (l.furnitureIsPresent(s)) {
                 storeRoom.addFurniture(l.removeFurniture(s));
+            } else if (s.equals("health")) {
+                p.takeDamage();
             }
         }
         
         for (String s : a.getProduced()) {
-            l.produce(s, locations);
+            if (s.equals("health")) {
+                p.heal();
+            } else {
+                l.produce(s, locations);
+            }
         }
         
         return a.getNarration();

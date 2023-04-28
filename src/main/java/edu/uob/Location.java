@@ -166,7 +166,6 @@ public class Location extends GameEntity {
         builder.append("You are in ");
         builder.append(this.getDescription());
         builder.append(" You can see:\n");
-        builder.append("There are ").append(artefacts.size()).append(" artefacts\n");
         for (Artefact a : artefacts) {
             builder.append(a.getDescription());
             builder.append("\n");
@@ -191,12 +190,18 @@ public class Location extends GameEntity {
     
     public void produce(String entityName, ArrayList<Location> locations) {
         for (Location l : locations) {
+            if (l.getName().equals(entityName)) {
+                paths.add(l);
+            }
             if (l.characterIsPresent(entityName)) {
                 characters.add(l.removeCharacter(entityName));
+                return;
             } else if (l.furnitureIsPresent(entityName)) {
                 furniture.add(l.removeFurniture(entityName));
+                return;
             } else if (l.artefactIsPresent(entityName)) {
                 artefacts.add(l.removeArtefact(entityName));
+                return;
             }
         }
     }

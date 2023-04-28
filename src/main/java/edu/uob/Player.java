@@ -99,4 +99,16 @@ public class Player extends GameCharacter {
         }
         return builder.toString();
     }
+    
+    public String getArtefactFromLocation(String[] words,
+                                           Location l) {
+        for (String w : words) {
+            Artefact a = l.removeArtefact(w);
+            if (a != null) {
+                this.pickUpItem(a);
+                return (this.getName() + " picked up " + a.getName() + "\n");
+            }
+        }
+        return ("There is no such item in the \n" + l.getName());
+    }
 }
