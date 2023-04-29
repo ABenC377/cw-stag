@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import static java.lang.Math.min;
 
 public class Player extends GameCharacter {
-    private ArrayList<Artefact> heldItems;
+    private final ArrayList<Artefact> heldItems;
     private int health;
     
     public Player(String name) {
@@ -32,12 +32,8 @@ public class Player extends GameCharacter {
                 "does not already hold");
         }
     }
-    public void removeItem(String s) throws IOException {
-        for (Artefact a : heldItems) {
-            if (a.getName().equals(s)) {
-                heldItems.remove(a);
-            }
-        }
+    public void removeItem(String s) {
+        heldItems.removeIf( a -> a.getName().equals(s));
     }
     
     public Artefact getItem(String s) {

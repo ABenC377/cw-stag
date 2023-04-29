@@ -71,7 +71,6 @@ public final class GameServer {
     // TODO this is filthy long.  Refactor
     private HashMap<String, HashSet<GameAction>> readActionsFile(File file) throws ParserConfigurationException, IOException, SAXException {
         HashMap<String, HashSet<GameAction>> actionsHashMap = new HashMap<>();
-        int id = 1;
         
         DocumentBuilder builder =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -117,7 +116,7 @@ public final class GameServer {
                     (Element)currentAction.getElementsByTagName("narration").item(0);
                 narration = narrationElement.getTextContent();
                 
-                GameAction current = new GameAction(id, subjects, consumed, produced,
+                GameAction current = new GameAction(subjects, consumed, produced,
                     narration);
                 
                 Element triggersElement =
@@ -285,13 +284,14 @@ public final class GameServer {
         return handleInstruction(instruction, p, playerLocation);
     }
     
+    // TODO - when dealing with ambiguous commands, this currently carries
+    //  one of them out in the try___() methods.  Need to think about this.
     private String handleInstruction(String inst, Player player,
                                      Location playerLocation) throws IOException {
-        String[] words = inst.toLowerCase().split(" ");
+        String alphanumericInst = inst.toLowerCase().replaceAll("[^a-z]", "");
+        String[] words = alphanumericInst.split(" ");
         String output = "";
         GameAction toPerform = null;
-        // TODO need to make sure this handles situations where more than one
-        //  outcome is possible!! (i.e., ambiguous commands)
         for (String w : words) {
             switch (w) {
                 case "inventory", "inv" -> {
@@ -385,15 +385,6 @@ public final class GameServer {
         return ((output.length() == 0) ? "ERROR - command does not contain " +
             "an executable action\n" : output);
     }
-    
-    /*
-    *
-"inventory" (or "inv" for short): lists all of the artefacts currently being carried by the player
-"get": picks up a specified artefact from the current location and adds it into player's inventory
-"drop": puts down an artefact from player's inventory and places it into the current location
-"goto": moves the player to the specified location (if there is a path to that location)
-"look": prints names and descriptions of entities in the current location and lists paths to other locations
-    * */
     
     private String gotoLocation(String[] words, Player p, Location l) {
         for (String s : words) {
