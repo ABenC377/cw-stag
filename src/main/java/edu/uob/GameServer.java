@@ -274,7 +274,7 @@ public final class GameServer {
         for (Location l : locations) {
             ArrayList<GameCharacter> characters = l.getCharacters();
             for (GameCharacter c : characters) {
-                if (c.getName().toLowerCase().equals(userName)) {
+                if (c.getName().equals(userName)) {
                     p = (Player)c;
                     playerLocation = l;
                 }
@@ -373,7 +373,7 @@ public final class GameServer {
         }
         
         if (command != null) {
-            return handleCommand(command, player, playerLocation, words);
+            return handleBasicCommand(command, player, playerLocation, words);
         } else if (action != null) {
             return handleAction(action, player, playerLocation);
         } else {
@@ -446,7 +446,7 @@ public final class GameServer {
         return a.getNarration();
     }
     
-    private String handleCommand(BasicCommand c, Player p,
+    private String handleBasicCommand(BasicCommand c, Player p,
                                  Location l, String[] words) throws IOException {
         switch (c) {
             case INV -> {
@@ -533,7 +533,7 @@ public final class GameServer {
         
         if (!l.artefactIsPresent(gottenArtefact)) {
             return ("ERROR - " + gottenArtefact.getName() + " is not present " +
-                "in this location\n");
+                "in " + l.getName() + "\n");
         }
         
         l.removeArtefact(gottenArtefact);
