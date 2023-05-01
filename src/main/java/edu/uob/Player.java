@@ -88,26 +88,13 @@ public class Player extends GameCharacter {
         StringBuilder builder = new StringBuilder();
         builder.append("You are currently holding:\n");
         for (Artefact a : heldItems) {
-            builder.append(a.getName());
-            builder.append(" - ");
-            builder.append(a.getDescription());
-            builder.append("\n");
+            builder.append(a.getName())
+                .append(" - ")
+                .append(a.getDescription())
+                .append("\n");
         }
         return builder.toString();
     }
-    
-    public String getArtefactFromLocation(String[] words,
-                                           Location l) {
-        for (String w : words) {
-            Artefact a = l.removeArtefact(w);
-            if (a != null) {
-                this.pickUpItem(a);
-                return (this.getName() + " picked up " + a.getName() + "\n");
-            }
-        }
-        return ("There is no such item in the \n" + l.getName());
-    }
-    
     
     public boolean checkForDeath(Location current, Location start) throws IOException {
         if (health == 0) {

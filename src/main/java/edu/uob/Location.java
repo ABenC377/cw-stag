@@ -136,26 +136,32 @@ public class Location extends GameEntity {
     
     public String getArrivalString(Player p) {
         StringBuilder builder = new StringBuilder();
-        builder.append("You arrive in ");
-        builder.append(this.getDescription());
-        builder.append(" You can see:\n");
+        builder.append("You arrive in ")
+            .append(this.getDescription())
+            .append(" You can see:\n");
         for (Artefact a : artefacts) {
-            builder.append(a.getDescription());
-            builder.append("\n");
+            builder.append(a.getName())
+                .append(": ")
+                .append(a.getDescription())
+                .append("\n");
         }
         for (Furniture f : furniture) {
-            builder.append(f.getDescription());
-            builder.append("\n");
+            builder.append(f.getName())
+                .append(": ")
+                .append(f.getDescription())
+                .append("\n");
         }
         for (GameCharacter c : characters) {
             if (c != p) {
-                builder.append(c.getDescription());
-                builder.append("\n");
+                builder.append(c.getName())
+                    .append(": ")
+                    .append(c.getDescription())
+                    .append("\n");
             }
         }
         builder.append("You can see from here:\n");
         for (Location l : paths) {
-            builder.append(l.getDescription());
+            builder.append(l.getName());
             builder.append("\n");
         }
         return builder.toString();
@@ -163,26 +169,32 @@ public class Location extends GameEntity {
     
     public String lookAround(Player p) {
         StringBuilder builder = new StringBuilder();
-        builder.append("You are in ");
-        builder.append(this.getDescription());
-        builder.append(" You can see:\n");
+        builder.append("You are in ")
+            .append(this.getDescription())
+            .append(" You can see:\n");
         for (Artefact a : artefacts) {
-            builder.append(a.getDescription());
-            builder.append("\n");
+            builder.append(a.getName())
+                .append(": ")
+                .append(a.getDescription())
+                .append("\n");
         }
         for (Furniture f : furniture) {
-            builder.append(f.getDescription());
-            builder.append("\n");
+            builder.append(f.getName())
+                .append(": ")
+                .append(f.getDescription())
+                .append("\n");
         }
         for (GameCharacter c : characters) {
             if (c != p) {
-                builder.append(c.getDescription());
-                builder.append("\n");
+                builder.append(c.getName())
+                    .append(": ")
+                    .append(c.getDescription())
+                    .append("\n");
             }
         }
         builder.append("You can see from here:\n");
         for (Location l : paths) {
-            builder.append(l.getDescription());
+            builder.append(l.getName());
             builder.append("\n");
         }
         return builder.toString();

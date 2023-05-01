@@ -30,9 +30,10 @@ public final class GameServer {
     
     Location startLocation;
     Location storeRoom;
-    ArrayList<Location> locations = new ArrayList<>();
+    private final ArrayList<Location> locations = new ArrayList<>();
+    private final ArrayList<GameEntity> entities = new ArrayList<>();
     
-
+    
     public static void main(String[] args) throws IOException {
         File entitiesFile = Paths.get("config" + File.separator + "extended" +
             "-entities.dot").toAbsolutePath().toFile();
@@ -174,6 +175,7 @@ public final class GameServer {
             String locationDescription =
                 current.getNodes(false).get(0).getAttribute("description");
             Location l = new Location(locationName, locationDescription);
+            entities.add(l);
             
             ArrayList<Graph> contents = current.getSubgraphs();
             
@@ -188,6 +190,7 @@ public final class GameServer {
                                 new Artefact(artefactNode.getId().getId(),
                                     artefactNode.getAttribute("description"));
                             l.addArtefact(a);
+                            entities.add(a);
                         }
                     }
                     case "furniture" -> {
@@ -199,6 +202,7 @@ public final class GameServer {
                                     furnitureNode.getAttribute(
                                         "description"));
                             l.addFurniture(f);
+                            entities.add(f);
                         }
                     }
                     case "characters" -> {
@@ -210,6 +214,7 @@ public final class GameServer {
                                     characterNode.getAttribute(
                                         "description"));
                             l.addCharacter(c);
+                            entities.add(c);
                         }
                     }
                 }
@@ -236,9 +241,9 @@ public final class GameServer {
             Location start = null;
             Location end = null;
             for (Location location : locations) {
-                if (location.getName().equals(startName)) {
+                if (location.getName().toLowerCase().equals(startName)) {
                     start = location;
-                } else if (location.getName().equals(endName)) {
+                } else if (location.getName().toLowerCase().equals(endName)) {
                     end = location;
                 }
             }
@@ -269,7 +274,7 @@ public final class GameServer {
         for (Location l : locations) {
             ArrayList<GameCharacter> characters = l.getCharacters();
             for (GameCharacter c : characters) {
-                if (c.getName().equals(userName)) {
+                if (c.getName().toLowerCase().equals(userName)) {
                     p = (Player)c;
                     playerLocation = l;
                 }
@@ -288,76 +293,61 @@ public final class GameServer {
     //  one of them out in the try___() methods.  Need to think about this.
     private String handleInstruction(String inst, Player player,
                                      Location playerLocation) throws IOException {
-        String alphanumericInst = inst.toLowerCase().replaceAll("[^a-z]", "");
+        String alphanumericInst = inst.toLowerCase().replaceAll("[^a-zA-Z0-9 ]",
+            "");
         String[] words = alphanumericInst.split(" ");
-        String output = "";
-        GameAction toPerform = null;
+        BasicCommand command = null;
+        GameAction action = null;
         for (String w : words) {
-            switch (w) {
-                case "inventory", "inv" -> {
-                    String commandOutput = player.listItems();
-                    if (commandOutput.length() != 0 && output.length() != 0) {
-                        return "ERROR - ambiguous command";
-                    } else if (commandOutput.length() != 0) {
-                        output = commandOutput;
-                    }
+            if (w.equals("inventory") || w.equals("inv")) {
+                if (action != null || (command != null && command != BasicCommand.INV)) {
+                    return "ERROR - ambiguous command";
+                } else {
+                    command = BasicCommand.INV;
                 }
-                case "get" -> {
-                    String commandOutput = player.getArtefactFromLocation(words,
-                        playerLocation);
-                    if (commandOutput.length() != 0 && output.length() != 0) {
-                        return "ERROR - ambiguous command";
-                    } else if (commandOutput.length() != 0) {
-                        output = commandOutput;
-                    }
+            } else if (w.equals("get")) {
+                if (action != null || (command != null && command != BasicCommand.GET)) {
+                    return "ERROR - ambiguous command";
+                } else {
+                    command = BasicCommand.GET;
                 }
-                case "drop" -> {
-                    String commandOutput = player.dropItem(words, playerLocation);
-                    if (commandOutput.length() != 0 && output.length() != 0) {
-                        return "ERROR - ambiguous command";
-                    } else if (commandOutput.length() != 0) {
-                        output = commandOutput;
-                    }
+            } else if (w.equals("drop")) {
+                if (action != null || (command != null && command != BasicCommand.DROP)) {
+                    return "ERROR - ambiguous command";
+                } else {
+                    command = BasicCommand.DROP;
                 }
-                case "goto" -> {
-                    String commandOutput = gotoLocation(words, player,
-                        playerLocation);
-                    if (commandOutput.length() != 0 && output.length() != 0) {
-                        return "ERROR - ambiguous command";
-                    } else if (commandOutput.length() != 0) {
-                        output = commandOutput;
-                    }
+            } else if (w.equals("goto")) {
+                System.out.println("Found goto in the command\n");
+                if (action != null || (command != null && command != BasicCommand.GOTO)) {
+                    return "ERROR - ambiguous command";
+                } else {
+                    command = BasicCommand.GOTO;
                 }
-                case "look" -> {
-                    String commandOutput = playerLocation.lookAround(player);
-                    if (commandOutput.length() != 0 && output.length() != 0) {
-                        return "ERROR - ambiguous command";
-                    } else if (commandOutput.length() != 0) {
-                        output = commandOutput;
-                    }
+            } else if (w.equals("look")) {
+                if (action != null || (command != null && command != BasicCommand.LOOK)) {
+                    return "ERROR - ambiguous command";
+                } else {
+                    command = BasicCommand.LOOK;
                 }
-                case "health" -> {
-                    String commandOutput = player.reportHealth();
-                    if (commandOutput.length() != 0 && output.length() != 0) {
-                        return "ERROR - ambiguous command";
-                    } else if (commandOutput.length() != 0) {
-                        output = commandOutput;
-                    }
+            } else if (w.equals("health")) {
+                if (action != null || (command != null && command != BasicCommand.HEALTH)) {
+                    return "ERROR - ambiguous command";
+                } else {
+                    command = BasicCommand.HEALTH;
                 }
-                default -> {
-                    if (singleTriggerActions.containsKey(w)) {
-                        if (output.length() != 0 && !singleTriggerActions.get(w).contains(toPerform)) {
-                            return "ERROR - ambiguous command";
-                        }
-                        for (GameAction a : singleTriggerActions.get(w)) {
-                            String actionOutput = tryAction(a, words, player,
-                                playerLocation);
-                            if (actionOutput.length() != 0 && output.length() != 0 && a != toPerform) {
+            } else {
+                if (singleTriggerActions.containsKey(w)) {
+                    if (command != null || (action != null && !singleTriggerActions.get(w).contains(action))) {
+                        return "ERROR - ambiguous command";
+                    }
+                    for (GameAction a : singleTriggerActions.get(w)) {
+                        if (actionIsValid(a, words, player,
+                            playerLocation)) {
+                            if (action != null && action != a) {
                                 return "ERROR - ambiguous command";
-                            } else if (actionOutput.length() != 0) {
-                                output = actionOutput;
-                                toPerform = a;
                             }
+                            action = a;
                         }
                     }
                 }
@@ -365,44 +355,34 @@ public final class GameServer {
         }
         
         for (ActionTuple tup : multiTriggerActions) {
-            if (inst.contains(tup.getTrigger())) {
-                if (output.length() != 0 && !tup.getActions().contains(toPerform)) {
+            if (alphanumericInst.contains(tup.getTrigger())) {
+                if (command != null ||
+                    action != null && !tup.getActions().contains(action)) {
                     return "ERROR = ambiguous command";
                 }
                 for (GameAction a : tup.getActions()) {
-                    String actionOutput = tryAction(a, words, player,
-                        playerLocation);
-                    if (actionOutput.length() != 0 && output.length() != 0 && a != toPerform) {
-                        return "ERROR - ambiguous command";
-                    } else if (actionOutput.length() != 0) {
-                        output = actionOutput;
-                        toPerform = a;
+                    if (actionIsValid(a, words, player,
+                        playerLocation)) {
+                        if (action != null && action != a) {
+                            return "ERROR - ambiguous command";
+                        }
+                        action = a;
                     }
                 }
             }
         }
         
-        return ((output.length() == 0) ? "ERROR - command does not contain " +
-            "an executable action\n" : output);
-    }
-    
-    private String gotoLocation(String[] words, Player p, Location l) {
-        for (String s : words) {
-            if (l.pathToLocationExists(s)) {
-                for (Location other : locations) {
-                    if (other.getName().equals(s)) {
-                        other.addCharacter(p);
-                        l.removeCharacter(p);
-                        return other.getArrivalString(p);
-                    }
-                }
-            }
+        if (command != null) {
+            return handleCommand(command, player, playerLocation, words);
+        } else if (action != null) {
+            return handleAction(action, player, playerLocation);
+        } else {
+            return "ERROR - no valid instruction in that command";
         }
-        return (p.getName() + " could not go to any of these locations as no" +
-            " valid path exists\n");
     }
     
-    private String tryAction(GameAction a, String[] words, Player p, Location l) throws IOException {
+    private boolean actionIsValid(GameAction a, String[] words, Player p,
+                                  Location l) {
         boolean present = false;
         for (String subj : a.getSubjects()) {
             for (String word : words) {
@@ -413,21 +393,26 @@ public final class GameServer {
             }
         }
         if (!present) {
-            return "";
+            return false;
         }
         
         for (String s : a.getConsumed()) {
             if (!p.itemHeld(s) && !l.artefactIsPresent(s) && !l.furnitureIsPresent(s) && !s.equals("health")) {
-                return "";
+                return false;
             }
         }
         
         for (String s : a.getSubjects()) {
             if (!p.itemHeld(s) && !l.artefactIsPresent(s) && !l.furnitureIsPresent(s) && !l.characterIsPresent(s)) {
-                return "";
+                return false;
             }
         }
         
+        return true;
+    }
+    
+    private String handleAction(GameAction a, Player p,
+                           Location l) throws IOException {
         for (String s : a.getConsumed()) {
             if (p.itemHeld(s)) {
                 Artefact i = p.getItem(s);
@@ -445,7 +430,6 @@ public final class GameServer {
         for (String s : a.getProduced()) {
             if (s.equals("health")) {
                 p.heal();
-                
             } else {
                 l.produce(s, locations);
             }
@@ -461,6 +445,240 @@ public final class GameServer {
         
         return a.getNarration();
     }
+    
+    private String handleCommand(BasicCommand c, Player p,
+                                 Location l, String[] words) throws IOException {
+        switch (c) {
+            case INV -> {
+                return handleInv(words, p);
+            }
+            case GET -> {
+                return handleGet(words, p, l);
+            }
+            case DROP -> {
+                return handleDrop(words, p, l);
+            }
+            case GOTO -> {
+                return handleGoto(words, p, l);
+            }
+            case LOOK -> {
+                return handleLook(words, p, l);
+            }
+            case HEALTH -> {
+                return handleHealth(words, p);
+            }
+        }
+        return null;
+    }
+    
+    private String handleInv(String[] words, Player p) {
+        boolean invAlreadySeen = false;
+        for (String w : words) {
+            if (w.equals("inv") || w.equals("inventory")) {
+                if (invAlreadySeen) {
+                    return "ERROR - invalid command, too many triggers for " +
+                        "inventory command\n";
+                } else {
+                    invAlreadySeen = true;
+                }
+            }
+        }
+        
+        for (String w : words) {
+            for (GameEntity e : entities) {
+                if (e.getName().toLowerCase().equals(w)) {
+                    return "ERROR - cannot use entity name as decoration for " +
+                        "inventory command\n";
+                }
+            }
+        }
+        
+        return p.listItems();
+    }
+    
+    private String handleGet(String[] words, Player p, Location l) {
+        int getIndex = -1;
+        int i = 0;
+        for (String w : words) {
+            if (w.equals("get")) {
+                if (getIndex != -1) {
+                    return "ERROR - invalid command, too many triggers for " +
+                        "get command\n";
+                } else {
+                    getIndex = i;
+                }
+            }
+            i++;
+        }
+        
+        Artefact gottenArtefact = null;
+        for (int j = getIndex + 1; j < words.length; j++) {
+            String w = words[j];
+            for (GameEntity e : entities) {
+                if (w.equals(e.getName().toLowerCase())) {
+                    if (e instanceof Artefact && gottenArtefact == null) {
+                        gottenArtefact = (Artefact)e;
+                    } else {
+                        return "ERROR - get requires one artefact as its " +
+                            "argument";
+                    }
+                }
+            }
+        }
+        
+        if (gottenArtefact == null) {
+            return "ERROR - get command requires an artefact name as an " +
+                "argument";
+        }
+        
+        if (!l.artefactIsPresent(gottenArtefact)) {
+            return ("ERROR - " + gottenArtefact.getName() + " is not present " +
+                "in this location\n");
+        }
+        
+        l.removeArtefact(gottenArtefact);
+        p.pickUpItem(gottenArtefact);
+        return (p.getName() + " picked up " + gottenArtefact.getName() + "\n");
+    }
+    
+    private String handleDrop(String[] words, Player p, Location l) throws IOException {
+        int getIndex = -1;
+        int i = 0;
+        for (String w : words) {
+            if (w.equals("drop")) {
+                if (getIndex != -1) {
+                    return "ERROR - invalid command, too many triggers for " +
+                        "drop command\n";
+                } else {
+                    getIndex = i;
+                }
+            }
+            i++;
+        }
+        
+        Artefact droppedArtefact = null;
+        for (int j = getIndex + 1; j < words.length; j++) {
+            String w = words[j];
+            for (GameEntity e : entities) {
+                if (w.equals(e.getName().toLowerCase())) {
+                    if (e instanceof Artefact && droppedArtefact == null) {
+                        droppedArtefact = (Artefact)e;
+                    } else {
+                        return "ERROR - drop requires one artefact as its " +
+                            "argument";
+                    }
+                }
+            }
+        }
+        
+        if (droppedArtefact == null) {
+            return "ERROR - drop command requires an artefact name as an " +
+                "argument";
+        }
+        
+        if (!p.itemHeld(droppedArtefact)) {
+            return ("ERROR - cannot drop " + droppedArtefact.getName() + " as" +
+                " it is not in your inventory\n");
+        }
+        
+        p.removeItem(droppedArtefact);
+        l.addArtefact(droppedArtefact);
+        return (p.getName() + " dropped " + droppedArtefact.getName() + "\n");
+    }
+    
+    private String handleGoto(String[] words, Player p, Location l) {
+        int getIndex = -1;
+        int i = 0;
+        for (String w : words) {
+            if (w.equals("goto")) {
+                if (getIndex != -1) {
+                    return "ERROR - invalid command, too many triggers for " +
+                        "drop command\n";
+                } else {
+                    getIndex = i;
+                }
+            }
+            i++;
+        }
+        
+        Location gotoLocation = null;
+        for (int j = getIndex; j < words.length; j++) {
+            String w = words[j];
+            for (GameEntity e : entities) {
+                if (w.equals(e.getName().toLowerCase())) {
+                    if (e instanceof Location && gotoLocation == null) {
+                        gotoLocation = (Location)e;
+                    } else {
+                        return "ERROR - goto requires one location as its " +
+                            "argument";
+                    }
+                }
+            }
+        }
+        
+        if (gotoLocation == null) {
+            return "ERROR - goto command requires a location name as an " +
+                "argument";
+        }
+        
+        return gotoLocation(p, l, gotoLocation);
+    }
+    
+    private String gotoLocation(Player p, Location currentLocation,
+                                Location gotoLocation) {
+        if (currentLocation.pathToLocationExists(gotoLocation.getName().toLowerCase())) {
+            gotoLocation.addCharacter(p);
+            currentLocation.removeCharacter(p);
+            return gotoLocation.getArrivalString(p);
+        }
+        return (p.getName() + " could not go to " + gotoLocation.getName() +
+            " as no valid path exists\n");
+    }
+    
+    private String handleLook(String[] words, Player p, Location l) {
+        boolean looked = false;
+        for (String w : words) {
+            if (w.equals("look")) {
+                if (looked) {
+                    return "ERROR - invalid command, too many triggers for " +
+                        "look command\n";
+                } else {
+                    looked = true;
+                }
+            }
+            
+            for (GameEntity e : entities) {
+                if (w.equals(e.getName().toLowerCase())) {
+                    return "ERROR - look requires no arguments, so the " +
+                        "command cannot contain any entity names\n";
+                }
+            }
+        }
+        
+        return l.lookAround(p);
+    }
+    
+    private String handleHealth(String[] words, Player p) {
+        boolean healthed = false;
+        for (String w : words) {
+            if (w.equals("health")) {
+                if (healthed) {
+                    return "ERROR - invalid command, too many triggers for " +
+                        "health command";
+                }
+            }
+            
+            for (GameEntity e : entities) {
+                if (w.equals(e.getName().toLowerCase())) {
+                    return "ERROR - health requires no arguments, so the " +
+                        "command cannot contain any entity names\n";
+                }
+            }
+        }
+        
+        return p.reportHealth();
+    }
+
 
 
     //  === Methods below are there to facilitate server related operations. ===
