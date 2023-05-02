@@ -1,6 +1,7 @@
 package edu.uob;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Location extends GameEntity {
     private final ArrayList<Furniture> furniture;
@@ -189,7 +190,8 @@ public class Location extends GameEntity {
         return builder.toString();
     }
     
-    public void produce(final String entityName, final ArrayList<Location> locations) {
+    public void produce(final String entityName,
+                        final List<Location> locations) {
         for (final Location l : locations) {
             if (l.getName().equals(entityName)) {
                 paths.add(l);

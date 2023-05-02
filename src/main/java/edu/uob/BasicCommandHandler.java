@@ -77,17 +77,13 @@ public class BasicCommandHandler {
         }
         
         Artefact gottenArtefact = findSingleArtefact(words, getIndex);
-        if (gottenArtefact.getName().equals("ERROR")) {
+        if ("ERROR".equals(gottenArtefact.getName())) {
             return "ERROR - get command requires only one argument";
         }
         
-        if (gottenArtefact == null ||
-            !location.artefactIsPresent(gottenArtefact)) {
-            return (gottenArtefact == null) ?
-                "ERROR - get command requires an artefact name as an " +
-                    "argument" :
-                ("ERROR - " + gottenArtefact.getName() + " is not present " +
-                    "in " + location.getName() + "\n");
+        if (!location.artefactIsPresent(gottenArtefact)) {
+            return "ERROR - " + gottenArtefact.getName() + " is not present " +
+                    "in " + location.getName() + "\n";
         }
         
         location.removeArtefact(gottenArtefact);

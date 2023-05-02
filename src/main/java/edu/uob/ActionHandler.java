@@ -2,9 +2,10 @@ package edu.uob;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ActionHandler {
-    private final ArrayList<Location> locations;
+    private final List<Location> locations;
     private final Location startLocation;
     private final Location storeRoom;
     
