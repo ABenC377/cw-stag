@@ -396,13 +396,9 @@ public final class GameServer {
                 continue;
             }
             
-            // If incompatible trigger
-            if (output != null && !tup.getActions().contains(output)) {
-                return err;
-            }
-            
             for (GameAction a : tup.getActions()) {
-                if (a.isDoable(words, p, l) && output != null && output != a) {
+                // Check action is allowable
+                if (output != null && output != a && a.isDoable(words, p, l)) {
                     return err;
                 } else if (a.isDoable(words, p, l)) {
                     output = a;
