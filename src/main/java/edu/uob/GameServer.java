@@ -397,8 +397,9 @@ public final class GameServer {
         return output;
     }
     
-    private GameAction checkMultiTriggerActions(final String inst, final Player p,
-                                                final Location l,
+    private GameAction checkMultiTriggerActions(final String inst,
+                                                final Player player,
+                                                final Location location,
                                                 final GameAction current) {
         // Set up variables
         final String[] words = cleanInstructions(inst);
@@ -406,18 +407,19 @@ public final class GameServer {
         final GameAction err = new GameAction();
         err.setNarration("ERROR");
         
-        for (final ActionTuple tup : manyWordActions) {
+        for (final ActionTuple tuple : manyWordActions) {
             // Move on if trigger not in instruction
-            if (!inst.toLowerCase().contains(tup.getTrigger())) {
+            if (!inst.toLowerCase().contains(tuple.getTrigger())) {
                 continue;
             }
             
-            for (final GameAction a : tup.getActions()) {
+            for (final GameAction action : tuple.getActions()) {
                 // Check action is allowable
-                if (output != null && output != a && a.isDoable(words, p, l)) {
+                if (output != null && output != action &&
+                    action.isDoable(words, player, location)) {
                     return err;
-                } else if (a.isDoable(words, p, l)) {
-                    output = a;
+                } else if (action.isDoable(words, player, location)) {
+                    output = action;
                 }
             }
         }
@@ -431,61 +433,64 @@ public final class GameServer {
         return alphanumericInst.split(" ");
     }
     
-    private String handleAction(final GameAction a, final Player p,
-                                final Location l) throws IOException {
-        for (final String s : a.getConsumed()) {
-            if (p.itemHeld(s)) {
-                final Artefact i = p.getItem(s);
-                p.removeItem(i);
-                storeRoom.addArtefact(i);
-            } else if (l.artefactIsPresent(s)) {
-                storeRoom.addArtefact(l.removeArtefact(s));
-            } else if (l.furnitureIsPresent(s)) {
-                storeRoom.addFurniture(l.removeFurniture(s));
-            } else if ("health".equals(s)) {
-                p.takeDamage();
+    private String handleAction(final GameAction action,
+                                final Player player,
+                                final Location location) throws IOException {
+        for (final String name : action.getConsumed()) {
+            if (player.itemHeld(name)) {
+                final Artefact artefact = player.getItem(name);
+                player.removeItem(name);
+                storeRoom.addArtefact(artefact);
+            } else if (location.artefactIsPresent(name)) {
+                storeRoom.addArtefact(location.removeArtefact(name));
+            } else if (location.furnitureIsPresent(name)) {
+                storeRoom.addFurniture(location.removeFurniture(name));
+            } else if ("health".equals(name)) {
+                player.takeDamage();
             }
         }
         
-        for (final String s : a.getProduced()) {
-            if ("health".equals(s)) {
-                p.heal();
+        for (final String name : action.getProduced()) {
+            if ("health".equals(name)) {
+                player.heal();
             } else {
-                l.produce(s, locations);
+                location.produce(name, locations);
             }
         }
         
-        if (p.checkForDeath(l, startLocation)) {
-            return (a.getNarration() +
+        if (player.checkForDeath(location, startLocation)) {
+            return (action.getNarration() +
                 "\nYou pass out from the damage\n" +
                 "You wake up in " +
                 startLocation.getDescription() +
                 " without any of your possessions\n");
         }
         
-        return a.getNarration();
+        return action.getNarration();
     }
     
-    private String handleBasicCommand(final BasicCommandType c, final Player p,
-                                      final Location l, final String[] words) throws IOException {
-        switch (c) {
+    private String handleBasicCommand(final BasicCommandType commandType,
+                                      final Player player,
+                                      final Location location,
+                                      final String[] words) throws IOException {
+        switch (commandType) {
             case INV -> {
-                return handleInv(words, p);
+                return handleInv(words, player);
             }
             case GET -> {
-                return handleGet(words, p, l);
+                return handleGet(words, player, location);
             }
             case DROP -> {
-                return handleDrop(words, p, l);
+                return handleDrop(words, player, location);
             }
             case GOTO -> {
-                return handleGoto(words, p, l);
+                return handleGoto(words, player, location);
             }
             case LOOK -> {
-                return handleLook(words, p, l);
+                return handleLook(words, player, location);
             }
             case HEALTH -> {
-                return handleHealth(words, p);
+                return handleHealth(words, player);
             }
             default -> {
                 return "ERROR - not a valid basic command type";
@@ -493,10 +498,10 @@ public final class GameServer {
         }
     }
     
-    private String handleInv(final String[] words, final Player p) {
+    private String handleInv(final String[] words, final Player player) {
         boolean invAlreadySeen = false;
-        for (final String w : words) {
-            if ("inv".equals(w) || "inventory".equals(w)) {
+        for (final String word : words) {
+            if ("inv".equals(word) || "inventory".equals(word)) {
                 if (invAlreadySeen) {
                     return "ERROR - invalid command, too many triggers for " +
                         "inventory command\n";
@@ -506,19 +511,21 @@ public final class GameServer {
             }
         }
         
-        for (final String w : words) {
-            for (final GameEntity e : entities) {
-                if (e.getName().toLowerCase().equals(w)) {
+        for (final String word : words) {
+            for (final GameEntity entity : entities) {
+                if (entity.getName().toLowerCase().equals(word)) {
                     return "ERROR - cannot use entity name as decoration for " +
                         "inventory command\n";
                 }
             }
         }
         
-        return p.listItems();
+        return player.listItems();
     }
     
-    private String handleGet(final String[] words, final Player p, final Location l) {
+    private String handleGet(final String[] words,
+                             final Player player,
+                             final Location location) {
         final int getIndex = findIndex(words, "get");
         if (getIndex == -1) {
             return "ERROR - invalid command, too many triggers for " +
@@ -527,11 +534,11 @@ public final class GameServer {
         
         Artefact gottenArtefact = null;
         for (int j = getIndex + 1; j < words.length; j++) {
-            final String w = words[j];
-            for (final GameEntity e : entities) {
-                if (w.equals(e.getName().toLowerCase())) {
-                    if (e instanceof Artefact && gottenArtefact == null) {
-                        gottenArtefact = (Artefact)e;
+            final String word = words[j];
+            for (final GameEntity entity : entities) {
+                if (word.equals(entity.getName().toLowerCase())) {
+                    if (entity instanceof Artefact && gottenArtefact == null) {
+                        gottenArtefact = (Artefact)entity;
                     } else {
                         return "ERROR - get requires one artefact as its " +
                             "argument";
@@ -545,31 +552,34 @@ public final class GameServer {
                 "argument";
         }
         
-        if (!l.artefactIsPresent(gottenArtefact)) {
+        if (!location.artefactIsPresent(gottenArtefact)) {
             return ("ERROR - " + gottenArtefact.getName() + " is not present " +
-                "in " + l.getName() + "\n");
+                "in " + location.getName() + "\n");
         }
         
-        l.removeArtefact(gottenArtefact);
-        p.pickUpItem(gottenArtefact);
-        return (p.getName() + " picked up " + gottenArtefact.getName() + "\n");
+        location.removeArtefact(gottenArtefact);
+        player.pickUpItem(gottenArtefact);
+        return (player.getName() + " picked up " + gottenArtefact.getName() +
+            "\n");
     }
     
     private int findIndex(final String[] words, final String toFind) {
         int output = -1;
-        int i = 0;
-        for (final String w : words) {
-            if (w.equals(toFind) && output == -1) {
-                output = i;
-            } else if (w.equals(toFind)) {
+        int index = 0;
+        for (final String word : words) {
+            if (word.equals(toFind) && output == -1) {
+                output = index;
+            } else if (word.equals(toFind)) {
                 return -1;
             }
-            i++;
+            index++;
         }
         return output;
     }
     
-    private String handleDrop(final String[] words, final Player p, final Location l) throws IOException {
+    private String handleDrop(final String[] words,
+                              final Player player,
+                              final Location location) throws IOException {
         final int getIndex = findIndex(words, "drop");
         if (getIndex == -1) {
             return "ERROR - invalid command, too many " +
@@ -578,11 +588,11 @@ public final class GameServer {
         
         Artefact droppedArtefact = null;
         for (int j = getIndex + 1; j < words.length; j++) {
-            final String w = words[j];
-            for (final GameEntity e : entities) {
-                if (w.equals(e.getName().toLowerCase())) {
-                    if (e instanceof Artefact && droppedArtefact == null) {
-                        droppedArtefact = (Artefact)e;
+            final String word = words[j];
+            for (final GameEntity entity : entities) {
+                if (word.equals(entity.getName().toLowerCase())) {
+                    if (entity instanceof Artefact && droppedArtefact == null) {
+                        droppedArtefact = (Artefact)entity;
                     } else {
                         return "ERROR - drop requires one artefact as its " +
                             "argument";
@@ -596,14 +606,15 @@ public final class GameServer {
                 "argument";
         }
         
-        if (!p.itemHeld(droppedArtefact)) {
+        if (!player.itemHeld(droppedArtefact)) {
             return ("ERROR - cannot drop " + droppedArtefact.getName() + " as" +
                 " it is not in your inventory\n");
         }
         
-        p.removeItem(droppedArtefact);
-        l.addArtefact(droppedArtefact);
-        return (p.getName() + " dropped " + droppedArtefact.getName() + "\n");
+        player.removeItem(droppedArtefact);
+        location.addArtefact(droppedArtefact);
+        return (player.getName() + " dropped " + droppedArtefact.getName() +
+            "\n");
     }
     
     private String handleGoto(final String[] words, final Player p, final Location l) {
