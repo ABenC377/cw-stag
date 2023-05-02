@@ -665,7 +665,7 @@ public final class GameServer {
     
     private String handleHealth(String[] words, Player p) {
         boolean healthed = false;
-        for (String w : words) {
+        for (final String w : words) {
             if ("health".equals(w)) {
                 if (healthed) {
                     return "ERROR - invalid command, too many triggers for " +
@@ -675,7 +675,7 @@ public final class GameServer {
                 }
             }
             
-            for (GameEntity e : entities) {
+            for (final GameEntity e : entities) {
                 if (w.equals(e.getName().toLowerCase())) {
                     return "ERROR - health requires no arguments, so the " +
                         "command cannot contain any entity names\n";
@@ -727,10 +727,10 @@ public final class GameServer {
         BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()))) {
             System.out.println("Connection established");
-            String incomingCommand = reader.readLine();
+            final String incomingCommand = reader.readLine();
             if(incomingCommand != null) {
                 System.out.println("Received message from " + incomingCommand);
-                String result = handleCommand(incomingCommand);
+                final String result = handleCommand(incomingCommand);
                 writer.write(result);
                 writer.write("\n" + END_OF_TRANSMISSION + "\n");
                 writer.flush();

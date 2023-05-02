@@ -37,7 +37,7 @@ public class Player extends GameCharacter {
     }
     
     public Artefact getItem(String s) {
-        for (Artefact a : heldItems) {
+        for (final Artefact a : heldItems) {
             if (a.getName().equals(s)) {
                 return a;
             }
@@ -46,8 +46,8 @@ public class Player extends GameCharacter {
     }
     
     public String dropItem(String[] words, Location l) throws IOException {
-        for (String s : words) {
-            for (Artefact a : heldItems) {
+        for (final String s : words) {
+            for (final Artefact a : heldItems) {
                 if (a.getName().equals(s)) {
                     heldItems.remove(a);
                     l.addArtefact(a);
@@ -73,7 +73,7 @@ public class Player extends GameCharacter {
         return heldItems.contains(a);
     }
     public boolean itemHeld(String s) {
-        for (Artefact a : heldItems) {
+        for (final Artefact a : heldItems) {
             if (a.getName().equals(s)) {
                 return true;
             }
@@ -85,9 +85,9 @@ public class Player extends GameCharacter {
         if (heldItems.isEmpty()) {
             return "You are not currently holding any items\n";
         }
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("You are currently holding:\n");
-        for (Artefact a : heldItems) {
+        for (final Artefact a : heldItems) {
             builder.append(a.getName())
                 .append(" - ")
                 .append(a.getDescription())
@@ -98,11 +98,11 @@ public class Player extends GameCharacter {
     
     public boolean checkForDeath(Location current, Location start) throws IOException {
         if (health == 0) {
-            ArrayList<Artefact> toDrop = new ArrayList<>();
-            for (Artefact a : heldItems) {
+            final ArrayList<Artefact> toDrop = new ArrayList<>();
+            for (final Artefact a : heldItems) {
                 toDrop.add(a);
             }
-            for (Artefact a : toDrop) {
+            for (final Artefact a : toDrop) {
                 removeItem(a);
                 current.addArtefact(a);
             }
