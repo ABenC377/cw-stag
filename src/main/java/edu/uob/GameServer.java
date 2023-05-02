@@ -177,9 +177,9 @@ public final class GameServer {
             }
         }
         if (!exists) {
-            final ActionTuple at = new ActionTuple(trigger);
-            at.addAction(action);
-            manyWordActions.add(at);
+            final ActionTuple tuple = new ActionTuple(trigger);
+            tuple.addAction(action);
+            manyWordActions.add(tuple);
         }
     }
     
@@ -224,65 +224,66 @@ public final class GameServer {
         }
     }
     
-    private void addLocation(final Graph g) {
+    private void addLocation(final Graph graph) {
         final String locationName =
-            g.getNodes(false).get(0).getId().getId();
+            graph.getNodes(false).get(0).getId().getId();
         final String description =
-            g.getNodes(false).get(0).getAttribute("description");
-        final Location l = new Location(locationName, description);
-        entities.add(l);
+            graph.getNodes(false).get(0).getAttribute("description");
+        final Location location = new Location(locationName, description);
+        entities.add(location);
         
-        final ArrayList<Graph> contents = g.getSubgraphs();
+        final ArrayList<Graph> contents = graph.getSubgraphs();
         
         for (final Graph content : contents) {
-            addEntityToLocation(l, content);
+            addEntityToLocation(location, content);
         }
         
-        locations.add(l);
+        locations.add(location);
         if (startLocation == null) {
-            startLocation = l;
+            startLocation = location;
         }
         if ("storeroom".equals(locationName)) {
-            storeRoom = l;
+            storeRoom = location;
         }
     }
     
-    private void addEntityToLocation(final Location l, final Graph g) {
-        final String type = g.getId().getId();
+    private void addEntityToLocation(final Location location,
+                                     final Graph graph) {
+        final String type = graph.getId().getId();
         switch (type) {
             case "artefacts" -> {
                 final ArrayList<Node> artefactNodes =
-                    g.getNodes(false);
+                    graph.getNodes(false);
                 for (final Node artefactNode : artefactNodes) {
-                    final Artefact a =
+                    final Artefact artefact =
                         new Artefact(artefactNode.getId().getId(),
                             artefactNode.getAttribute("description"));
-                    l.addArtefact(a);
-                    entities.add(a);
+                    location.addArtefact(artefact);
+                    entities.add(artefact);
                 }
             }
             case "furniture" -> {
                 final ArrayList<Node> furnitureNodes =
-                    g.getNodes(false);
+                    graph.getNodes(false);
                 for (final Node furnitureNode : furnitureNodes) {
-                    final Furniture f =
+                    final Furniture furniture =
                         new Furniture(furnitureNode.getId().getId(),
                             furnitureNode.getAttribute(
                                 "description"));
-                    l.addFurniture(f);
-                    entities.add(f);
+                    location.addFurniture(furniture);
+                    entities.add(furniture);
                 }
             }
             case "characters" -> {
                 final ArrayList<Node> characterNodes =
-                    g.getNodes(false);
+                    graph.getNodes(false);
                 for (final Node characterNode : characterNodes) {
-                    final GameCharacter c =
+                    final GameCharacter character =
                         new GameCharacter(characterNode.getId().getId(),
                             characterNode.getAttribute(
                                 "description"));
-                    l.addCharacter(c);
-                    entities.add(c);
+                    location.addCharacter(character);
+                    entities.add(character);
                 }
             }
             default -> {}
@@ -305,26 +306,27 @@ public final class GameServer {
         }
         
         // Set up player metadata
-        Player p = null;
+        Player player = null;
         Location playerLocation = null;
         final String userName = components[0];
-        for (final Location l : locations) {
-            final ArrayList<GameCharacter> characters = l.getCharacters();
+        for (final Location location : locations) {
+            final ArrayList<GameCharacter> characters =
+                location.getCharacters();
             for (final GameCharacter c : characters) {
                 if (c.getName().equals(userName)) {
-                    p = (Player)c;
-                    playerLocation = l;
+                    player = (Player)c;
+                    playerLocation = location;
                 }
             }
         }
-        if (p == null) {
-            p = new Player(userName);
-            entities.add(p);
-            startLocation.addCharacter(p);
+        if (player == null) {
+            player = new Player(userName);
+            entities.add(player);
+            startLocation.addCharacter(player);
             playerLocation = startLocation;
         }
         
-        return handleInstruction(instruction, p, playerLocation);
+        return handleInstruction(instruction, player, playerLocation);
     }
     
     private String handleInstruction(final String inst, final Player player,
@@ -367,23 +369,25 @@ public final class GameServer {
         return output;
     }
     
-    private GameAction checkSingleTriggerActions(final String[] words, final Player p,
-                                                 final Location l) {
+    private GameAction checkSingleTriggerActions(final String[] words,
+                                                 final Player player,
+                                                 final Location location) {
         GameAction output = null;
         final GameAction err = new GameAction();
         err.setNarration("ERROR");
         
         // Handle single-word triggers
-        for (final String w : words) {
+        for (final String word : words) {
             // Move straight on if word not a trigger
-            if (!oneWordActions.containsKey(w)) {
+            if (!oneWordActions.containsKey(word)) {
                 continue;
             }
             
-            for (final GameAction a : oneWordActions.get(w)) {
-                if (a.isDoable(words, p, l) && (output == null || output == a)) {
-                    output = a;
-                } else if (a.isDoable(words, p, l)) {
+            for (final GameAction action : oneWordActions.get(word)) {
+                if (action.isDoable(words, player, location) &&
+                    (output == null || output == action)) {
+                    output = action;
+                } else if (action.isDoable(words, player, location)) {
                     return err;
                 }
             }
