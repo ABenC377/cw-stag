@@ -28,3 +28,7 @@
 /.idea/misc.xml
 /.idea/modules.xml
 *.class
+/target/surefire-reports/edu.uob.builtInCommandTests.txt
+/target/surefire-reports/edu.uob.MultiPlayerTests.txt
+/target/surefire-reports/TEST-edu.uob.builtInCommandTests.xml
+/target/surefire-reports/TEST-edu.uob.MultiPlayerTests.xml
