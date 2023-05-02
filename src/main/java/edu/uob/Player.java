@@ -82,7 +82,7 @@ public class Player extends GameCharacter {
     }
     
     public String listItems() {
-        if (heldItems.size() == 0) {
+        if (heldItems.isEmpty()) {
             return "You are not currently holding any items\n";
         }
         StringBuilder builder = new StringBuilder();

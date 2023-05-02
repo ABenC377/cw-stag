@@ -44,9 +44,9 @@ public class GameAction {
     }
     
     public boolean isDoable(String[] words, Player p, Location l) {
-        boolean subjectSaid = (subjects.size() == 0);
-        for (String sub : subjects) {
-            for (String word : words) {
+        boolean subjectSaid = (subjects.isEmpty());
+        for (final String sub : subjects) {
+            for (final String word : words) {
                 if (sub.equals(word)) {
                     subjectSaid = true;
                     break;
@@ -59,10 +59,10 @@ public class GameAction {
     
     private boolean arePresent(ArrayList<String> entities, Player p,
                                Location l) {
-        for (String ent : entities) {
+        for (final String ent : entities) {
             if (!p.itemHeld(ent) && !l.artefactIsPresent(ent) &&
                 !l.characterIsPresent(ent) && !l.furnitureIsPresent(ent) &&
-                !l.pathToLocationExists(ent) && !ent.equals("health")) {
+                !l.pathToLocationExists(ent) && !"health".equals(ent)) {
                 return false;
             }
         }

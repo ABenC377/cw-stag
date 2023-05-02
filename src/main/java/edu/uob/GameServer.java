@@ -79,31 +79,32 @@ public final class GameServer {
     }
     
     private HashMap<String, HashSet<GameAction>> readActionsFile(File file) throws ParserConfigurationException, IOException, SAXException {
-        HashMap<String, HashSet<GameAction>> actionsHashMap = new HashMap<>();
-        
-        DocumentBuilder builder =
+        final HashMap<String, HashSet<GameAction>> actionsHashMap =
+            new HashMap<>();
+        final DocumentBuilder builder =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document d = builder.parse(file);
-        Element actions = d.getDocumentElement();
-        NodeList actionNodeList = actions.getChildNodes();
+        final Document d = builder.parse(file);
+        final Element actions = d.getDocumentElement();
+        final NodeList actionNodeList = actions.getChildNodes();
         // Weird for loop, as we only want the odd elements
         for (int i = 1; i < actionNodeList.getLength(); i += 2) {
-            Element currentAction = (Element)actionNodeList.item(i);
+            final Element currentAction = (Element)actionNodeList.item(i);
                 
-            GameAction current = new GameActionBuilder().createGameAction();
+            final GameAction current =
+                new GameActionBuilder().createGameAction();
                 
             addSubjects(currentAction, current);
             addConsumed(currentAction, current);
             addProduced(currentAction, current);
                 
-            Element narrationElement =
+            final Element narrationElement =
                 (Element)currentAction.getElementsByTagName("narration").item(0);
             current.setNarration(narrationElement.getTextContent());
             
-            Element triggersElement =
+            final Element triggersElement =
                 (Element)currentAction.getElementsByTagName(
                     "triggers").item(0);
-            NodeList triggers = triggersElement.getElementsByTagName(
+            final NodeList triggers = triggersElement.getElementsByTagName(
                 "keyphrase");
             
             addActionsByTrigger(actionsHashMap, current, triggers);
@@ -113,34 +114,34 @@ public final class GameServer {
     }
     
     private void addSubjects(Element e, GameAction a) {
-        Element subElement =
+        final Element subElement =
             (Element)e.getElementsByTagName("subjects").item(0);
-        NodeList subjectsNL = subElement.getElementsByTagName(
+        final NodeList subjectsNL = subElement.getElementsByTagName(
             "entity");
         for (int i = 0; i < subjectsNL.getLength(); i++) {
-            Element subjectElement = (Element)subjectsNL.item(i);
+            final Element subjectElement = (Element)subjectsNL.item(i);
             a.addSubject(subjectElement.getTextContent());
         }
     }
     
     private void addConsumed(Element e, GameAction a) {
-        Element consElement =
+        final Element consElement =
             (Element)e.getElementsByTagName("consumed").item(0);
-        NodeList consumedsNL = consElement.getElementsByTagName(
+        final NodeList consumedsNL = consElement.getElementsByTagName(
             "entity");
         for (int i = 0; i < consumedsNL.getLength(); i++) {
-            Element consumedElement = (Element)consumedsNL.item(i);
+            final Element consumedElement = (Element)consumedsNL.item(i);
             a.addConsumed(consumedElement.getTextContent());
         }
     }
     
     private void addProduced(Element e, GameAction a) {
-        Element prodElement =
+        final Element prodElement =
             (Element)e.getElementsByTagName("produced").item(0);
-        NodeList producedsNL = prodElement.getElementsByTagName(
+        final NodeList producedsNL = prodElement.getElementsByTagName(
             "entity");
         for (int i = 0; i < producedsNL.getLength(); i++) {
-            Element producedElement = (Element)producedsNL.item(i);
+            final Element producedElement = (Element)producedsNL.item(i);
             a.addProduced(producedElement.getTextContent());
         }
     }
@@ -148,13 +149,13 @@ public final class GameServer {
     private void addActionsByTrigger(HashMap<String, HashSet<GameAction>> hm,
                                      GameAction a, NodeList nl) {
         for (int i = 0; i < nl.getLength(); i++) {
-            Element triggerElement = (Element)nl.item(i);
-            String trigger = triggerElement.getTextContent();
+            final Element triggerElement = (Element)nl.item(i);
+            final String trigger = triggerElement.getTextContent();
             if (trigger.indexOf(' ') == -1) {
                 if (hm.containsKey(trigger)) {
                     hm.get(trigger).add(a);
                 } else {
-                    HashSet<GameAction> hs = new HashSet<>();
+                    final HashSet<GameAction> hs = new HashSet<>();
                     hs.add(a);
                     hm.put(trigger, hs);
                 }
@@ -236,7 +237,7 @@ public final class GameServer {
         if (startLocation == null) {
             startLocation = l;
         }
-        if (locationName.equals("storeroom")) {
+        if ("storeroom".equals(locationName)) {
             storeRoom = l;
         }
     }
@@ -279,6 +280,7 @@ public final class GameServer {
                     entities.add(c);
                 }
             }
+            default -> {}
         }
     }
 
@@ -293,7 +295,7 @@ public final class GameServer {
         String[] components = command.split(":", 2);
         String userName = components[0];
         String instruction = (components.length == 2) ? components[1] : "";
-        if (instruction.equals("")) {
+        if ("".equals(instruction)) {
             throw new IOException("ERROR: invalid command format");
         }
         
@@ -325,7 +327,7 @@ public final class GameServer {
         String[] words = cleanInstructions(inst);
         
         // Check for built-in commands and actions
-        BasicCommandType command = checkBasicCommands(words, player, playerLocation);
+        BasicCommandType command = checkBasicCommands(words);
         GameAction gameAction = checkSingleTriggerActions(words, player,
             playerLocation);
         gameAction = checkMultiTriggerActions(inst, player, playerLocation,
@@ -347,8 +349,7 @@ public final class GameServer {
         }
     }
     
-    private BasicCommandType checkBasicCommands(String[] words, Player p,
-                                                   Location l) {
+    private BasicCommandType checkBasicCommands(String[] words) {
         BasicCommandType output = NULL;
         for (String w : words) {
             if (BasicCommandType.fromString(w) != NULL && output == NULL) {
@@ -368,16 +369,21 @@ public final class GameServer {
         
         // Handle single-word triggers
         for (String w : words) {
-            if (singleTriggerActions.containsKey(w) && (output == null || singleTriggerActions.get(w).contains(output))) {
-                for (GameAction a : singleTriggerActions.get(w)) {
-                    if (a.isDoable(words, p, l) && output == null || output == a) {
-                        output = a;
-                    } else if (a.isDoable(words, p, l)) {
-                        return err;
-                    }
+            // Move straight on if word not a trigger
+            if (!singleTriggerActions.containsKey(w)) {
+                continue;
+            }
+            
+            for (GameAction a : singleTriggerActions.get(w)) {
+                if (a.isDoable(words, p, l) && (output == null || output == a)) {
+                    output = a;
+                } else if (a.isDoable(words, p, l)) {
+                    return err;
                 }
             }
+            
         }
+        
         return output;
     }
     
@@ -425,13 +431,13 @@ public final class GameServer {
                 storeRoom.addArtefact(l.removeArtefact(s));
             } else if (l.furnitureIsPresent(s)) {
                 storeRoom.addFurniture(l.removeFurniture(s));
-            } else if (s.equals("health")) {
+            } else if ("health".equals(s)) {
                 p.takeDamage();
             }
         }
         
         for (String s : a.getProduced()) {
-            if (s.equals("health")) {
+            if ("health".equals(s)) {
                 p.heal();
             } else {
                 l.produce(s, locations);
@@ -470,14 +476,16 @@ public final class GameServer {
             case HEALTH -> {
                 return handleHealth(words, p);
             }
+            default -> {
+                return "ERROR - not a valid basic command type";
+            }
         }
-        return "ERROR - not a valid basic command type";
     }
     
     private String handleInv(String[] words, Player p) {
         boolean invAlreadySeen = false;
         for (String w : words) {
-            if (w.equals("inv") || w.equals("inventory")) {
+            if ("inv".equals(w) || "inventory".equals(w)) {
                 if (invAlreadySeen) {
                     return "ERROR - invalid command, too many triggers for " +
                         "inventory command\n";
@@ -500,18 +508,10 @@ public final class GameServer {
     }
     
     private String handleGet(String[] words, Player p, Location l) {
-        int getIndex = -1;
-        int i = 0;
-        for (String w : words) {
-            if (w.equals("get")) {
-                if (getIndex == -1) {
-                    getIndex = i;
-                } else {
-                    return "ERROR - invalid command, too many triggers for " +
-                        "get command\n";
-                }
-            }
-            i++;
+        int getIndex = findIndex(words, "get");
+        if (getIndex == -1) {
+            return "ERROR - invalid command, too many triggers for " +
+                "get command\n";
         }
         
         Artefact gottenArtefact = null;
@@ -544,19 +544,25 @@ public final class GameServer {
         return (p.getName() + " picked up " + gottenArtefact.getName() + "\n");
     }
     
-    private String handleDrop(String[] words, Player p, Location l) throws IOException {
-        int getIndex = -1;
+    private int findIndex(String[] words, String toFind) {
+        int output = -1;
         int i = 0;
         for (String w : words) {
-            if (w.equals("drop")) {
-                if (getIndex == -1) {
-                    getIndex = i;
-                } else {
-                    return "ERROR - invalid command, too many triggers for " +
-                        "drop command\n";
-                }
+            if (w.equals(toFind) && output == -1) {
+                output = i;
+            } else if (w.equals(toFind)) {
+                return -1;
             }
             i++;
+        }
+        return output;
+    }
+    
+    private String handleDrop(String[] words, Player p, Location l) throws IOException {
+        int getIndex = findIndex(words, "drop");
+        if (getIndex == -1) {
+            return "ERROR - invalid command, too many " +
+            "triggers for drop command\n";
         }
         
         Artefact droppedArtefact = null;
@@ -590,18 +596,10 @@ public final class GameServer {
     }
     
     private String handleGoto(String[] words, Player p, Location l) {
-        int getIndex = -1;
-        int i = 0;
-        for (String w : words) {
-            if (w.equals("goto")) {
-                if (getIndex == -1) {
-                    getIndex = i;
-                } else {
-                    return "ERROR - invalid command, too many triggers for " +
+        int getIndex = findIndex(words, "goto");
+        if (getIndex == -1) {
+            return "ERROR - invalid command, too many triggers for " +
                         "drop command\n";
-                }
-            }
-            i++;
         }
         
         Location gotoLocation = null;
@@ -641,7 +639,7 @@ public final class GameServer {
     private String handleLook(String[] words, Player p, Location l) {
         boolean looked = false;
         for (String w : words) {
-            if (w.equals("look")) {
+            if ("look".equals(w)) {
                 if (looked) {
                     return "ERROR - invalid command, too many triggers for " +
                         "look command\n";
@@ -664,7 +662,7 @@ public final class GameServer {
     private String handleHealth(String[] words, Player p) {
         boolean healthed = false;
         for (String w : words) {
-            if (w.equals("health")) {
+            if ("health".equals(w)) {
                 if (healthed) {
                     return "ERROR - invalid command, too many triggers for " +
                         "health command";
