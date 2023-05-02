@@ -445,6 +445,8 @@ public final class GameServer {
                 storeRoom.addArtefact(location.removeArtefact(name));
             } else if (location.furnitureIsPresent(name)) {
                 storeRoom.addFurniture(location.removeFurniture(name));
+            } else if (location.pathToLocationExists(name)) {
+                location.removePath(name);
             } else if ("health".equals(name)) {
                 player.takeDamage();
             }
@@ -617,7 +619,9 @@ public final class GameServer {
             "\n");
     }
     
-    private String handleGoto(final String[] words, final Player p, final Location l) {
+    private String handleGoto(final String[] words,
+                              final Player player,
+                              final Location location) {
         final int getIndex = findIndex(words, "goto");
         if (getIndex == -1) {
             return "ERROR - invalid command, too many triggers for " +
@@ -626,11 +630,11 @@ public final class GameServer {
         
         Location gotoLocation = null;
         for (int j = getIndex; j < words.length; j++) {
-            final String w = words[j];
-            for (final GameEntity e : entities) {
-                if (w.equals(e.getName().toLowerCase())) {
-                    if (e instanceof Location && gotoLocation == null) {
-                        gotoLocation = (Location)e;
+            final String word = words[j];
+            for (final GameEntity entity : entities) {
+                if (word.equals(entity.getName().toLowerCase())) {
+                    if (entity instanceof Location && gotoLocation == null) {
+                        gotoLocation = (Location)entity;
                     } else {
                         return "ERROR - goto requires one location as its " +
                             "argument";
@@ -644,24 +648,27 @@ public final class GameServer {
                 "argument";
         }
         
-        return gotoLocation(p, l, gotoLocation);
+        return gotoLocation(player, location, gotoLocation);
     }
     
-    private String gotoLocation(final Player p, final Location currentLocation,
+    private String gotoLocation(final Player player,
+                                final Location currentLocation,
                                 final Location gotoLocation) {
         if (currentLocation.pathToLocationExists(gotoLocation.getName().toLowerCase())) {
-            gotoLocation.addCharacter(p);
-            currentLocation.removeCharacter(p);
-            return gotoLocation.getArrivalString(p);
+            gotoLocation.addCharacter(player);
+            currentLocation.removeCharacter(player);
+            return gotoLocation.getArrivalString(player);
         }
-        return ("ERROR - " + p.getName() + " could not go to " + gotoLocation.getName() +
-            " as no valid path exists\n");
+        return ("ERROR - " + player.getName() + " could not go to " +
+            gotoLocation.getName() + " as no valid path exists\n");
     }
     
-    private String handleLook(final String[] words, final Player p, final Location l) {
+    private String handleLook(final String[] words,
+                              final Player player,
+                              final Location location) {
         boolean looked = false;
-        for (final String w : words) {
-            if ("look".equals(w)) {
+        for (final String word : words) {
+            if ("look".equals(word)) {
                 if (looked) {
                     return "ERROR - invalid command, too many triggers for " +
                         "look command\n";
@@ -670,21 +677,22 @@ public final class GameServer {
                 }
             }
             
-            for (final GameEntity e : entities) {
-                if (w.equals(e.getName().toLowerCase())) {
+            for (final GameEntity entity : entities) {
+                if (word.equals(entity.getName().toLowerCase())) {
                     return "ERROR - look requires no arguments, so the " +
                         "command cannot contain any entity names\n";
                 }
             }
         }
         
-        return l.lookAround(p);
+        return location.lookAround(player);
     }
     
-    private String handleHealth(final String[] words, final Player p) {
+    private String handleHealth(final String[] words,
+                                final Player player) {
         boolean healthed = false;
-        for (final String w : words) {
-            if ("health".equals(w)) {
+        for (final String word : words) {
+            if ("health".equals(word)) {
                 if (healthed) {
                     return "ERROR - invalid command, too many triggers for " +
                         "health command";
@@ -693,15 +701,15 @@ public final class GameServer {
                 }
             }
             
-            for (final GameEntity e : entities) {
-                if (w.equals(e.getName().toLowerCase())) {
+            for (final GameEntity entity : entities) {
+                if (word.equals(entity.getName().toLowerCase())) {
                     return "ERROR - health requires no arguments, so the " +
                         "command cannot contain any entity names\n";
                 }
             }
         }
         
-        return p.reportHealth();
+        return player.reportHealth();
     }
 
 
@@ -719,11 +727,11 @@ public final class GameServer {
     * @throws IOException If any IO related operation fails.
     */
     public void blockingListenOn(final int portNumber) throws IOException {
-        try (ServerSocket s = new ServerSocket(portNumber)) {
+        try (ServerSocket socket = new ServerSocket(portNumber)) {
             System.out.println("Server listening on port " + portNumber);
             while (!Thread.interrupted()) {
                 try {
-                    blockingHandleConnection(s);
+                    blockingHandleConnection(socket);
                 } catch (IOException e) {
                     System.out.println("Connection closed");
                 }
@@ -741,9 +749,11 @@ public final class GameServer {
     * @throws IOException If any IO related operation fails.
     */
     private void blockingHandleConnection(final ServerSocket serverSocket) throws IOException {
-        try (Socket s = serverSocket.accept();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()))) {
+        try (Socket socket = serverSocket.accept();
+        BufferedReader reader =
+            new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedWriter writer =
+                 new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
             System.out.println("Connection established");
             final String incomingCommand = reader.readLine();
             if(incomingCommand != null) {

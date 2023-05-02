@@ -16,117 +16,106 @@ public class Location extends GameEntity {
         paths = new ArrayList<>();
     }
     
-    public void addFurniture(final Furniture f) {
-        furniture.add(f);
-    }
-    public void addArtefact(final Artefact a) {
-        artefacts.add(a);
-    }
-    public void addCharacter(final GameCharacter c) {
-        characters.add(c);
-    }
-    public void addPath(final Location l) {
-        paths.add(l);
+    public void addFurniture(final Furniture furniture) {
+        this.furniture.add(furniture);
     }
     
-    public boolean furnitureIsPresent(final Furniture f) {
-        return furniture.contains(f);
+    public void addArtefact(final Artefact artefact) {
+        artefacts.add(artefact);
     }
-    public boolean furnitureIsPresent(final String s) {
-        for (final Furniture f : furniture) {
-            if (f.getName().equals(s)) {
-                return true;
-            }
-        }
-        return false;
+    
+    public void addCharacter(final GameCharacter character) {
+        characters.add(character);
     }
-    public boolean artefactIsPresent(final Artefact a) {
-        return artefacts.contains(a);
+    
+    public void addPath(final Location location) {
+        paths.add(location);
     }
-    public boolean artefactIsPresent(final String s) {
-        for (final Artefact a : artefacts) {
-            if (a.getName().equals(s)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    public boolean characterIsPresent(final GameCharacter c) {
-        return characters.contains(c);
-    }
-    public boolean characterIsPresent(final String s) {
-        for (final GameCharacter c : characters) {
-            if (c.getName().equals(s)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    public boolean pathToLocationExists(final Location l) {
-       return paths.contains(l);
-    }
-    public boolean pathToLocationExists(final String s) {
-        for (final Location l : paths) {
-            if (l.getName().equals(s)) {
+    
+    public boolean furnitureIsPresent(final String name) {
+        for (final Furniture furn : furniture) {
+            if (furn.getName().equals(name)) {
                 return true;
             }
         }
         return false;
     }
     
-    public int furniturePresent() {
-        return furniture.size();
-    }
-    public int artefactsPresent() {
-        return artefacts.size();
-    }
-    public int charactersPresent() {
-        return characters.size();
-    }
-    public int pathsPresent() {
-        return paths.size();
+    public boolean artefactIsPresent(final Artefact artefact) {
+        return artefacts.contains(artefact);
     }
     
-    public void removeFurniture(final Furniture f) {
-        furniture.remove(f);
-    }
-    public Furniture removeFurniture(final String s) {
-        for (final Furniture f : furniture) {
-            if (f.getName().equals(s)) {
-                furniture.remove(f);
-                return f;
+    public boolean artefactIsPresent(final String name) {
+        for (final Artefact artefact : artefacts) {
+            if (artefact.getName().equals(name)) {
+                return true;
             }
         }
-        return null;
-    }
-    public void removeArtefact(final Artefact a) {
-        artefacts.remove(a);
-    }
-    public Artefact removeArtefact(final String s) {
-        for (final Artefact a : artefacts) {
-            if (a.getName().equals(s)) {
-                artefacts.remove(a);
-                return a;
-            }
-        }
-        return null;
-    }
-    public void removeCharacter(final GameCharacter c) {
-        characters.remove(c);
+        return false;
     }
     
-    public GameCharacter removeCharacter(final String s) {
-        for (final GameCharacter c : characters) {
-            if (c.getName().equals(s)) {
-                characters.remove(c);
-                return c;
+    public boolean characterIsPresent(final String name) {
+        for (final GameCharacter character : characters) {
+            if (character.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean pathToLocationExists(final String name) {
+        for (final Location location : paths) {
+            if (location.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public Furniture removeFurniture(final String name) {
+        for (final Furniture furn : furniture) {
+            if (furn.getName().equals(name)) {
+                furniture.remove(furn);
+                return furn;
             }
         }
         return null;
     }
     
-    public void removePath(final Location l) {
-        paths.remove(l);
+    public void removeArtefact(final Artefact artefact) {
+        artefacts.remove(artefact);
+    }
+    
+    public Artefact removeArtefact(final String name) {
+        for (final Artefact artefact : artefacts) {
+            if (artefact.getName().equals(name)) {
+                artefacts.remove(artefact);
+                return artefact;
+            }
+        }
+        return null;
+    }
+    
+    public void removeCharacter(final GameCharacter character) {
+        characters.remove(character);
+    }
+    
+    public GameCharacter removeCharacter(final String name) {
+        for (final GameCharacter character : characters) {
+            if (character.getName().equals(name)) {
+                characters.remove(character);
+                return character;
+            }
+        }
+        return null;
+    }
+    
+    public void removePath(final String name) {
+        for (final Location destination : paths) {
+            if (destination.getName().equals(name)) {
+                paths.remove(destination);
+            }
+        }
     }
     
     public ArrayList<GameCharacter> getCharacters() {
@@ -134,34 +123,34 @@ public class Location extends GameEntity {
     }
     
     
-    public String getArrivalString(final Player p) {
+    public String getArrivalString(final Player player) {
         final StringBuilder builder = new StringBuilder();
         builder.append("You arrive in ")
             .append(this.getDescription())
             .append(" You can see:\n");
-        for (final Artefact a : artefacts) {
-            builder.append(a.getName())
+        for (final Artefact artefact : artefacts) {
+            builder.append(artefact.getName())
                 .append(": ")
-                .append(a.getDescription())
+                .append(artefact.getDescription())
                 .append(System.lineSeparator());
         }
-        for (final Furniture f : furniture) {
-            builder.append(f.getName())
+        for (final Furniture furn : furniture) {
+            builder.append(furn.getName())
                 .append(": ")
-                .append(f.getDescription())
+                .append(furn.getDescription())
                 .append(System.lineSeparator());
         }
-        for (final GameCharacter c : characters) {
-            if (c != p) {
-                builder.append(c.getName())
+        for (final GameCharacter character : characters) {
+            if (character != player) {
+                builder.append(character.getName())
                     .append(": ")
-                    .append(c.getDescription())
+                    .append(character.getDescription())
                     .append(System.lineSeparator());
             }
         }
         builder.append("You can see from here:\n");
-        for (final Location l : paths) {
-            builder.append(l.getName());
+        for (final Location location : paths) {
+            builder.append(location.getName());
             builder.append(System.lineSeparator());
         }
         return builder.toString();
