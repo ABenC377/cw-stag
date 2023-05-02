@@ -437,19 +437,7 @@ public final class GameServer {
                                 final Player player,
                                 final Location location) throws IOException {
         for (final String name : action.getConsumed()) {
-            if (player.itemHeld(name)) {
-                final Artefact artefact = player.getItem(name);
-                player.removeItem(name);
-                storeRoom.addArtefact(artefact);
-            } else if (location.artefactIsPresent(name)) {
-                storeRoom.addArtefact(location.removeArtefact(name));
-            } else if (location.furnitureIsPresent(name)) {
-                storeRoom.addFurniture(location.removeFurniture(name));
-            } else if (location.pathToLocationExists(name)) {
-                location.removePath(name);
-            } else if ("health".equals(name)) {
-                player.takeDamage();
-            }
+            consumeEntity(name, player, location);
         }
         
         for (final String name : action.getProduced()) {
@@ -460,15 +448,31 @@ public final class GameServer {
             }
         }
         
-        if (player.checkForDeath(location, startLocation)) {
-            return (action.getNarration() +
+        return (player.checkForDeath(location, startLocation)) ?
+            (action.getNarration() +
                 "\nYou pass out from the damage\n" +
                 "You wake up in " +
                 startLocation.getDescription() +
-                " without any of your possessions\n");
+                " without any of your possessions\n") :
+            action.getNarration();
+    }
+    
+    private void consumeEntity(final String name,
+                               final Player player,
+                               final Location location) {
+        if (player.itemHeld(name)) {
+            final Artefact artefact = player.getItem(name);
+            player.removeItem(name);
+            storeRoom.addArtefact(artefact);
+        } else if (location.artefactIsPresent(name)) {
+            storeRoom.addArtefact(location.removeArtefact(name));
+        } else if (location.furnitureIsPresent(name)) {
+            storeRoom.addFurniture(location.removeFurniture(name));
+        } else if (location.pathToLocationExists(name)) {
+            location.removePath(name);
+        } else if ("health".equals(name)) {
+            player.takeDamage();
         }
-        
-        return action.getNarration();
     }
     
     private String handleBasicCommand(final BasicCommandType commandType,
@@ -528,35 +532,34 @@ public final class GameServer {
     private String handleGet(final String[] words,
                              final Player player,
                              final Location location) {
+        
         final int getIndex = findIndex(words, "get");
         if (getIndex == -1) {
             return "ERROR - invalid command, too many triggers for " +
                 "get command\n";
         }
         
+        Artefact err = new Artefact("ERROR", "ERROR");
         Artefact gottenArtefact = null;
-        for (int j = getIndex + 1; j < words.length; j++) {
-            final String word = words[j];
+        for (int jndex = getIndex + 1; jndex < words.length; jndex++) {
+            final String word = words[jndex];
             for (final GameEntity entity : entities) {
-                if (word.equals(entity.getName().toLowerCase())) {
-                    if (entity instanceof Artefact && gottenArtefact == null) {
-                        gottenArtefact = (Artefact)entity;
-                    } else {
-                        return "ERROR - get requires one artefact as its " +
-                            "argument";
-                    }
+                if (word.equals(entity.getName().toLowerCase()) &&
+                    entity instanceof Artefact && gottenArtefact == null) {
+                    gottenArtefact = (Artefact)entity;
+                } else if (word.equals(entity.getName().toLowerCase())) {
+                    gottenArtefact = err;
                 }
             }
         }
         
-        if (gottenArtefact == null) {
-            return "ERROR - get command requires an artefact name as an " +
-                "argument";
-        }
-        
-        if (!location.artefactIsPresent(gottenArtefact)) {
-            return ("ERROR - " + gottenArtefact.getName() + " is not present " +
-                "in " + location.getName() + "\n");
+        if (gottenArtefact == null ||
+            !location.artefactIsPresent(gottenArtefact)) {
+            return (gottenArtefact == null) ?
+                "ERROR - get command requires an artefact name as an " +
+                "argument" :
+                ("ERROR - " + gottenArtefact.getName() + " is not present " +
+                    "in " + location.getName() + "\n");
         }
         
         location.removeArtefact(gottenArtefact);
@@ -592,13 +595,12 @@ public final class GameServer {
         for (int j = getIndex + 1; j < words.length; j++) {
             final String word = words[j];
             for (final GameEntity entity : entities) {
-                if (word.equals(entity.getName().toLowerCase())) {
-                    if (entity instanceof Artefact && droppedArtefact == null) {
-                        droppedArtefact = (Artefact)entity;
-                    } else {
-                        return "ERROR - drop requires one artefact as its " +
+                if (word.equals(entity.getName().toLowerCase()) &&
+                    entity instanceof Artefact && droppedArtefact == null) {
+                    droppedArtefact = (Artefact)entity;
+                } else if (word.equals(entity.getName().toLowerCase())) {
+                    return "ERROR - drop requires one artefact as its " +
                             "argument";
-                    }
                 }
             }
         }

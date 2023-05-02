@@ -203,4 +203,15 @@ class ExtendedTests {
         assertTrue(response14.contains("You are not currently holding any " +
             "items"));
     }
+    
+    @Test
+    void extraEntityTest() {
+        String response1 = sendCommandToServer("test: goto forest");
+        String response2 = sendCommandToServer("test: goto forest");
+        String response3 = sendCommandToServer("test: get key");
+        String response4 = sendCommandToServer("test: goto cabin");
+        String response5 = sendCommandToServer("test: open trapdoor with key " +
+            "and potion");
+        assertTrue(response5.contains("ERROR"));
+    }
 }
