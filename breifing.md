@@ -168,7 +168,7 @@ There is another special location called `storeroom` that can be found in the en
 This location does not appear in the game world (there will be no paths to/from it).
 The `storeroom` is a container for all of the entities that have no initial location in the game.
 Everything needs to exist somewhere in the game structure (so that they can be defined in the entities file).
-These entities will not enter the game until an action places them into another location within the game.
+These entities will not enter the game until an gameAction places them into another location within the game.
 
 
 
@@ -197,39 +197,39 @@ In addition to the standard "built-in" commands (e.g. `get`, `goto`, `look` etc.
 respond to any of a number of game-specific commands (as specified in the "actions" file).
 Each of these **actions** will have the following elements:
 
-- One or more possible **trigger** phrases (ANY of which can be used to initiate the action)
-- One or more **subject** entities that are acted upon (ALL of which need to be available to perform the action)
-- An optional set of **consumed** entities that are all removed ("eaten up") by the action
-- An optional set of **produced** entities that are all created ("generated") by the action
-- A **narration** that provides a human-readable explanation of what happened when the action is performed
+- One or more possible **trigger** phrases (ANY of which can be used to initiate the gameAction)
+- One or more **subject** entities that are acted upon (ALL of which need to be available to perform the gameAction)
+- An optional set of **consumed** entities that are all removed ("eaten up") by the gameAction
+- An optional set of **produced** entities that are all created ("generated") by the gameAction
+- A **narration** that provides a human-readable explanation of what happened when the gameAction is performed
 
-Note that being "available" requires the entity to _either_ be in the inventory of the player invoking the action
-_or_ for that entity to be in the room/location where the action is being performed. This feature is
+Note that being "available" requires the entity to _either_ be in the inventory of the player invoking the gameAction
+_or_ for that entity to be in the room/location where the gameAction is being performed. This feature is
 intended to be a shortcut so that a player can use an entity in their location without having to explicitly pick it up first.
-Additionally, subjects of an action can be locations, characters or furniture (which can't be picked up).
+Additionally, subjects of an gameAction can be locations, characters or furniture (which can't be picked up).
 
-It is worth noting that action trigger keyphrases are NOT unique - for example there may be multiple "open" actions that
+It is worth noting that gameAction trigger keyphrases are NOT unique - for example there may be multiple "open" actions that
 act on different entities. Note that trigger phrases cannot (and will not) contain the names of entities,
 since this would make incoming commands far too difficult to parse. Just consider the challenge of trying to
 interpret the command: `lock lock with key`.
 
-Upon receiving an action command, your server should attempt to find an appropriate matching action.
-Note that the action is only valid if ALL **subject** entities (as specified in the actions file) are available to the player.
-If a valid action is found, your server must undertake the relevant additions/removals (production/consumption).
+Upon receiving an gameAction command, your server should attempt to find an appropriate matching gameAction.
+Note that the gameAction is only valid if ALL **subject** entities (as specified in the actions file) are available to the player.
+If a valid gameAction is found, your server must undertake the relevant additions/removals (production/consumption).
 
 When an entity is _produced_, it should be moved from its current location in the game (which might be in the `storeroom`)
-to the location in which the action was trigged. The entity should NOT automatically appear in a players inventory -
+to the location in which the gameAction was trigged. The entity should NOT automatically appear in a players inventory -
 it might be furniture (which the player can't carry) or it might be an artefact they don't actually want to pick up !
 
 When an entity is _consumed_ it should be removed from its current location (which could be any location within the game)
 moved into the `storeroom` location. If the game writer wants to enforce co-location (i.e. the consumed entity must be
-in the same location as the player) then they must include that entity as a subject of the action.
+in the same location as the player) then they must include that entity as a subject of the gameAction.
 
-Note that it is NOT possible to perform an action where a subject, or a consumed or produced entity is currently in
+Note that it is NOT possible to perform an gameAction where a subject, or a consumed or produced entity is currently in
 _another_ player's inventory. You should consider these entities "out of bounds" and not available to a player who does not
 currently hold that artefact. You can't unlock a door if another player has the key !
 
-Locations can be used as subjects, consumed and produced entities of an action (just like other entities).
+Locations can be used as subjects, consumed and produced entities of an gameAction (just like other entities).
 Consumed locations however are not moved to the storeroom - instead, the path between the current location and consumed location is removed
 (there may still be other paths to that location in other game locations). For produced locations, a new (one-way) path is added from the
 current location to the "produced" location.
@@ -240,7 +240,7 @@ current location to the "produced" location.
 ### Task 7: Loading Actions
 
 
-We have provided some example action files for you to use in your project.
+We have provided some example gameAction files for you to use in your project.
 Firstly there is a <a href="resources/cw-stag/config/basic-actions.xml" target="_blank">basic actions file</a>
 to help get you started in constructing your game engine.
 We have also provided an <a href="resources/cw-stag/config/extended-actions.xml" target="_blank">extended actions file</a>
@@ -269,7 +269,7 @@ The data structure described in the above code is illustrated in the diagram sho
 provides a fast and efficient lookup mechanism - using a `String` key (the trigger keyphrase) to map to a
 <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/HashSet.html" target="_blank">HashSet</a>
 of matching actions. Remember that a particular trigger keyphrase may be used
-in more than one action, so we need to map to a _composite_ data structure (rather than just a single `GameAction` element).
+in more than one gameAction, so we need to map to a _composite_ data structure (rather than just a single `GameAction` element).
 It is useful for us to make use a _set_ (rather than, for example, an `ArrayList`)
 since this allows us to ensure that there are no duplicate actions being stored in the data structure (all elements of a set will be unique).
 
@@ -283,7 +283,7 @@ To ensure that the basic actions file is in the correct location in the project 
 Not only will these tests verify the basic actions file, but they also provides a clear illustration of the use of the JAXP library
 for parsing XML files.
 
-You may assume that all action files used during marking are in a valid format (our aim isn't to test the robustness of the parsing libraries).
+You may assume that all gameAction files used during marking are in a valid format (our aim isn't to test the robustness of the parsing libraries).
 
 
 
@@ -299,7 +299,7 @@ The best we can hope do is to try to make our command interpreter as flexible an
 Below are various features your should implement in your interpreter:
 
 **Case Insensitivity**  
-All commands (including entity names, locations, built in commands and action triggers) should be treated as case insensitive.
+All commands (including entity names, locations, built in commands and gameAction triggers) should be treated as case insensitive.
 This ensure that, no matter what capitalisation a player chooses to use in their commands, the server will be able in interpret their intensions.
 
 **Decorated Commands**  
@@ -314,28 +314,28 @@ For example `chop tree with axe` and `use axe to chop tree` are equivalent and s
 **Partial Commands**  
 To further support flexible natural language communication, your server should be able to operate with shortened, "partial" commands.
 It is convenient for the user to be able to omit _some_ of the subjects from a command, whilst still providing enough information for
-the correct action to be identified.
+the correct gameAction to be identified.
 For example, the command `unlock trapdoor with key` could alternatively be entered as _either_ `unlock trapdoor` _or_ `unlock with key` -
-both of which provide enough detail for an action match to be attempted.
-In order to stand a chance of matching a command to an action, each incoming command MUST contain a trigger phrase and _at least_ one subject.
-Anything less than this and the intended action will probably be too vague to identify.
+both of which provide enough detail for an gameAction match to be attempted.
+In order to stand a chance of matching a command to an gameAction, each incoming command MUST contain a trigger phrase and _at least_ one subject.
+Anything less than this and the intended gameAction will probably be too vague to identify.
 
 **Extraneous Entities**  
-When searching for an action, you must match ALL of the subjects that are specified in the incoming command (e.g. `repair door with hammer and nails`).
-Extraneous entities included within an incoming command (i.e. entities that are in the incoming command, but not specified in the action file)
+When searching for an gameAction, you must match ALL of the subjects that are specified in the incoming command (e.g. `repair door with hammer and nails`).
+Extraneous entities included within an incoming command (i.e. entities that are in the incoming command, but not specified in the gameAction file)
 should prevent a match from being made. This is to prevent the user attempting to perform actions with inappropriate entities
 (e.g. `open potion with hammer` should not succeed).
 
 **Ambiguous Commands**  
-Much of the above "fuzzy" matching of actions is risky - there may be situations where _more than one_ action matches a particular command.
-If a particular command is ambiguous (i.e. there is _more than one_ **valid** and **performable** action possible - given the current state of the game)
-then NO action should be performed and a suitable warning message sent back to the user
-(e.g. `there is more than one 'open' action possible - which one do you want to perform ?`)
+Much of the above "fuzzy" matching of actions is risky - there may be situations where _more than one_ gameAction matches a particular command.
+If a particular command is ambiguous (i.e. there is _more than one_ **valid** and **performable** gameAction possible - given the current state of the game)
+then NO gameAction should be performed and a suitable warning message sent back to the user
+(e.g. `there is more than one 'open' gameAction possible - which one do you want to perform ?`)
 
 **Composite Commands**  
 Composite commands (commands involving more than one activity) should NOT be supported.
 Users are unable to use commands such as `get axe and coin`, `get key and open door` or `open door and potion`.
-A single command can only be used to perform a single built-in command or single game action.
+A single command can only be used to perform a single built-in command or single game gameAction.
 
 **Error messages**  
 Note that due to the range of possible response messages it is possible to return to the user, we will not test for specific error/anomaly messages.
@@ -345,7 +345,7 @@ been performed by your server. That said, we still encourage you to return suita
 Although there is much flexibility and variability in the command language, the test cases we will use during the marking process
 will focus upon testing user input that is "fair and reasonable".
 We are interested in assessing the ability of the command interpreter to detect valid, sensible and likely inputs from the user.
-This requires the user to provide enough information to allow the interpreter to uniquely identify an action,
+This requires the user to provide enough information to allow the interpreter to uniquely identify an gameAction,
 whilst at the same time giving them some flexibility about how they go about expressing the command.
 We aren't looking for the ability of the interpreter to deal with illogical or silly commands.
 We just want to avoid the situation where the user thinks: "That was a fair command, why won't it understand me".
@@ -382,7 +382,7 @@ For example, each player may be in a different location in the game and will car
 One final thing to remember is that you should include _other_ players in your description of a location
 when a `look` command is issued by a user. There is no point having multiple players in the game if they can't
 actually _see_ each other ! Note that even though they can see each other, human players cannot interact directly.
-This is because, due to dynamic player naming, it is not possible to write action rules involving player names
+This is because, due to dynamic player naming, it is not possible to write gameAction rules involving player names
 (since they are not known in advance of the game being played).
 
 

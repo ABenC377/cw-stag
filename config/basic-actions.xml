@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>open</keyphrase>
             <keyphrase>unlock</keyphrase>
@@ -16,9 +16,9 @@
             <entity>cellar</entity>
         </produced>
         <narration>You unlock the trapdoor and see steps leading down into a cellar</narration>
-    </action>
+    </gameAction>
 
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>chop</keyphrase>
             <keyphrase>cut</keyphrase>
@@ -35,9 +35,9 @@
             <entity>log</entity>
         </produced>
         <narration>You cut down the tree with the axe</narration>
-    </action>
+    </gameAction>
 
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>drink</keyphrase>
         </triggers>
@@ -51,9 +51,9 @@
             <entity>health</entity>
         </produced>
         <narration>You drink the potion and your health improves</narration>
-    </action>
+    </gameAction>
 
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>fight</keyphrase>
             <keyphrase>hit</keyphrase>
@@ -68,6 +68,6 @@
         <produced>
         </produced>
         <narration>You attack the elf, but he fights back and you lose some health</narration>
-    </action>
+    </gameAction>
 
 </actions>

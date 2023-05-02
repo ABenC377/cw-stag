@@ -37,8 +37,6 @@ class ExtendedTests {
     @Test
     void test1Step2() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
         assertTrue(response2.contains("ERROR"));
     }
@@ -46,10 +44,7 @@ class ExtendedTests {
     @Test
     void test1Step3() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
         assertTrue(response3.contains("picked up"));
     }
@@ -57,12 +52,8 @@ class ExtendedTests {
     @Test
     void test1Step4() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
         assertTrue(response4.contains("cabin"));
     }
@@ -70,14 +61,9 @@ class ExtendedTests {
     @Test
     void test1Step5() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
-        assertTrue(response4.contains("cabin"));
         String response5 = sendCommandToServer("test: open key");
         assertTrue(response5.contains("unlock"));
     }
@@ -85,16 +71,10 @@ class ExtendedTests {
     @Test
     void test1Step6() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
-        assertTrue(response4.contains("cabin"));
         String response5 = sendCommandToServer("test: open key");
-        assertTrue(response5.contains("unlock"));
         String response6 = sendCommandToServer("test: goto cellar");
         assertTrue(response6.contains("elf"));
     }
@@ -102,18 +82,11 @@ class ExtendedTests {
     @Test
     void test1Step7() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
-        assertTrue(response4.contains("cabin"));
         String response5 = sendCommandToServer("test: open key");
-        assertTrue(response5.contains("unlock"));
         String response6 = sendCommandToServer("test: goto cellar");
-        assertTrue(response6.contains("elf"));
         String response7 = sendCommandToServer("test: health");
         assertTrue(response7.contains("3"));
     }
@@ -121,20 +94,12 @@ class ExtendedTests {
     @Test
     void test1Step8() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
-        assertTrue(response4.contains("cabin"));
         String response5 = sendCommandToServer("test: open key");
-        assertTrue(response5.contains("unlock"));
         String response6 = sendCommandToServer("test: goto cellar");
-        assertTrue(response6.contains("elf"));
         String response7 = sendCommandToServer("test: health");
-        assertTrue(response7.contains("3"));
         String response8 = sendCommandToServer("test: hit elf");
         assertTrue(response8.contains("lose some health"));
     }
@@ -142,22 +107,13 @@ class ExtendedTests {
     @Test
     void test1Step9() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
-        assertTrue(response4.contains("cabin"));
         String response5 = sendCommandToServer("test: open key");
-        assertTrue(response5.contains("unlock"));
         String response6 = sendCommandToServer("test: goto cellar");
-        assertTrue(response6.contains("elf"));
         String response7 = sendCommandToServer("test: health");
-        assertTrue(response7.contains("3"));
         String response8 = sendCommandToServer("test: hit elf");
-        assertTrue(response8.contains("lose some health"));
         String response9 = sendCommandToServer("test: health");
         assertTrue(response9.contains("2"));
     }
@@ -165,24 +121,14 @@ class ExtendedTests {
     @Test
     void test1Step10() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
-        assertTrue(response4.contains("cabin"));
         String response5 = sendCommandToServer("test: open key");
-        assertTrue(response5.contains("unlock"));
         String response6 = sendCommandToServer("test: goto cellar");
-        assertTrue(response6.contains("elf"));
         String response7 = sendCommandToServer("test: health");
-        assertTrue(response7.contains("3"));
         String response8 = sendCommandToServer("test: hit elf");
-        assertTrue(response8.contains("lose some health"));
         String response9 = sendCommandToServer("test: health");
-        assertTrue(response9.contains("2"));
         String response10 = sendCommandToServer("test: hit elf");
         assertTrue(response10.contains("lose some health"));
     }
@@ -190,26 +136,15 @@ class ExtendedTests {
     @Test
     void test1Step11() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
-        assertTrue(response4.contains("cabin"));
         String response5 = sendCommandToServer("test: open key");
-        assertTrue(response5.contains("unlock"));
         String response6 = sendCommandToServer("test: goto cellar");
-        assertTrue(response6.contains("elf"));
         String response7 = sendCommandToServer("test: health");
-        assertTrue(response7.contains("3"));
         String response8 = sendCommandToServer("test: hit elf");
-        assertTrue(response8.contains("lose some health"));
         String response9 = sendCommandToServer("test: health");
-        assertTrue(response9.contains("2"));
         String response10 = sendCommandToServer("test: hit elf");
-        assertTrue(response10.contains("lose some health"));
         String response11 = sendCommandToServer("test: health");
         assertTrue(response11.contains("1"));
     }
@@ -217,28 +152,16 @@ class ExtendedTests {
     @Test
     void test1Step12() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
-        assertTrue(response4.contains("cabin"));
         String response5 = sendCommandToServer("test: open key");
-        assertTrue(response5.contains("unlock"));
         String response6 = sendCommandToServer("test: goto cellar");
-        assertTrue(response6.contains("elf"));
         String response7 = sendCommandToServer("test: health");
-        assertTrue(response7.contains("3"));
         String response8 = sendCommandToServer("test: hit elf");
-        assertTrue(response8.contains("lose some health"));
         String response9 = sendCommandToServer("test: health");
-        assertTrue(response9.contains("2"));
         String response10 = sendCommandToServer("test: hit elf");
-        assertTrue(response10.contains("lose some health"));
         String response11 = sendCommandToServer("test: health");
-        assertTrue(response11.contains("1"));
         String response12 = sendCommandToServer("test: hit elf");
         assertTrue(response12.contains("pass out"));
     }
@@ -246,30 +169,17 @@ class ExtendedTests {
     @Test
     void test1Step13() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
-        assertTrue(response4.contains("cabin"));
         String response5 = sendCommandToServer("test: open key");
-        assertTrue(response5.contains("unlock"));
         String response6 = sendCommandToServer("test: goto cellar");
-        assertTrue(response6.contains("elf"));
         String response7 = sendCommandToServer("test: health");
-        assertTrue(response7.contains("3"));
         String response8 = sendCommandToServer("test: hit elf");
-        assertTrue(response8.contains("lose some health"));
         String response9 = sendCommandToServer("test: health");
-        assertTrue(response9.contains("2"));
         String response10 = sendCommandToServer("test: hit elf");
-        assertTrue(response10.contains("lose some health"));
         String response11 = sendCommandToServer("test: health");
-        assertTrue(response11.contains("1"));
         String response12 = sendCommandToServer("test: hit elf");
-        assertTrue(response12.contains("pass out"));
         String response13 = sendCommandToServer("test: health");
         assertTrue(response13.contains("3"));
     }
@@ -277,32 +187,18 @@ class ExtendedTests {
     @Test
     void test1Step14() {
         String response1 = sendCommandToServer("test: goto forest");
-        assertTrue(response1.contains("key"));
-        assertTrue(response1.contains("cabin"));
         String response2 = sendCommandToServer("test: goto forest");
-        assertTrue(response2.contains("ERROR"));
         String response3 = sendCommandToServer("test: get key");
-        assertTrue(response3.contains("picked up"));
         String response4 = sendCommandToServer("test: goto cabin");
-        assertTrue(response4.contains("cabin"));
         String response5 = sendCommandToServer("test: open key");
-        assertTrue(response5.contains("unlock"));
         String response6 = sendCommandToServer("test: goto cellar");
-        assertTrue(response6.contains("elf"));
         String response7 = sendCommandToServer("test: health");
-        assertTrue(response7.contains("3"));
         String response8 = sendCommandToServer("test: hit elf");
-        assertTrue(response8.contains("lose some health"));
         String response9 = sendCommandToServer("test: health");
-        assertTrue(response9.contains("2"));
         String response10 = sendCommandToServer("test: hit elf");
-        assertTrue(response10.contains("lose some health"));
         String response11 = sendCommandToServer("test: health");
-        assertTrue(response11.contains("1"));
         String response12 = sendCommandToServer("test: hit elf");
-        assertTrue(response12.contains("pass out"));
         String response13 = sendCommandToServer("test: health");
-        assertTrue(response13.contains("3"));
         String response14 = sendCommandToServer("test: inv");
         assertTrue(response14.contains("You are not currently holding any " +
             "items"));

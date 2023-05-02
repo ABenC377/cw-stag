@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>open</keyphrase>
             <keyphrase>unlock</keyphrase>
@@ -16,9 +16,9 @@
             <entity>cellar</entity>
         </produced>
         <narration>You unlock the door and see steps leading down into a cellar</narration>
-    </action>
+    </gameAction>
 
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>chop</keyphrase>
             <keyphrase>cut</keyphrase>
@@ -35,9 +35,9 @@
             <entity>log</entity>
         </produced>
         <narration>You cut down the tree with the axe</narration>
-    </action>
+    </gameAction>
 
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>drink</keyphrase>
         </triggers>
@@ -51,9 +51,9 @@
             <entity>health</entity>
         </produced>
         <narration>You drink the potion and your health improves</narration>
-    </action>
+    </gameAction>
 
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>fight</keyphrase>
             <keyphrase>hit</keyphrase>
@@ -68,9 +68,9 @@
         <produced>
         </produced>
         <narration>You attack the elf, but he fights back and you lose some health</narration>
-    </action>
+    </gameAction>
 
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>pay</keyphrase>
         </triggers>
@@ -85,9 +85,9 @@
             <entity>shovel</entity>
         </produced>
         <narration>You pay the elf your silver coin and he produces a shovel</narration>
-    </action>
+    </gameAction>
 
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>bridge</keyphrase>
         </triggers>
@@ -102,9 +102,9 @@
             <entity>clearing</entity>
         </produced>
         <narration>You bridge the river with the log and can now reach the other side</narration>
-    </action>
+    </gameAction>
 
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>dig</keyphrase>
         </triggers>
@@ -120,9 +120,9 @@
             <entity>gold</entity>
         </produced>
         <narration>You dig into the soft ground and unearth a pot of gold !!!</narration>
-    </action>
+    </gameAction>
 
-    <action>
+    <gameAction>
         <triggers>
             <keyphrase>blow</keyphrase>
         </triggers>
@@ -135,6 +135,6 @@
             <entity>lumberjack</entity>
         </produced>
         <narration>You blow the horn and as if by magic, a lumberjack appears !</narration>
-    </action>
+    </gameAction>
 
 </actions>

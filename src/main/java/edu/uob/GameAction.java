@@ -42,4 +42,38 @@ public class GameAction {
     public String getNarration() {
         return narration;
     }
+    
+    public boolean isDoable(String[] words, Player p, Location l) {
+        boolean subjectSaid = (subjects.size() == 0);
+        for (String sub : subjects) {
+            for (String word : words) {
+                if (sub.equals(word)) {
+                    subjectSaid = true;
+                    break;
+                }
+            }
+        }
+        
+        if (!subjectSaid) {
+            return false;
+        }
+        
+        for (String sub : subjects) {
+            if (!p.itemHeld(sub) && !l.artefactIsPresent(sub) &&
+                !l.characterIsPresent(sub) && !l.furnitureIsPresent(sub) &&
+                !l.pathToLocationExists(sub)) {
+                return false;
+            }
+        }
+        
+        for (String cons : consumed) {
+            if (!p.itemHeld(cons) && !l.artefactIsPresent(cons) &&
+                !l.characterIsPresent(cons) && !l.furnitureIsPresent(cons) &&
+                !l.pathToLocationExists(cons) && !cons.equals("health")) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
 }

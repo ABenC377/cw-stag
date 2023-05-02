@@ -21,6 +21,8 @@ import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
 import com.alexmerz.graphviz.objects.Edge;
 
+import static edu.uob.BasicCommand.*;
+
 /** This class implements the STAG server. */
 public final class GameServer {
     
@@ -33,7 +35,7 @@ public final class GameServer {
     private HashMap<String, HashSet<GameAction>> singleTriggerActions;
     private ArrayList<ActionTuple> multiTriggerActions = new ArrayList<>();
     
-    private Location startLocation;
+    private Location startLocation = null;
     private Location storeRoom;
     private final ArrayList<Location> locations = new ArrayList<>();
     private final ArrayList<GameEntity> entities = new ArrayList<>();
@@ -88,7 +90,7 @@ public final class GameServer {
         for (int i = 1; i < actionNodeList.getLength(); i += 2) {
             Element currentAction = (Element)actionNodeList.item(i);
                 
-            GameAction current = new GameAction();
+            GameAction current = new GameActionBuilder().createGameAction();
                 
             addSubjects(currentAction, current);
             addConsumed(currentAction, current);
@@ -144,7 +146,7 @@ public final class GameServer {
     }
     
     private void addActionsByTrigger(HashMap<String, HashSet<GameAction>> hm,
-        GameAction a, NodeList nl) {
+                                     GameAction a, NodeList nl) {
         for (int i = 0; i < nl.getLength(); i++) {
             Element triggerElement = (Element)nl.item(i);
             String trigger = triggerElement.getTextContent();
@@ -189,65 +191,9 @@ public final class GameServer {
         Graph locationsGraph = graphs.get(0);
         ArrayList<Graph> locationSubGraphs = locationsGraph.getSubgraphs();
         for (Graph current : locationSubGraphs) {
-            String locationName =
-                current.getNodes(false).get(0).getId().getId();
-            String locationDescription =
-                current.getNodes(false).get(0).getAttribute("description");
-            Location l = new Location(locationName, locationDescription);
-            entities.add(l);
+            addLocation(current);
             
-            ArrayList<Graph> contents = current.getSubgraphs();
-            
-            for (Graph content : contents) {
-                String type = content.getId().getId();
-                switch (type) {
-                    case "artefacts" -> {
-                        ArrayList<Node> artefactNodes =
-                            content.getNodes(false);
-                        for (Node artefactNode : artefactNodes) {
-                            Artefact a =
-                                new Artefact(artefactNode.getId().getId(),
-                                    artefactNode.getAttribute("description"));
-                            l.addArtefact(a);
-                            entities.add(a);
-                        }
-                    }
-                    case "furniture" -> {
-                        ArrayList<Node> furnitureNodes =
-                            content.getNodes(false);
-                        for (Node furnitureNode : furnitureNodes) {
-                            Furniture f =
-                                new Furniture(furnitureNode.getId().getId(),
-                                    furnitureNode.getAttribute(
-                                        "description"));
-                            l.addFurniture(f);
-                            entities.add(f);
-                        }
-                    }
-                    case "characters" -> {
-                        ArrayList<Node> characterNodes =
-                            content.getNodes(false);
-                        for (Node characterNode : characterNodes) {
-                            GameCharacter c =
-                                new GameCharacter(characterNode.getId().getId(),
-                                    characterNode.getAttribute(
-                                        "description"));
-                            l.addCharacter(c);
-                            entities.add(c);
-                        }
-                    }
-                }
-            }
-            
-            locations.add(l);
-            if (i == 0) {
-                startLocation = l;
-            }
-            if (locationName.equals("storeroom")) {
-                storeRoom = l;
-            }
         }
-        
         
         // Then handle paths between them
         Graph pathsGraph = graphs.get(1);
@@ -259,15 +205,79 @@ public final class GameServer {
                 pathEdge.getTarget().getNode().getId().getId();
             Location start = null;
             Location end = null;
-            for (Location location : locations) {
-                if (location.getName().toLowerCase().equals(startName)) {
-                    start = location;
-                } else if (location.getName().toLowerCase().equals(endName)) {
-                    end = location;
+            for (Location l : locations) {
+                if (l.getName().toLowerCase().equals(startName)) {
+                    start = l;
+                } else if (l.getName().toLowerCase().equals(endName)) {
+                    end = l;
                 }
             }
-            if (start != null) {
+            if (start != null && end != null) {
                 start.addPath(end);
+            }
+        }
+    }
+    
+    private void addLocation(Graph g) {
+        String locationName =
+            g.getNodes(false).get(0).getId().getId();
+        String locationDescription =
+            g.getNodes(false).get(0).getAttribute("description");
+        Location l = new Location(locationName, locationDescription);
+        entities.add(l);
+        
+        ArrayList<Graph> contents = g.getSubgraphs();
+        
+        for (Graph content : contents) {
+            addEntityToLocation(l, content);
+        }
+        
+        locations.add(l);
+        if (startLocation == null) {
+            startLocation = l;
+        }
+        if (locationName.equals("storeroom")) {
+            storeRoom = l;
+        }
+    }
+    
+    private void addEntityToLocation(Location l, Graph g) {
+        String type = g.getId().getId();
+        switch (type) {
+            case "artefacts" -> {
+                ArrayList<Node> artefactNodes =
+                    g.getNodes(false);
+                for (Node artefactNode : artefactNodes) {
+                    Artefact a =
+                        new Artefact(artefactNode.getId().getId(),
+                            artefactNode.getAttribute("description"));
+                    l.addArtefact(a);
+                    entities.add(a);
+                }
+            }
+            case "furniture" -> {
+                ArrayList<Node> furnitureNodes =
+                    g.getNodes(false);
+                for (Node furnitureNode : furnitureNodes) {
+                    Furniture f =
+                        new Furniture(furnitureNode.getId().getId(),
+                            furnitureNode.getAttribute(
+                                "description"));
+                    l.addFurniture(f);
+                    entities.add(f);
+                }
+            }
+            case "characters" -> {
+                ArrayList<Node> characterNodes =
+                    g.getNodes(false);
+                for (Node characterNode : characterNodes) {
+                    GameCharacter c =
+                        new GameCharacter(characterNode.getId().getId(),
+                            characterNode.getAttribute(
+                                "description"));
+                    l.addCharacter(c);
+                    entities.add(c);
+                }
             }
         }
     }
@@ -309,129 +319,70 @@ public final class GameServer {
         return handleInstruction(instruction, p, playerLocation);
     }
     
-    // TODO - when dealing with ambiguous commands, this currently carries
-    //  one of them out in the try___() methods.  Need to think about this.
     private String handleInstruction(String inst, Player player,
                                      Location playerLocation) throws IOException {
         String alphanumericInst = inst.toLowerCase().replaceAll("[^a-zA-Z0-9 ]",
             "");
         String[] words = alphanumericInst.split(" ");
-        BasicCommand command = null;
-        GameAction action = null;
+        BasicCommand command = NULL;
+        GameAction gameAction = null;
+        
+        // Handle single-word triggers
         for (String w : words) {
-            if (w.equals("inventory") || w.equals("inv")) {
-                if (action != null || (command != null && command != BasicCommand.INV)) {
-                    return "ERROR - ambiguous command";
+            // Check if word is a built-in command trigger
+            if (BasicCommandTest.fromString(w) != NULL) {
+                if (command == NULL && gameAction == null) {
+                    command = BasicCommandTest.fromString(w);
                 } else {
-                    command = BasicCommand.INV;
+                    return "ERROR - built-in commands cannot have more than " +
+                        "one trigger";
                 }
-            } else if (w.equals("get")) {
-                if (action != null || (command != null && command != BasicCommand.GET)) {
-                    return "ERROR - ambiguous command";
-                } else {
-                    command = BasicCommand.GET;
-                }
-            } else if (w.equals("drop")) {
-                if (action != null || (command != null && command != BasicCommand.DROP)) {
-                    return "ERROR - ambiguous command";
-                } else {
-                    command = BasicCommand.DROP;
-                }
-            } else if (w.equals("goto")) {
-                if (action != null || (command != null && command != BasicCommand.GOTO)) {
-                    return "ERROR - ambiguous command";
-                } else {
-                    command = BasicCommand.GOTO;
-                }
-            } else if (w.equals("look")) {
-                if (action != null || (command != null && command != BasicCommand.LOOK)) {
-                    return "ERROR - ambiguous command";
-                } else {
-                    command = BasicCommand.LOOK;
-                }
-            } else if (w.equals("health")) {
-                if (action != null || (command != null && command != BasicCommand.HEALTH)) {
-                    return "ERROR - ambiguous command";
-                } else {
-                    command = BasicCommand.HEALTH;
-                }
-            } else {
-                if (singleTriggerActions.containsKey(w)) {
-                    if (command != null || (action != null && !singleTriggerActions.get(w).contains(action))) {
-                        return "ERROR - ambiguous command";
-                    }
+            // Check if the word is an action trigger word
+            } else if (singleTriggerActions.containsKey(w)) {
+                if (command == NULL && (gameAction == null || singleTriggerActions.get(w).contains(gameAction))) {
                     for (GameAction a : singleTriggerActions.get(w)) {
-                        if (actionIsValid(a, words, player,
-                            playerLocation)) {
-                            if (action != null && action != a) {
-                                return "ERROR - ambiguous command";
+                        if (a.isDoable(words, player, playerLocation)) {
+                            if (gameAction == null || gameAction == a) {
+                                gameAction = a;
+                            } else {
+                                return "ERROR - ambiguous command\n";
                             }
-                            action = a;
                         }
                     }
                 }
             }
         }
         
+        // Handle multi-word triggers
         for (ActionTuple tup : multiTriggerActions) {
             if (alphanumericInst.contains(tup.getTrigger())) {
-                if (command != null ||
-                    action != null && !tup.getActions().contains(action)) {
+                if (command != NULL ||
+                    (gameAction != null && !tup.getActions().contains(gameAction))) {
                     return "ERROR = ambiguous command";
                 }
                 for (GameAction a : tup.getActions()) {
-                    if (actionIsValid(a, words, player,
+                    if (a.isDoable(words, player,
                         playerLocation)) {
-                        if (action != null && action != a) {
+                        if (gameAction != null && gameAction != a) {
                             return "ERROR - ambiguous command";
                         }
-                        action = a;
+                        gameAction = a;
                     }
                 }
             }
         }
         
-        if (command != null) {
+        if (command != NULL) {
             return handleBasicCommand(command, player, playerLocation, words);
-        } else if (action != null) {
-            return handleAction(action, player, playerLocation);
+        } else if (gameAction != null) {
+            return handleAction(gameAction, player, playerLocation);
         } else {
             return "ERROR - no valid instruction in that command";
         }
     }
     
-    private boolean actionIsValid(GameAction a, String[] words, Player p,
-                                  Location l) {
-        boolean present = false;
-        for (String subj : a.getSubjects()) {
-            for (String word : words) {
-                if (subj.equals(word)) {
-                    present = true;
-                    break;
-                }
-            }
-        }
-        if (!present && a.getSubjects().size() > 0) {
-            return false;
-        }
-        
-        for (String s : a.getConsumed()) {
-            if (!p.itemHeld(s) && !l.artefactIsPresent(s) && !l.furnitureIsPresent(s) && !s.equals("health")) {
-                return false;
-            }
-        }
-        
-        for (String s : a.getSubjects()) {
-            if (!p.itemHeld(s) && !l.artefactIsPresent(s) && !l.furnitureIsPresent(s) && !l.characterIsPresent(s)) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
     private String handleAction(GameAction a, Player p,
-                           Location l) throws IOException {
+                                Location l) throws IOException {
         for (String s : a.getConsumed()) {
             if (p.itemHeld(s)) {
                 Artefact i = p.getItem(s);
@@ -487,7 +438,7 @@ public final class GameServer {
                 return handleHealth(words, p);
             }
         }
-        return null;
+        return "ERROR - not a valid basic command type";
     }
     
     private String handleInv(String[] words, Player p) {
