@@ -142,7 +142,7 @@ public class Location extends GameEntity {
                 .append(System.lineSeparator());
         }
         for (final GameCharacter character : characters) {
-            if (character != player) {
+            if (!character.equals(player)) {
                 builder.append(character.getName())
                     .append(": ")
                     .append(character.getDescription())
@@ -175,7 +175,7 @@ public class Location extends GameEntity {
                 .append(System.lineSeparator());
         }
         for (final GameCharacter character : characters) {
-            if (character != player) {
+            if (!character.equals(player)) {
                 builder.append(character.getName())
                     .append(": ")
                     .append(character.getDescription())

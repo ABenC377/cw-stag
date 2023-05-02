@@ -16,7 +16,7 @@ class ExampleSTAGTests {
 
   // Create a new server _before_ every @Test
   @BeforeEach
-  void setup() {
+  void setup() throws IOException {
       File entitiesFile = Paths.get("config" + File.separator + "extended" +
           "-entities.dot").toAbsolutePath().toFile();
       File actionsFile = Paths.get("config" + File.separator + "extended" +

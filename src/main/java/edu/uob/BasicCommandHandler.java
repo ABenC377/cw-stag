@@ -2,6 +2,7 @@ package edu.uob;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static edu.uob.BasicCommandType.*;
 
@@ -16,29 +17,31 @@ public class BasicCommandHandler {
                          final Player player,
                          final Location location,
                          final String[] words) throws IOException {
+        String output;
         switch (command) {
             case INV -> {
-                return handleInv(words, player);
+                output = handleInv(words, player);
             }
             case GET -> {
-                return handleGet(words, player, location);
+                output = handleGet(words, player, location);
             }
             case DROP -> {
-                return handleDrop(words, player, location);
+                output = handleDrop(words, player, location);
             }
             case GOTO -> {
-                return handleGoto(words, player, location);
+                output = handleGoto(words, player, location);
             }
             case LOOK -> {
-                return handleLook(words, player, location);
+                output = handleLook(words, player, location);
             }
             case HEALTH -> {
-                return handleHealth(words, player);
+                output = handleHealth(words, player);
             }
             default -> {
-                return "ERROR - not a valid basic command type";
+                output = "ERROR - not a valid basic command type";
             }
         }
+        return output;
     }
     
     private String handleInv(final String[] words, final Player player) {
@@ -56,7 +59,7 @@ public class BasicCommandHandler {
         
         for (final String word : words) {
             for (final GameEntity entity : entities) {
-                if (entity.getName().toLowerCase().equals(word)) {
+                if (entity.getName().toLowerCase(Locale.ENGLISH).equals(word)) {
                     return "ERROR - cannot use entity name as decoration for " +
                         "inventory command\n";
                 }
@@ -88,8 +91,8 @@ public class BasicCommandHandler {
         
         location.removeArtefact(gottenArtefact);
         player.pickUpItem(gottenArtefact);
-        return (player.getName() + " picked up " + gottenArtefact.getName() +
-            "\n");
+        return player.getName() + " picked up " + gottenArtefact.getName() +
+            "\n";
     }
     
     private String handleDrop(final String[] words,
@@ -102,20 +105,20 @@ public class BasicCommandHandler {
         }
         
         final Artefact droppedArtefact = findSingleArtefact(words, dropIndex);
-        if (droppedArtefact.getName().equals("ERROR")) {
+        if ("ERROR".equals(droppedArtefact.getName())) {
             return "ERROR - drop requires one artefact as its " +
                 "argument";
         }
         
         if (!player.itemHeld(droppedArtefact)) {
-            return ("ERROR - cannot drop " + droppedArtefact.getName() + " as" +
-                " it is not in your inventory\n");
+            return "ERROR - cannot drop " + droppedArtefact.getName() + " as" +
+                " it is not in your inventory\n";
         }
         
         player.removeItem(droppedArtefact);
         location.addArtefact(droppedArtefact);
-        return (player.getName() + " dropped " + droppedArtefact.getName() +
-            "\n");
+        return player.getName() + " dropped " + droppedArtefact.getName() +
+            "\n";
     }
     
     private String handleGoto(final String[] words,
@@ -131,7 +134,7 @@ public class BasicCommandHandler {
         for (int j = getIndex; j < words.length; j++) {
             final String word = words[j];
             for (final GameEntity entity : entities) {
-                if (word.equals(entity.getName().toLowerCase())) {
+                if (word.equals(entity.getName().toLowerCase(Locale.ENGLISH))) {
                     if (entity instanceof Location && gotoLocation == null) {
                         gotoLocation = (Location)entity;
                     } else {
@@ -165,7 +168,7 @@ public class BasicCommandHandler {
             }
             
             for (final GameEntity entity : entities) {
-                if (word.equals(entity.getName().toLowerCase())) {
+                if (word.equals(entity.getName().toLowerCase(Locale.ENGLISH))) {
                     return "ERROR - look requires no arguments, so the " +
                         "command cannot contain any entity names\n";
                 }
@@ -189,7 +192,7 @@ public class BasicCommandHandler {
             }
             
             for (final GameEntity entity : entities) {
-                if (word.equals(entity.getName().toLowerCase())) {
+                if (word.equals(entity.getName().toLowerCase(Locale.ENGLISH))) {
                     return "ERROR - health requires no arguments, so the " +
                         "command cannot contain any entity names\n";
                 }
@@ -216,13 +219,13 @@ public class BasicCommandHandler {
     private String gotoLocation(final Player player,
                                 final Location currentLocation,
                                 final Location gotoLocation) {
-        if (currentLocation.pathToLocationExists(gotoLocation.getName().toLowerCase())) {
+        if (currentLocation.pathToLocationExists(gotoLocation.getName().toLowerCase(Locale.ENGLISH))) {
             gotoLocation.addCharacter(player);
             currentLocation.removeCharacter(player);
             return gotoLocation.getArrivalString(player);
         }
-        return ("ERROR - " + player.getName() + " could not go to " +
-            gotoLocation.getName() + " as no valid path exists\n");
+        return "ERROR - " + player.getName() + " could not go to " +
+            gotoLocation.getName() + " as no valid path exists\n";
     }
     
     private Artefact findSingleArtefact(final String[] words,
@@ -233,10 +236,10 @@ public class BasicCommandHandler {
         for (int jndex = startIndex; jndex < words.length; jndex++) {
             final String word = words[jndex];
             for (final GameEntity entity : entities) {
-                if (word.equals(entity.getName().toLowerCase()) &&
+                if (word.equals(entity.getName().toLowerCase(Locale.ENGLISH)) &&
                     entity instanceof Artefact && gottenArtefact == null) {
                     gottenArtefact = (Artefact)entity;
-                } else if (word.equals(entity.getName().toLowerCase())) {
+                } else if (word.equals(entity.getName().toLowerCase(Locale.ENGLISH))) {
                     gottenArtefact = err;
                 }
             }

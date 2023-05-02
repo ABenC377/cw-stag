@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 
 import static edu.uob.BasicCommandType.ERROR;
 import static edu.uob.BasicCommandType.NULL;
@@ -79,8 +80,8 @@ public class CommandHandler {
             gameAction);
         
         // Check for errors
-        if (command == ERROR || (gameAction != null && gameAction.getNarration().equals(
-            "ERROR"))) {
+        if (command == ERROR || gameAction != null && gameAction.getNarration().equals(
+            "ERROR")) {
             return "ERROR - invalid/ambiguous command\n";
         }
         
@@ -122,7 +123,7 @@ public class CommandHandler {
             
             for (final GameAction action : oneWordActions.get(word)) {
                 if (action.isDoable(words, player, location, entities) &&
-                    (output == null || output == action)) {
+                    (output == null || output.equals(action))) {
                     output = action;
                 } else if (action.isDoable(words, player, location, entities)) {
                     return err;
@@ -146,13 +147,13 @@ public class CommandHandler {
         
         for (final ActionTuple tuple : manyWordActions) {
             // Move on if trigger not in instruction
-            if (!inst.toLowerCase().contains(tuple.getTrigger())) {
+            if (!inst.toLowerCase(Locale.ENGLISH).contains(tuple.getTrigger())) {
                 continue;
             }
             
             for (final GameAction action : tuple.getActions()) {
                 // Check action is allowable
-                if (output != null && output != action &&
+                if (output != null && !output.equals(action) &&
                     action.isDoable(words, player, location, entities)) {
                     return err;
                 } else if (action.isDoable(words, player, location, entities)) {
@@ -164,7 +165,8 @@ public class CommandHandler {
     }
     
     private String[] cleanInstructions(final String inst) {
-        final String alphanumericInst = inst.toLowerCase().replaceAll("[^a-zA" +
+        final String alphanumericInst = inst.toLowerCase(Locale.ENGLISH).replaceAll("[^a" +
+                "-zA" +
                 "-Z0-9 ]",
             "");
         return alphanumericInst.split(" ");

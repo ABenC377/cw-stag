@@ -45,7 +45,7 @@ public class GameAction {
                             final Player player,
                             final Location location,
                             final ArrayList<GameEntity> entities) {
-        boolean subjectSaid = (subjects.isEmpty());
+        boolean subjectSaid = subjects.isEmpty();
         for (final String sub : subjects) {
             for (final String word : words) {
                 if (sub.equals(word)) {
@@ -56,9 +56,9 @@ public class GameAction {
         }
 
         
-        return (noExtraEntities(words, entities) &&
+        return noExtraEntities(words, entities) &&
             subjectSaid && arePresent(subjects, player, location) &&
-            arePresent(consumed, player, location));
+            arePresent(consumed, player, location);
     }
     
     private boolean noExtraEntities(final String[] words,

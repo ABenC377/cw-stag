@@ -32,12 +32,12 @@ public class ActionHandler {
             }
         }
         
-        return (player.checkForDeath(location, startLocation)) ?
-            (action.getNarration() +
+        return player.checkForDeath(location, startLocation) ?
+            action.getNarration() +
                 "\nYou pass out from the damage\n" +
                 "You wake up in " +
                 startLocation.getDescription() +
-                " without any of your possessions\n") :
+                " without any of your possessions\n" :
             action.getNarration();
     }
     

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
 
@@ -13,7 +14,7 @@ public class MultiPlayerTests {
     private GameServer server;
     
     @BeforeEach
-    void setup() {
+    void setup() throws IOException {
         File entitiesFile = Paths.get("config" + File.separator + "extended" +
             "-entities.dot").toAbsolutePath().toFile();
         File actionsFile = Paths.get("config" + File.separator + "extended" +

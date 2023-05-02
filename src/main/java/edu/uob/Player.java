@@ -52,13 +52,13 @@ public class Player extends GameCharacter {
                 if (artefact.getName().equals(word)) {
                     heldItems.remove(artefact);
                     location.addArtefact(artefact);
-                    return (this.getName() + " dropped " +
-                        artefact.getName() + "\n");
+                    return this.getName() + " dropped " +
+                        artefact.getName() + "\n";
                 }
             }
         }
-        return (this.getName() + " cannot drop an item they are not" +
-            " holding\n");
+        return this.getName() + " cannot drop an item they are not" +
+            " holding\n";
     }
     public void takeDamage() {
         health -= 1;
@@ -117,6 +117,6 @@ public class Player extends GameCharacter {
     }
     
     public String reportHealth() {
-        return (this.getName() + "'s health is at " + this.getHealth());
+        return this.getName() + "'s health is at " + this.getHealth();
     }
 }

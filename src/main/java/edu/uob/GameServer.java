@@ -15,13 +15,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
+
 import com.alexmerz.graphviz.Parser;
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
 import com.alexmerz.graphviz.objects.Edge;
-
-import static edu.uob.BasicCommandType.*;
 
 /** This class implements the STAG server. */
 public final class GameServer {
@@ -215,9 +215,9 @@ public final class GameServer {
             Location start = null;
             Location end = null;
             for (final Location l : initialLocations) {
-                if (l.getName().toLowerCase().equals(startName)) {
+                if (l.getName().toLowerCase(Locale.ENGLISH).equals(startName)) {
                     start = l;
-                } else if (l.getName().toLowerCase().equals(endName)) {
+                } else if (l.getName().toLowerCase(Locale.ENGLISH).equals(endName)) {
                     end = l;
                 }
             }
