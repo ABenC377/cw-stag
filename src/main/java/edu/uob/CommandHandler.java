@@ -12,7 +12,6 @@ public class CommandHandler {
     private final HashMap<String, HashSet<GameAction>> oneWordActions;
     private final ArrayList<ActionTuple> manyWordActions;
     private final Location startLocation;
-    private final Location storeRoom;
     private final ArrayList<Location> locations;
     private final ArrayList<GameEntity> entities;
     private final BasicCommandHandler commandHandler;
@@ -26,14 +25,13 @@ public class CommandHandler {
                           HashMap<String, HashSet<GameAction>> oneWord,
                           ArrayList<ActionTuple> manyWord) {
         startLocation = start;
-        storeRoom = store;
         locations = locs;
         entities = ents;
         oneWordActions = oneWord;
         manyWordActions = manyWord;
         commandHandler = new BasicCommandHandler(entities);
         actionHandler = new ActionHandler(locations,
-            startLocation, storeRoom);
+            startLocation, store);
     }
     
     public String handle(final String command) throws IOException {

@@ -32,8 +32,7 @@ public final class GameServer {
     // TODO test multiplayer see the other player in a room
 
     private static final char END_OF_TRANSMISSION = 4;
-    private HashMap<String, HashSet<GameAction>> oneWordActions;
-    private ArrayList<ActionTuple> manyWordActions = new ArrayList<>();
+    private final ArrayList<ActionTuple> manyWordActions = new ArrayList<>();
     
     private Location startLocation = null;
     private Location storeRoom;
@@ -64,7 +63,7 @@ public final class GameServer {
     *
     */
     public GameServer(final File entitiesFile, final File actionsFile) {
-        // TODO implement your server logic here
+        HashMap<String, HashSet<GameAction>> oneWordActions;
         try {
             oneWordActions = readActionsFile(actionsFile);
         } catch (ParserConfigurationException | SAXException | IOException e) {
