@@ -352,7 +352,7 @@ public final class GameServer {
         }
     }
     
-    private BasicCommandType checkBasicCommands(String[] words) {
+    private BasicCommandType checkBasicCommands(final String[] words) {
         BasicCommandType output = NULL;
         for (final String w : words) {
             if (BasicCommandType.fromString(w) != NULL && output == NULL) {
@@ -364,8 +364,8 @@ public final class GameServer {
         return output;
     }
     
-    private GameAction checkSingleTriggerActions(String[] words, Player p,
-                                                 Location l) {
+    private GameAction checkSingleTriggerActions(final String[] words, final Player p,
+                                                 final Location l) {
         GameAction output = null;
         final GameAction err = new GameAction();
         err.setNarration("ERROR");
@@ -390,9 +390,9 @@ public final class GameServer {
         return output;
     }
     
-    private GameAction checkMultiTriggerActions(String inst, Player p,
-                                                Location l,
-                                                GameAction current) {
+    private GameAction checkMultiTriggerActions(final String inst, final Player p,
+                                                final Location l,
+                                                final GameAction current) {
         // Set up variables
         final String[] words = cleanInstructions(inst);
         GameAction output = current;
@@ -417,15 +417,15 @@ public final class GameServer {
         return output;
     }
     
-    private String[] cleanInstructions(String inst) {
+    private String[] cleanInstructions(final String inst) {
         final String alphanumericInst = inst.toLowerCase().replaceAll("[^a-zA" +
                 "-Z0-9 ]",
             "");
         return alphanumericInst.split(" ");
     }
     
-    private String handleAction(GameAction a, Player p,
-                                Location l) throws IOException {
+    private String handleAction(final GameAction a, final Player p,
+                                final Location l) throws IOException {
         for (final String s : a.getConsumed()) {
             if (p.itemHeld(s)) {
                 final Artefact i = p.getItem(s);
@@ -459,8 +459,8 @@ public final class GameServer {
         return a.getNarration();
     }
     
-    private String handleBasicCommand(BasicCommandType c, Player p,
-                                      Location l, String[] words) throws IOException {
+    private String handleBasicCommand(final BasicCommandType c, final Player p,
+                                      final Location l, final String[] words) throws IOException {
         switch (c) {
             case INV -> {
                 return handleInv(words, p);
@@ -486,7 +486,7 @@ public final class GameServer {
         }
     }
     
-    private String handleInv(String[] words, Player p) {
+    private String handleInv(final String[] words, final Player p) {
         boolean invAlreadySeen = false;
         for (final String w : words) {
             if ("inv".equals(w) || "inventory".equals(w)) {
@@ -511,7 +511,7 @@ public final class GameServer {
         return p.listItems();
     }
     
-    private String handleGet(String[] words, Player p, Location l) {
+    private String handleGet(final String[] words, final Player p, final Location l) {
         final int getIndex = findIndex(words, "get");
         if (getIndex == -1) {
             return "ERROR - invalid command, too many triggers for " +
@@ -548,7 +548,7 @@ public final class GameServer {
         return (p.getName() + " picked up " + gottenArtefact.getName() + "\n");
     }
     
-    private int findIndex(String[] words, String toFind) {
+    private int findIndex(final String[] words, final String toFind) {
         int output = -1;
         int i = 0;
         for (final String w : words) {
@@ -562,7 +562,7 @@ public final class GameServer {
         return output;
     }
     
-    private String handleDrop(String[] words, Player p, Location l) throws IOException {
+    private String handleDrop(final String[] words, final Player p, final Location l) throws IOException {
         final int getIndex = findIndex(words, "drop");
         if (getIndex == -1) {
             return "ERROR - invalid command, too many " +
@@ -599,7 +599,7 @@ public final class GameServer {
         return (p.getName() + " dropped " + droppedArtefact.getName() + "\n");
     }
     
-    private String handleGoto(String[] words, Player p, Location l) {
+    private String handleGoto(final String[] words, final Player p, final Location l) {
         final int getIndex = findIndex(words, "goto");
         if (getIndex == -1) {
             return "ERROR - invalid command, too many triggers for " +
@@ -629,8 +629,8 @@ public final class GameServer {
         return gotoLocation(p, l, gotoLocation);
     }
     
-    private String gotoLocation(Player p, Location currentLocation,
-                                Location gotoLocation) {
+    private String gotoLocation(final Player p, final Location currentLocation,
+                                final Location gotoLocation) {
         if (currentLocation.pathToLocationExists(gotoLocation.getName().toLowerCase())) {
             gotoLocation.addCharacter(p);
             currentLocation.removeCharacter(p);
@@ -640,7 +640,7 @@ public final class GameServer {
             " as no valid path exists\n");
     }
     
-    private String handleLook(String[] words, Player p, Location l) {
+    private String handleLook(final String[] words, final Player p, final Location l) {
         boolean looked = false;
         for (final String w : words) {
             if ("look".equals(w)) {
@@ -663,7 +663,7 @@ public final class GameServer {
         return l.lookAround(p);
     }
     
-    private String handleHealth(String[] words, Player p) {
+    private String handleHealth(final String[] words, final Player p) {
         boolean healthed = false;
         for (final String w : words) {
             if ("health".equals(w)) {
@@ -700,7 +700,7 @@ public final class GameServer {
     * @param portNumber The port to listen on.
     * @throws IOException If any IO related operation fails.
     */
-    public void blockingListenOn(int portNumber) throws IOException {
+    public void blockingListenOn(final int portNumber) throws IOException {
         try (ServerSocket s = new ServerSocket(portNumber)) {
             System.out.println("Server listening on port " + portNumber);
             while (!Thread.interrupted()) {
@@ -722,7 +722,7 @@ public final class GameServer {
     * @param serverSocket The client socket to read/write from.
     * @throws IOException If any IO related operation fails.
     */
-    private void blockingHandleConnection(ServerSocket serverSocket) throws IOException {
+    private void blockingHandleConnection(final ServerSocket serverSocket) throws IOException {
         try (Socket s = serverSocket.accept();
         BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()))) {

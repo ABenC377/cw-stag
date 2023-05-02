@@ -8,7 +8,7 @@ public class Location extends GameEntity {
     private final ArrayList<GameCharacter> characters;
     private final ArrayList<Location> paths;
     
-    public Location(String name, String description) {
+    public Location(final String name, final String description) {
         super(name, description);
         furniture = new ArrayList<>();
         artefacts = new ArrayList<>();
@@ -16,23 +16,23 @@ public class Location extends GameEntity {
         paths = new ArrayList<>();
     }
     
-    public void addFurniture(Furniture f) {
+    public void addFurniture(final Furniture f) {
         furniture.add(f);
     }
-    public void addArtefact(Artefact a) {
+    public void addArtefact(final Artefact a) {
         artefacts.add(a);
     }
-    public void addCharacter(GameCharacter c) {
+    public void addCharacter(final GameCharacter c) {
         characters.add(c);
     }
-    public void addPath(Location l) {
+    public void addPath(final Location l) {
         paths.add(l);
     }
     
-    public boolean furnitureIsPresent(Furniture f) {
+    public boolean furnitureIsPresent(final Furniture f) {
         return furniture.contains(f);
     }
-    public boolean furnitureIsPresent(String s) {
+    public boolean furnitureIsPresent(final String s) {
         for (final Furniture f : furniture) {
             if (f.getName().equals(s)) {
                 return true;
@@ -40,10 +40,10 @@ public class Location extends GameEntity {
         }
         return false;
     }
-    public boolean artefactIsPresent(Artefact a) {
+    public boolean artefactIsPresent(final Artefact a) {
         return artefacts.contains(a);
     }
-    public boolean artefactIsPresent(String s) {
+    public boolean artefactIsPresent(final String s) {
         for (final Artefact a : artefacts) {
             if (a.getName().equals(s)) {
                 return true;
@@ -51,10 +51,10 @@ public class Location extends GameEntity {
         }
         return false;
     }
-    public boolean characterIsPresent(GameCharacter c) {
+    public boolean characterIsPresent(final GameCharacter c) {
         return characters.contains(c);
     }
-    public boolean characterIsPresent(String s) {
+    public boolean characterIsPresent(final String s) {
         for (final GameCharacter c : characters) {
             if (c.getName().equals(s)) {
                 return true;
@@ -62,10 +62,10 @@ public class Location extends GameEntity {
         }
         return false;
     }
-    public boolean pathToLocationExists(Location l) {
+    public boolean pathToLocationExists(final Location l) {
        return paths.contains(l);
     }
-    public boolean pathToLocationExists(String s) {
+    public boolean pathToLocationExists(final String s) {
         for (final Location l : paths) {
             if (l.getName().equals(s)) {
                 return true;
@@ -87,10 +87,10 @@ public class Location extends GameEntity {
         return paths.size();
     }
     
-    public void removeFurniture(Furniture f) {
+    public void removeFurniture(final Furniture f) {
         furniture.remove(f);
     }
-    public Furniture removeFurniture(String s) {
+    public Furniture removeFurniture(final String s) {
         for (final Furniture f : furniture) {
             if (f.getName().equals(s)) {
                 furniture.remove(f);
@@ -99,10 +99,10 @@ public class Location extends GameEntity {
         }
         return null;
     }
-    public void removeArtefact(Artefact a) {
+    public void removeArtefact(final Artefact a) {
         artefacts.remove(a);
     }
-    public Artefact removeArtefact(String s) {
+    public Artefact removeArtefact(final String s) {
         for (final Artefact a : artefacts) {
             if (a.getName().equals(s)) {
                 artefacts.remove(a);
@@ -111,11 +111,11 @@ public class Location extends GameEntity {
         }
         return null;
     }
-    public void removeCharacter(GameCharacter c) {
+    public void removeCharacter(final GameCharacter c) {
         characters.remove(c);
     }
     
-    public GameCharacter removeCharacter(String s) {
+    public GameCharacter removeCharacter(final String s) {
         for (final GameCharacter c : characters) {
             if (c.getName().equals(s)) {
                 characters.remove(c);
@@ -125,7 +125,7 @@ public class Location extends GameEntity {
         return null;
     }
     
-    public void removePath(Location l) {
+    public void removePath(final Location l) {
         paths.remove(l);
     }
     
@@ -134,7 +134,7 @@ public class Location extends GameEntity {
     }
     
     
-    public String getArrivalString(Player p) {
+    public String getArrivalString(final Player p) {
         final StringBuilder builder = new StringBuilder();
         builder.append("You arrive in ")
             .append(this.getDescription())
@@ -167,7 +167,7 @@ public class Location extends GameEntity {
         return builder.toString();
     }
     
-    public String lookAround(Player p) {
+    public String lookAround(final Player p) {
         final StringBuilder builder = new StringBuilder();
         builder.append("You are in ")
             .append(this.getDescription())
@@ -200,7 +200,7 @@ public class Location extends GameEntity {
         return builder.toString();
     }
     
-    public void produce(String entityName, ArrayList<Location> locations) {
+    public void produce(final String entityName, final ArrayList<Location> locations) {
         for (final Location l : locations) {
             if (l.getName().equals(entityName)) {
                 paths.add(l);

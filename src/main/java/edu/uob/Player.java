@@ -9,13 +9,13 @@ public class Player extends GameCharacter {
     private final ArrayList<Artefact> heldItems;
     private int health;
     
-    public Player(String name) {
+    public Player(final String name) {
         super(name, "A player by the name of " + name);
         heldItems = new ArrayList<>();
         health = 3;
     }
     
-    public void pickUpItem(Artefact a) {
+    public void pickUpItem(final Artefact a) {
         if (a != null) {
             heldItems.add(a);
         }
@@ -24,7 +24,7 @@ public class Player extends GameCharacter {
         health = min(3, health + 1);
     }
     
-    public void removeItem(Artefact a) throws IOException {
+    public void removeItem(final Artefact a) throws IOException {
         if (heldItems.contains(a)) {
             heldItems.remove(a);
         } else {
@@ -32,11 +32,11 @@ public class Player extends GameCharacter {
                 "does not already hold");
         }
     }
-    public void removeItem(String s) {
+    public void removeItem(final String s) {
         heldItems.removeIf( a -> a.getName().equals(s));
     }
     
-    public Artefact getItem(String s) {
+    public Artefact getItem(final String s) {
         for (final Artefact a : heldItems) {
             if (a.getName().equals(s)) {
                 return a;
@@ -45,7 +45,7 @@ public class Player extends GameCharacter {
         return null;
     }
     
-    public String dropItem(String[] words, Location l) throws IOException {
+    public String dropItem(final String[] words, final Location l) throws IOException {
         for (final String s : words) {
             for (final Artefact a : heldItems) {
                 if (a.getName().equals(s)) {
@@ -69,10 +69,10 @@ public class Player extends GameCharacter {
         return heldItems.size();
     }
     
-    public boolean itemHeld(Artefact a) {
+    public boolean itemHeld(final Artefact a) {
         return heldItems.contains(a);
     }
-    public boolean itemHeld(String s) {
+    public boolean itemHeld(final String s) {
         for (final Artefact a : heldItems) {
             if (a.getName().equals(s)) {
                 return true;
@@ -96,7 +96,7 @@ public class Player extends GameCharacter {
         return builder.toString();
     }
     
-    public boolean checkForDeath(Location current, Location start) throws IOException {
+    public boolean checkForDeath(final Location current, final Location start) throws IOException {
         if (health == 0) {
             final ArrayList<Artefact> toDrop = new ArrayList<>();
             for (final Artefact a : heldItems) {
