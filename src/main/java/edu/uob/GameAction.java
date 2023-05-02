@@ -2,6 +2,7 @@ package edu.uob;
 
 import java.util.ArrayList;
 
+
 public class GameAction {
     private final ArrayList<String> subjects;
     private final ArrayList<String> consumed;
@@ -43,8 +44,10 @@ public class GameAction {
         return narration;
     }
     
-    public boolean isDoable(final String[] words, final Player player,
-                            final Location location) {
+    public boolean isDoable(final String[] words,
+                            final Player player,
+                            final Location location,
+                            final ArrayList<GameEntity> entities) {
         boolean subjectSaid = (subjects.isEmpty());
         for (final String sub : subjects) {
             for (final String word : words) {
@@ -54,9 +57,24 @@ public class GameAction {
                 }
             }
         }
+
         
-        return (subjectSaid && arePresent(subjects, player, location) &&
+        return (noExtraEntities(words, entities) &&
+            subjectSaid && arePresent(subjects, player, location) &&
             arePresent(consumed, player, location));
+    }
+    
+    private boolean noExtraEntities(final String[] words,
+                                 final ArrayList<GameEntity> entities) {
+        for (String word : words) {
+            for (GameEntity entity : entities) {
+                if (entity.getName().equals(word) &&
+                    !subjects.contains(word)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     private boolean arePresent(final ArrayList<String> entities,

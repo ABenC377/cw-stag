@@ -384,10 +384,10 @@ public final class GameServer {
             }
             
             for (final GameAction action : oneWordActions.get(word)) {
-                if (action.isDoable(words, player, location) &&
+                if (action.isDoable(words, player, location, entities) &&
                     (output == null || output == action)) {
                     output = action;
-                } else if (action.isDoable(words, player, location)) {
+                } else if (action.isDoable(words, player, location, entities)) {
                     return err;
                 }
             }
@@ -416,9 +416,9 @@ public final class GameServer {
             for (final GameAction action : tuple.getActions()) {
                 // Check action is allowable
                 if (output != null && output != action &&
-                    action.isDoable(words, player, location)) {
+                    action.isDoable(words, player, location, entities)) {
                     return err;
-                } else if (action.isDoable(words, player, location)) {
+                } else if (action.isDoable(words, player, location, entities)) {
                     output = action;
                 }
             }
