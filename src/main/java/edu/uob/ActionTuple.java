@@ -1,6 +1,7 @@
 package edu.uob;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This is a custom data type for storing multi-word triggers and their
@@ -15,7 +16,7 @@ public class ActionTuple {
     /**
      * a Set of actions that are triggered by the trigger phrase
      */
-    private final HashSet<GameAction> gameActions = new HashSet<>();
+    private final Set<GameAction> gameActions = new HashSet<>();
     
     /**
      * Creates a tuple object with an empty Set of actions, and the provided
@@ -39,7 +40,7 @@ public class ActionTuple {
      * returns the actions in this tuple
      * @return a pointer to the HashSet of Actions
      */
-    public HashSet<GameAction> getActions() {
+    public Set<GameAction> getActions() {
         return gameActions;
     }
     

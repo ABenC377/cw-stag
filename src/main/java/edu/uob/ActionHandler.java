@@ -32,7 +32,7 @@ public class ActionHandler {
      * @param startLocation The start location for the game
      * @param storeRoom The storeroom location for the game
      */
-    public ActionHandler(final ArrayList<Location> locations,
+    public ActionHandler(final List<Location> locations,
                          final Location startLocation,
                          final Location storeRoom) {
         this.locations = locations;

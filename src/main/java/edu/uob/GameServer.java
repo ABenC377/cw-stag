@@ -90,11 +90,12 @@ public final class GameServer {
         final Element actions = document.getDocumentElement();
         final NodeList actionNodeList = actions.getChildNodes();
         // Weird for loop, as we only want the odd elements
+        GameActionBuilder actionBuilder = new GameActionBuilder();
         for (int i = 1; i < actionNodeList.getLength(); i += 2) {
             final Element currentAction = (Element)actionNodeList.item(i);
                 
             final GameAction current =
-                new GameActionBuilder().createGameAction();
+                actionBuilder.createGameAction();
                 
             addSubjects(currentAction, current);
             addConsumed(currentAction, current);
