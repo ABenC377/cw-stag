@@ -9,6 +9,9 @@ import java.util.Locale;
 import static edu.uob.BasicCommandType.ERROR;
 import static edu.uob.BasicCommandType.NULL;
 
+/**
+ * object for handling a user's command
+ */
 public class CommandHandler {
     private final HashMap<String, HashSet<GameAction>> oneWordActions;
     private final ArrayList<ActionTuple> manyWordActions;
