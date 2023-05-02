@@ -330,9 +330,9 @@ public final class GameServer {
         // Handle single-word triggers
         for (String w : words) {
             // Check if word is a built-in command trigger
-            if (BasicCommandTests.fromString(w) != NULL) {
+            if (BasicCommandType.fromString(w) != NULL) {
                 if (command == NULL && gameAction == null) {
-                    command = BasicCommandTests.fromString(w);
+                    command = BasicCommandType.fromString(w);
                 } else {
                     return "ERROR - built-in commands cannot have more than " +
                         "one trigger";
