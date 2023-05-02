@@ -321,43 +321,29 @@ public final class GameServer {
     
     private String handleInstruction(String inst, Player player,
                                      Location playerLocation) throws IOException {
+        // Clean and parse command string
         String[] words = cleanInstructions(inst);
+        
+        // Check for built-in commands and actions
         BasicCommandType command = checkBasicCommands(words, player, playerLocation);
         GameAction gameAction = checkSingleTriggerActions(words, player,
             playerLocation);
+        gameAction = checkMultiTriggerActions(inst, player, playerLocation,
+            gameAction);
         
         // Check for errors
         if (command == ERROR || (gameAction != null && gameAction.getNarration().equals(
             "ERROR"))) {
-            return "ERROR - invalid command\n";
+            return "ERROR - invalid/ambiguous command\n";
         }
         
-        
-        // Handle multi-word triggers
-        for (ActionTuple tup : multiTriggerActions) {
-            if (inst.toLowerCase().contains(tup.getTrigger())) {
-                if (command != NULL ||
-                    (gameAction != null && !tup.getActions().contains(gameAction))) {
-                    return "ERROR = ambiguous command";
-                }
-                for (GameAction a : tup.getActions()) {
-                    if (a.isDoable(words, player,
-                        playerLocation)) {
-                        if (gameAction != null && gameAction != a) {
-                            return "ERROR - ambiguous command";
-                        }
-                        gameAction = a;
-                    }
-                }
-            }
-        }
-        
-        if (command != NULL) {
-            return handleBasicCommand(command, player, playerLocation, words);
-        } else if (gameAction != null) {
-            return handleAction(gameAction, player, playerLocation);
-        } else {
+        // return an appropriate output
+        if (command == NULL && gameAction == null) {
             return "ERROR - no valid instruction in that command";
+        } else {
+            return (command == NULL) ?
+                handleAction(gameAction, player, playerLocation) :
+                handleBasicCommand(command, player, playerLocation, words);
         }
     }
     
@@ -389,6 +375,37 @@ public final class GameServer {
                     } else if (a.isDoable(words, p, l)) {
                         return err;
                     }
+                }
+            }
+        }
+        return output;
+    }
+    
+    private GameAction checkMultiTriggerActions(String inst, Player p,
+                                                Location l,
+                                                GameAction current) {
+        // Set up variables
+        String[] words = cleanInstructions(inst);
+        GameAction output = current;
+        GameAction err = new GameAction();
+        err.setNarration("ERROR");
+        
+        for (ActionTuple tup : multiTriggerActions) {
+            // Move on if trigger not in instruction
+            if (!inst.toLowerCase().contains(tup.getTrigger())) {
+                continue;
+            }
+            
+            // If incompatible trigger
+            if (output != null && !tup.getActions().contains(output)) {
+                return err;
+            }
+            
+            for (GameAction a : tup.getActions()) {
+                if (a.isDoable(words, p, l) && output != null && output != a) {
+                    return err;
+                } else if (a.isDoable(words, p, l)) {
+                    output = a;
                 }
             }
         }
