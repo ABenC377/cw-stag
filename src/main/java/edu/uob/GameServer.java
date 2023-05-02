@@ -41,7 +41,7 @@ public final class GameServer {
     private final ArrayList<GameEntity> entities = new ArrayList<>();
     
     
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         final File entitiesFile = Paths.get("config" + File.separator +
             "extended" +
             "-entities.dot").toAbsolutePath().toFile();
@@ -62,7 +62,7 @@ public final class GameServer {
     * @param actionsFile The game configuration file containing all game actions to use in your game
     *
     */
-    public GameServer(File entitiesFile, File actionsFile) {
+    public GameServer(final File entitiesFile, final File actionsFile) {
         // TODO implement your server logic here
         try {
             oneWordActions = readActionsFile(actionsFile);
@@ -78,7 +78,7 @@ public final class GameServer {
         
     }
     
-    private HashMap<String, HashSet<GameAction>> readActionsFile(File file) throws ParserConfigurationException, IOException, SAXException {
+    private HashMap<String, HashSet<GameAction>> readActionsFile(final File file) throws ParserConfigurationException, IOException, SAXException {
         final HashMap<String, HashSet<GameAction>> actionsHashMap =
             new HashMap<>();
         final DocumentBuilder builder =
@@ -113,7 +113,7 @@ public final class GameServer {
         return actionsHashMap;
     }
     
-    private void addSubjects(Element e, GameAction a) {
+    private void addSubjects(final Element e, final GameAction a) {
         final Element subElement =
             (Element)e.getElementsByTagName("subjects").item(0);
         final NodeList subjectsNL = subElement.getElementsByTagName(
@@ -124,7 +124,7 @@ public final class GameServer {
         }
     }
     
-    private void addConsumed(Element e, GameAction a) {
+    private void addConsumed(final Element e, final GameAction a) {
         final Element consElement =
             (Element)e.getElementsByTagName("consumed").item(0);
         final NodeList consumedsNL = consElement.getElementsByTagName(
@@ -135,7 +135,7 @@ public final class GameServer {
         }
     }
     
-    private void addProduced(Element e, GameAction a) {
+    private void addProduced(final Element e, final GameAction a) {
         final Element prodElement =
             (Element)e.getElementsByTagName("produced").item(0);
         final NodeList producedsNL = prodElement.getElementsByTagName(
@@ -146,8 +146,8 @@ public final class GameServer {
         }
     }
     
-    private void addActionsByTrigger(HashMap<String, HashSet<GameAction>> hm,
-                                     GameAction a, NodeList nl) {
+    private void addActionsByTrigger(final HashMap<String, HashSet<GameAction>> hm,
+                                     final GameAction a, final NodeList nl) {
         for (int i = 0; i < nl.getLength(); i++) {
             final Element triggerElement = (Element)nl.item(i);
             final String trigger = triggerElement.getTextContent();
@@ -165,7 +165,7 @@ public final class GameServer {
         }
     }
     
-    private void addToMultiTriggers(String s, GameAction a) {
+    private void addToMultiTriggers(final String s, final GameAction a) {
         boolean exists = false;
         for (final ActionTuple tup : manyWordActions) {
             if (tup.getTrigger().equals(s)) {
@@ -181,7 +181,7 @@ public final class GameServer {
     }
     
     
-    private void readEntitiesFile(File file) throws FileNotFoundException, ParseException {
+    private void readEntitiesFile(final File file) throws FileNotFoundException, ParseException {
         final Parser parser = new Parser();
         final FileReader reader = new FileReader(file);
         parser.parse(reader);
@@ -221,7 +221,7 @@ public final class GameServer {
         }
     }
     
-    private void addLocation(Graph g) {
+    private void addLocation(final Graph g) {
         final String locationName =
             g.getNodes(false).get(0).getId().getId();
         final String description =
@@ -244,7 +244,7 @@ public final class GameServer {
         }
     }
     
-    private void addEntityToLocation(Location l, Graph g) {
+    private void addEntityToLocation(final Location l, final Graph g) {
         final String type = g.getId().getId();
         switch (type) {
             case "artefacts" -> {
@@ -292,7 +292,7 @@ public final class GameServer {
     *
     * <p>This method handles all incoming game commands and carries out the corresponding actions.
     */
-    public String handleCommand(String command) throws IOException {
+    public String handleCommand(final String command) throws IOException {
         // TODO implement your server logic here
         final String[] components = command.split(":", 2);
         final String userName = components[0];
@@ -324,8 +324,8 @@ public final class GameServer {
         return handleInstruction(instruction, p, playerLocation);
     }
     
-    private String handleInstruction(String inst, Player player,
-                                     Location playerLocation) throws IOException {
+    private String handleInstruction(final String inst, final Player player,
+                                     final Location playerLocation) throws IOException {
         // Clean and parse command string
         final String[] words = cleanInstructions(inst);
         

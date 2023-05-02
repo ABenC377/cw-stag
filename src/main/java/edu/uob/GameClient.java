@@ -16,14 +16,14 @@ public final class GameClient {
 
     private static final char END_OF_TRANSMISSION = 4;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         final String username = args[0];
         while (!Thread.interrupted()) {
             handleNextCommand(username);
         }
     }
 
-    private static void handleNextCommand(String username) throws IOException {
+    private static void handleNextCommand(final String username) throws IOException {
         System.out.print(username + ":> ");
         final BufferedReader commandLine =
             new BufferedReader(new InputStreamReader(System.in));
