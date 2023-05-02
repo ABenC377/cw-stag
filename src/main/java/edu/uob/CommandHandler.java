@@ -13,15 +13,44 @@ import static edu.uob.BasicCommandType.NULL;
  * object for handling a user's command
  */
 public class CommandHandler {
+    /**
+     * a hashmap with single-word triggers as key, and an arraylist of
+     * correspodning action objects as value
+     */
     private final HashMap<String, HashSet<GameAction>> oneWordActions;
+    /**
+     * list of tuples for actions that have triggers of more than one word
+     */
     private final ArrayList<ActionTuple> manyWordActions;
+    /**
+     * location object for where a player starts the game
+     */
     private final Location startLocation;
+    /**
+     * list of all the locations in the game
+     */
     private final ArrayList<Location> locations;
+    /**
+     * list of all the entities in the game
+     */
     private final ArrayList<GameEntity> entities;
+    /**
+     * an object for dealing with built-in commands
+     */
     private final BasicCommandHandler commandHandler;
+    /**
+     * an object for dealing with custom actions
+     */
     private final ActionHandler actionHandler;
     
-    
+    /**
+     * @param start game start location
+     * @param store the storeroom where currently non-existant entities live
+     * @param locs list of locations in the game
+     * @param ents list of entities in the game
+     * @param oneWord hashmap of trigger and actions for one-word triggers
+     * @param manyWord list of trigger-action tuples for multi-word triggers
+     */
     public CommandHandler(final Location start,
                           final Location store,
                           final ArrayList<Location> locs,
@@ -38,6 +67,12 @@ public class CommandHandler {
             startLocation, store);
     }
     
+    /**
+     * handles a user's input command
+     * @param command the string provided by the client
+     * @return the string to be returned to the client
+     * @throws IOException self-explanatory
+     */
     public String handle(final String command) throws IOException {
         final String[] components = command.split(":", 2);
         final String instruction = (components.length == 2) ? components[1] :
@@ -70,6 +105,14 @@ public class CommandHandler {
         return handleInstruction(instruction, player, playerLocation);
     }
     
+    /**
+     * handles the command part of the client-provided string
+     * @param inst the command string
+     * @param player the player object
+     * @param playerLocation the player's location object
+     * @return the string to be passed back to the client
+     * @throws IOException self-explanatory
+     */
     private String handleInstruction(final String inst, final Player player,
                                      final Location playerLocation) throws IOException {
         // Clean and parse command string
@@ -98,6 +141,12 @@ public class CommandHandler {
         }
     }
     
+    /**
+     * checks for the presence of a built-in command
+     * @param words the words that make up the user's instruction
+     * @return the type of command present (NULL if none, ERROR if more than
+     * one)
+     */
     private BasicCommandType checkBasicCommands(final String[] words) {
         BasicCommandType output = NULL;
         for (final String w : words) {

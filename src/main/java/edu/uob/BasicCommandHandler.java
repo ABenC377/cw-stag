@@ -23,7 +23,6 @@ public class BasicCommandHandler {
     }
     
     /**
-     * handles a Built-in command
      * @param command the type of command
      * @param player the player object
      * @param location the current location of the player
