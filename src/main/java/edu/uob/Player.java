@@ -161,6 +161,10 @@ public class Player extends GameCharacter {
         }
     }
     
+    /**
+     * tells the user the player's current health
+     * @return a string to be sent to the client
+     */
     public String reportHealth() {
         return this.getName() + "'s health is at " + this.getHealth();
     }
