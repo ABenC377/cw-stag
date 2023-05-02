@@ -338,12 +338,10 @@ public final class GameServer {
             // Check if the word is an action trigger word
             } else if (singleTriggerActions.containsKey(w) && command == NULL && (gameAction == null || singleTriggerActions.get(w).contains(gameAction))) {
                 for (GameAction a : singleTriggerActions.get(w)) {
-                    if (a.isDoable(words, player, playerLocation)) {
-                        if (gameAction == null || gameAction == a) {
-                            gameAction = a;
-                        } else {
-                            return "ERROR - ambiguous command\n";
-                        }
+                    if (a.isDoable(words, player, playerLocation) && gameAction == null || gameAction == a) {
+                        gameAction = a;
+                    } else if (a.isDoable(words, player, playerLocation)) {
+                        return "ERROR - ambiguous command\n";
                     }
                 }
             }
