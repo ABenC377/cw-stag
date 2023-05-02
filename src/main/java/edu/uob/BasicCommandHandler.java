@@ -110,6 +110,10 @@ public class BasicCommandHandler {
         }
         
         final Artefact gottenArtefact = findSingleArtefact(words, getIndex);
+        if (gottenArtefact == null) {
+            return "ERROR - cannot get artefact as it is not in this location";
+        }
+        
         if ("ERROR".equals(gottenArtefact.getName())) {
             return "ERROR - get command requires only one argument";
         }
