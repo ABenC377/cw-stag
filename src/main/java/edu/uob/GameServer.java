@@ -539,18 +539,9 @@ public final class GameServer {
                 "get command\n";
         }
         
-        Artefact err = new Artefact("ERROR", "ERROR");
-        Artefact gottenArtefact = null;
-        for (int jndex = getIndex + 1; jndex < words.length; jndex++) {
-            final String word = words[jndex];
-            for (final GameEntity entity : entities) {
-                if (word.equals(entity.getName().toLowerCase()) &&
-                    entity instanceof Artefact && gottenArtefact == null) {
-                    gottenArtefact = (Artefact)entity;
-                } else if (word.equals(entity.getName().toLowerCase())) {
-                    gottenArtefact = err;
-                }
-            }
+        Artefact gottenArtefact = findSingleArtefact(words, getIndex);
+        if (gottenArtefact.getName().equals("ERROR")) {
+            return "ERROR - get command requires only one argument";
         }
         
         if (gottenArtefact == null ||
@@ -566,6 +557,26 @@ public final class GameServer {
         player.pickUpItem(gottenArtefact);
         return (player.getName() + " picked up " + gottenArtefact.getName() +
             "\n");
+    }
+    
+    private Artefact findSingleArtefact(final String[] words,
+                                        final int startIndex) {
+        Artefact gottenArtefact = null;
+        Artefact err = new Artefact("ERROR", "ERROR");
+        
+        for (int jndex = startIndex; jndex < words.length; jndex++) {
+            final String word = words[jndex];
+            for (final GameEntity entity : entities) {
+                if (word.equals(entity.getName().toLowerCase()) &&
+                    entity instanceof Artefact && gottenArtefact == null) {
+                    gottenArtefact = (Artefact)entity;
+                } else if (word.equals(entity.getName().toLowerCase())) {
+                    gottenArtefact = err;
+                }
+            }
+        }
+        
+        return gottenArtefact;
     }
     
     private int findIndex(final String[] words, final String toFind) {
@@ -585,24 +596,16 @@ public final class GameServer {
     private String handleDrop(final String[] words,
                               final Player player,
                               final Location location) throws IOException {
-        final int getIndex = findIndex(words, "drop");
-        if (getIndex == -1) {
+        final int dropIndex = findIndex(words, "drop");
+        if (dropIndex == -1) {
             return "ERROR - invalid command, too many " +
             "triggers for drop command\n";
         }
         
-        Artefact droppedArtefact = null;
-        for (int j = getIndex + 1; j < words.length; j++) {
-            final String word = words[j];
-            for (final GameEntity entity : entities) {
-                if (word.equals(entity.getName().toLowerCase()) &&
-                    entity instanceof Artefact && droppedArtefact == null) {
-                    droppedArtefact = (Artefact)entity;
-                } else if (word.equals(entity.getName().toLowerCase())) {
-                    return "ERROR - drop requires one artefact as its " +
-                            "argument";
-                }
-            }
+        Artefact droppedArtefact = findSingleArtefact(words, dropIndex);
+        if (droppedArtefact.getName().equals("ERROR")) {
+            return "ERROR - drop requires one artefact as its " +
+                "argument";
         }
         
         if (droppedArtefact == null) {

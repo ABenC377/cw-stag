@@ -31,9 +31,6 @@ public class GameAction {
         this.narration = entityName;
     }
     
-    public ArrayList<String> getSubjects() {
-        return subjects;
-    }
     public ArrayList<String> getConsumed() {
         return consumed;
     }
