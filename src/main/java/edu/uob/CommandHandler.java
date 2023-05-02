@@ -18,12 +18,12 @@ public class CommandHandler {
     private final ActionHandler actionHandler;
     
     
-    public CommandHandler(Location start,
-                          Location store,
-                          ArrayList<Location> locs,
-                          ArrayList<GameEntity> ents,
-                          HashMap<String, HashSet<GameAction>> oneWord,
-                          ArrayList<ActionTuple> manyWord) {
+    public CommandHandler(final Location start,
+                          final Location store,
+                          final ArrayList<Location> locs,
+                          final ArrayList<GameEntity> ents,
+                          final HashMap<String, HashSet<GameAction>> oneWord,
+                          final ArrayList<ActionTuple> manyWord) {
         startLocation = start;
         locations = locs;
         entities = ents;

@@ -9,17 +9,17 @@ public class ActionHandler {
     private final Location startLocation;
     private final Location storeRoom;
     
-    public ActionHandler(ArrayList<Location> locations,
-                         Location startLocation,
-                         Location storeRoom) {
+    public ActionHandler(final ArrayList<Location> locations,
+                         final Location startLocation,
+                         final Location storeRoom) {
         this.locations = locations;
         this.startLocation = startLocation;
         this.storeRoom = storeRoom;
     }
     
-    public String handle(GameAction action,
-                         Player player,
-                         Location location) throws IOException {
+    public String handle(final GameAction action,
+                         final Player player,
+                         final Location location) throws IOException {
         for (final String name : action.getConsumed()) {
             consumeEntity(name, player, location);
         }

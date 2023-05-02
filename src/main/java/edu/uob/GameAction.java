@@ -63,8 +63,8 @@ public class GameAction {
     
     private boolean noExtraEntities(final String[] words,
                                  final ArrayList<GameEntity> entities) {
-        for (String word : words) {
-            for (GameEntity entity : entities) {
+        for (final String word : words) {
+            for (final GameEntity entity : entities) {
                 if (entity.getName().equals(word) &&
                     !subjects.contains(word)) {
                     return false;

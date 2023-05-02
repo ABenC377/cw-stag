@@ -8,14 +8,14 @@ import static edu.uob.BasicCommandType.*;
 public class BasicCommandHandler {
     
     private final ArrayList<GameEntity> entities;
-    public BasicCommandHandler(ArrayList<GameEntity> ents) {
+    public BasicCommandHandler(final ArrayList<GameEntity> ents) {
         entities = ents;
     }
     
-    public String handle(BasicCommandType command,
-                         Player player,
-                         Location location,
-                         String[] words) throws IOException {
+    public String handle(final BasicCommandType command,
+                         final Player player,
+                         final Location location,
+                         final String[] words) throws IOException {
         switch (command) {
             case INV -> {
                 return handleInv(words, player);
@@ -76,7 +76,7 @@ public class BasicCommandHandler {
                 "get command\n";
         }
         
-        Artefact gottenArtefact = findSingleArtefact(words, getIndex);
+        final Artefact gottenArtefact = findSingleArtefact(words, getIndex);
         if ("ERROR".equals(gottenArtefact.getName())) {
             return "ERROR - get command requires only one argument";
         }
@@ -101,7 +101,7 @@ public class BasicCommandHandler {
                 "triggers for drop command\n";
         }
         
-        Artefact droppedArtefact = findSingleArtefact(words, dropIndex);
+        final Artefact droppedArtefact = findSingleArtefact(words, dropIndex);
         if (droppedArtefact.getName().equals("ERROR")) {
             return "ERROR - drop requires one artefact as its " +
                 "argument";
@@ -228,7 +228,7 @@ public class BasicCommandHandler {
     private Artefact findSingleArtefact(final String[] words,
                                         final int startIndex) {
         Artefact gottenArtefact = null;
-        Artefact err = new Artefact("ERROR", "ERROR");
+        final Artefact err = new Artefact("ERROR", "ERROR");
         
         for (int jndex = startIndex; jndex < words.length; jndex++) {
             final String word = words[jndex];
