@@ -23,13 +23,13 @@ public class BasicCommandHandler {
     }
     
     /**
-     *
-     * @param command
-     * @param player
-     * @param location
-     * @param words
-     * @return
-     * @throws IOException
+     * handles a Built-in command
+     * @param command the type of command
+     * @param player the player object
+     * @param location the current location of the player
+     * @param words the words of the user's command
+     * @return the string that is to be passed back to client
+     * @throws IOException self-explanatory
      */
     public String handle(final BasicCommandType command,
                          final Player player,
@@ -62,6 +62,12 @@ public class BasicCommandHandler {
         return output;
     }
     
+    /**
+     * handles the inventory command
+     * @param words the words of the user's input
+     * @param player the player object
+     * @return the string that is to be passed back to the client
+     */
     private String handleInv(final String[] words, final Player player) {
         boolean invAlreadySeen = false;
         for (final String word : words) {
@@ -87,6 +93,13 @@ public class BasicCommandHandler {
         return player.listItems();
     }
     
+    /**
+     * handles the get command
+     * @param words the words of the user's input
+     * @param player the player object
+     * @param location the players current location object
+     * @return the string to be passed back to the client
+    */
     private String handleGet(final String[] words,
                              final Player player,
                              final Location location) {
@@ -113,6 +126,14 @@ public class BasicCommandHandler {
             "\n";
     }
     
+    /**
+     * handles the drop command
+     * @param words teh words of the user's input
+     * @param player the player object
+     * @param location the player's current location object
+     * @return the string to be passed back to the client
+     * @throws IOException self-explanatory
+     */
     private String handleDrop(final String[] words,
                               final Player player,
                               final Location location) throws IOException {
@@ -139,6 +160,13 @@ public class BasicCommandHandler {
             "\n";
     }
     
+    /**
+     * handles the goto command
+     * @param words the words of the user's input
+     * @param player the player object
+     * @param location the player's current location object
+     * @return the string to be passed back to the client
+     */
     private String handleGoto(final String[] words,
                               final Player player,
                               final Location location) {
@@ -171,6 +199,13 @@ public class BasicCommandHandler {
         return gotoLocation(player, location, gotoLocation);
     }
     
+    /**
+     * handles the drop command
+     * @param words teh words of the user's input
+     * @param player the player object
+     * @param location the player's current location object
+     * @return the string to be passed back to the client
+     */
     private String handleLook(final String[] words,
                               final Player player,
                               final Location location) {
@@ -196,6 +231,12 @@ public class BasicCommandHandler {
         return location.lookAround(player);
     }
     
+    /**
+     * handles the drop command
+     * @param words teh words of the user's input
+     * @param player the player object
+     * @return the string to be passed back to the client
+     */
     private String handleHealth(final String[] words,
                                 final Player player) {
         boolean healthed = false;
@@ -220,6 +261,12 @@ public class BasicCommandHandler {
         return player.reportHealth();
     }
     
+    /**
+     * Finds the index of toFind in the words array
+     * @param words array of words provided by the user
+     * @param toFind the word we want to find
+     * @return the index of the word, or -1 if it is not present
+     */
     private int findIndex(final String[] words, final String toFind) {
         int output = -1;
         int index = 0;
@@ -234,6 +281,14 @@ public class BasicCommandHandler {
         return output;
     }
     
+    /**
+     * moves a player object from its current location object to a
+     * destination location object
+     * @param player the player object
+     * @param currentLocation the current location object
+     * @param gotoLocation the destination location object
+     * @return the string to be passed to the client
+     */
     private String gotoLocation(final Player player,
                                 final Location currentLocation,
                                 final Location gotoLocation) {
@@ -246,6 +301,14 @@ public class BasicCommandHandler {
             gotoLocation.getName() + " as no valid path exists\n";
     }
     
+    /**
+     * finds an artefact object from its name in an array of words provided
+     * by the user
+     * @param words array of words provided by the user
+     * @param startIndex index where search starts from
+     * @return the Artefact object, or an error object if there are more than
+     * one artefact name in the array, or null if there are none
+     */
     private Artefact findSingleArtefact(final String[] words,
                                         final int startIndex) {
         Artefact gottenArtefact = null;
