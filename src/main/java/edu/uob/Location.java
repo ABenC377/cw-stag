@@ -3,12 +3,32 @@ package edu.uob;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * a location in the game
+ */
 public class Location extends GameEntity {
+    /**
+     * list of the furniture that are present in the location
+     */
     private final ArrayList<Furniture> furniture;
+    /**
+     * a list of the artefacts that are present in the location
+     */
     private final ArrayList<Artefact> artefacts;
+    /**
+     * a list of the characters that are present in the location
+     */
     private final ArrayList<GameCharacter> characters;
+    /**
+     * a list of the locations that are directly accessible from the location
+     */
     private final ArrayList<Location> paths;
     
+    /**
+     * produces a location object with empty entity lists
+     * @param name the name of the location
+     * @param description a description of the location
+     */
     public Location(final String name, final String description) {
         super(name, description);
         furniture = new ArrayList<>();
@@ -17,22 +37,43 @@ public class Location extends GameEntity {
         paths = new ArrayList<>();
     }
     
+    /**
+     * add a furniture object to the list of furniture in this location
+     * @param furniture the furniture object
+     */
     public void addFurniture(final Furniture furniture) {
         this.furniture.add(furniture);
     }
     
+    /**
+     * add an artefact object to the list of artefacts in this location
+     * @param artefact the artefact object
+     */
     public void addArtefact(final Artefact artefact) {
         artefacts.add(artefact);
     }
     
+    /**
+     * add a character object to the list of characters in this location
+     * @param character the character object
+     */
     public void addCharacter(final GameCharacter character) {
         characters.add(character);
     }
     
+    /**
+     * add a location to the list of accessible locations
+     * @param location the location object
+     */
     public void addPath(final Location location) {
         paths.add(location);
     }
     
+    /**
+     * checks whether a piece of furniture is present in this location
+     * @param name the name of the furniture
+     * @return yes/no
+     */
     public boolean furnitureIsPresent(final String name) {
         for (final Furniture furn : furniture) {
             if (furn.getName().equals(name)) {
@@ -42,10 +83,20 @@ public class Location extends GameEntity {
         return false;
     }
     
+    /**
+     * checks whether an artefact is present in this location
+     * @param artefact the artefact object
+     * @return yes/no
+     */
     public boolean artefactIsPresent(final Artefact artefact) {
         return artefacts.contains(artefact);
     }
     
+    /**
+     * checks whether an artefact is present in this location
+     * @param name the name of the artefact
+     * @return yes/no
+     */
     public boolean artefactIsPresent(final String name) {
         for (final Artefact artefact : artefacts) {
             if (artefact.getName().equals(name)) {
@@ -55,6 +106,11 @@ public class Location extends GameEntity {
         return false;
     }
     
+    /**
+     * checks whether a character is present in this location
+     * @param name the name of the character
+     * @return yes/no
+     */
     public boolean characterIsPresent(final String name) {
         for (final GameCharacter character : characters) {
             if (character.getName().equals(name)) {
@@ -64,6 +120,11 @@ public class Location extends GameEntity {
         return false;
     }
     
+    /**
+     * checks whether there is a path to the given location from here
+     * @param name the name of the location
+     * @return yes/no
+     */
     public boolean pathToLocationExists(final String name) {
         for (final Location location : paths) {
             if (location.getName().equals(name)) {
@@ -73,6 +134,12 @@ public class Location extends GameEntity {
         return false;
     }
     
+    /**
+     * removes a furniture object from the list of furniture at this location
+     * @param name the name of the furniture to be removed
+     * @return the furniture object being removed, or null if there is no
+     * furniture of the given name
+     */
     public Furniture removeFurniture(final String name) {
         for (final Furniture furn : furniture) {
             if (furn.getName().equals(name)) {
@@ -83,10 +150,20 @@ public class Location extends GameEntity {
         return null;
     }
     
+    /**
+     * removes an artefact object from the list of artefacts
+     * @param artefact the artefact object
+     */
     public void removeArtefact(final Artefact artefact) {
         artefacts.remove(artefact);
     }
     
+    /**
+     * remvoes an artefact object from the list of artefacts at this location
+     * @param name the name of the  artefact to be removed
+     * @return the artefact object being removed, or null if there is no
+     * artefact of the given name
+     */
     public Artefact removeArtefact(final String name) {
         for (final Artefact artefact : artefacts) {
             if (artefact.getName().equals(name)) {
@@ -97,10 +174,20 @@ public class Location extends GameEntity {
         return null;
     }
     
+    /**
+     * removes a character object from the character list
+     * @param character the character object to be removed
+     */
     public void removeCharacter(final GameCharacter character) {
         characters.remove(character);
     }
     
+    /**
+     * remvoes an character object from the list of characters at this location
+     * @param name the name of the  character to be removed
+     * @return the character object being removed, or null if there is no
+     * character of the given name
+     */
     public GameCharacter removeCharacter(final String name) {
         for (final GameCharacter character : characters) {
             if (character.getName().equals(name)) {
@@ -111,6 +198,10 @@ public class Location extends GameEntity {
         return null;
     }
     
+    /**
+     * removes a location object from the paths list
+     * @param name the name of the location to be removed
+     */
     public void removePath(final String name) {
         for (final Location destination : paths) {
             if (destination.getName().equals(name)) {
@@ -119,11 +210,19 @@ public class Location extends GameEntity {
         }
     }
     
+    /**
+     * gives the list of characters in this location
+     * @return the list of character objects
+     */
     public ArrayList<GameCharacter> getCharacters() {
         return characters;
     }
     
-    
+    /**
+     * gives a string for a user to see if their player arrives here
+     * @param player the player object
+     * @return the string to send to the client
+     */
     public String getArrivalString(final Player player) {
         final StringBuilder builder = new StringBuilder();
         builder.append("You arrive in ")
@@ -157,6 +256,11 @@ public class Location extends GameEntity {
         return builder.toString();
     }
     
+    /**
+     * gives the text that a user sees when looking around this location
+     * @param player the user's player object
+     * @return the string that is to be sent to the client
+     */
     public String lookAround(final Player player) {
         final StringBuilder builder = new StringBuilder();
         builder.append("You are in ")
@@ -190,6 +294,11 @@ public class Location extends GameEntity {
         return builder.toString();
     }
     
+    /**
+     * produces an entity into this location
+     * @param entityName the name of the entity to be produced
+     * @param locations a list of all the locations in the game
+     */
     public void produce(final String entityName,
                         final List<Location> locations) {
         for (final Location l : locations) {
@@ -208,5 +317,4 @@ public class Location extends GameEntity {
             }
         }
     }
-    
 }
