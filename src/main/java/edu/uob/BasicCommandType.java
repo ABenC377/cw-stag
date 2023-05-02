@@ -1,5 +1,5 @@
 package edu.uob;
 
-public enum BasicCommand {
+public enum BasicCommandType {
     INV, GET, DROP, GOTO, LOOK, HEALTH, NULL
 }

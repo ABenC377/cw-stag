@@ -54,26 +54,18 @@ public class GameAction {
             }
         }
         
-        if (!subjectSaid) {
-            return false;
-        }
-        
-        for (String sub : subjects) {
-            if (!p.itemHeld(sub) && !l.artefactIsPresent(sub) &&
-                !l.characterIsPresent(sub) && !l.furnitureIsPresent(sub) &&
-                !l.pathToLocationExists(sub)) {
+        return (subjectSaid && arePresent(subjects, p, l) && arePresent(consumed, p, l));
+    }
+    
+    private boolean arePresent(ArrayList<String> entities, Player p,
+                               Location l) {
+        for (String ent : entities) {
+            if (!p.itemHeld(ent) && !l.artefactIsPresent(ent) &&
+                !l.characterIsPresent(ent) && !l.furnitureIsPresent(ent) &&
+                !l.pathToLocationExists(ent) && !ent.equals("health")) {
                 return false;
             }
         }
-        
-        for (String cons : consumed) {
-            if (!p.itemHeld(cons) && !l.artefactIsPresent(cons) &&
-                !l.characterIsPresent(cons) && !l.furnitureIsPresent(cons) &&
-                !l.pathToLocationExists(cons) && !cons.equals("health")) {
-                return false;
-            }
-        }
-        
         return true;
     }
 }

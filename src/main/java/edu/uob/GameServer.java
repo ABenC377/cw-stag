@@ -21,7 +21,7 @@ import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
 import com.alexmerz.graphviz.objects.Edge;
 
-import static edu.uob.BasicCommand.*;
+import static edu.uob.BasicCommandType.*;
 
 /** This class implements the STAG server. */
 public final class GameServer {
@@ -324,15 +324,15 @@ public final class GameServer {
         String alphanumericInst = inst.toLowerCase().replaceAll("[^a-zA-Z0-9 ]",
             "");
         String[] words = alphanumericInst.split(" ");
-        BasicCommand command = NULL;
+        BasicCommandType command = NULL;
         GameAction gameAction = null;
         
         // Handle single-word triggers
         for (String w : words) {
             // Check if word is a built-in command trigger
-            if (BasicCommandTest.fromString(w) != NULL) {
+            if (BasicCommandTests.fromString(w) != NULL) {
                 if (command == NULL && gameAction == null) {
-                    command = BasicCommandTest.fromString(w);
+                    command = BasicCommandTests.fromString(w);
                 } else {
                     return "ERROR - built-in commands cannot have more than " +
                         "one trigger";
@@ -416,8 +416,8 @@ public final class GameServer {
         return a.getNarration();
     }
     
-    private String handleBasicCommand(BasicCommand c, Player p,
-                                 Location l, String[] words) throws IOException {
+    private String handleBasicCommand(BasicCommandType c, Player p,
+                                      Location l, String[] words) throws IOException {
         switch (c) {
             case INV -> {
                 return handleInv(words, p);
