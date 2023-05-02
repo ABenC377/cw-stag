@@ -608,11 +608,6 @@ public final class GameServer {
                 "argument";
         }
         
-        if (droppedArtefact == null) {
-            return "ERROR - drop command requires an artefact name as an " +
-                "argument";
-        }
-        
         if (!player.itemHeld(droppedArtefact)) {
             return ("ERROR - cannot drop " + droppedArtefact.getName() + " as" +
                 " it is not in your inventory\n");
