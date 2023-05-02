@@ -31,7 +31,7 @@ public final class GameServer {
     private static final char END_OF_TRANSMISSION = 4;
     private final List<ActionTuple> manyWordActions = new ArrayList<>();
     
-    private Location startLocation = null;
+    private Location startLocation;
     private Location storeRoom;
     private final List<Location> initialLocations = new ArrayList<>();
     private final List<GameEntity> initialEntities = new ArrayList<>();
@@ -87,7 +87,7 @@ public final class GameServer {
         final Element actions = document.getDocumentElement();
         final NodeList actionNodeList = actions.getChildNodes();
         // Weird for loop, as we only want the odd elements
-        GameActionBuilder actionBuilder = new GameActionBuilder();
+        final GameActionBuilder actionBuilder = new GameActionBuilder();
         for (int i = 1; i < actionNodeList.getLength(); i += 2) {
             final Element currentAction = (Element)actionNodeList.item(i);
                 

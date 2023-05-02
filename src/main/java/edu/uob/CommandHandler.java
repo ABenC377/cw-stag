@@ -34,7 +34,7 @@ public class CommandHandler {
     /**
      * an object for dealing with built-in commands
      */
-    private final BasicCommandHandler basicCommandHandler;
+    private final BasicCommandHandler basicHandler;
     /**
      * an object for dealing with custom actions
      */
@@ -59,7 +59,7 @@ public class CommandHandler {
         entities = ents;
         oneWordActions = oneWord;
         manyWordActions = manyWord;
-        basicCommandHandler = new BasicCommandHandler(entities);
+        basicHandler = new BasicCommandHandler(entities);
         actionHandler = new ActionHandler(locations,
             startLocation, store);
     }
@@ -134,7 +134,7 @@ public class CommandHandler {
         } else {
             return (command == NULL) ?
                 actionHandler.handle(gameAction, player, playerLocation) :
-                basicCommandHandler.handle(command, player, playerLocation, words);
+                basicHandler.handle(command, player, playerLocation, words);
         }
     }
     

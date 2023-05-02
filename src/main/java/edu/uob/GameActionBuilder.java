@@ -5,7 +5,7 @@ package edu.uob;
  */
 public class GameActionBuilder {
     /**
-     * constructor - empty at the moment, nothing needed
+     * creates and empty factory object
      */
     public GameActionBuilder() {}
     
