@@ -328,13 +328,11 @@ public final class GameServer {
         // Handle single-word triggers
         for (String w : words) {
             // Check if word is a built-in command trigger
-            if (BasicCommandType.fromString(w) != NULL) {
-                if (command == NULL && gameAction == null) {
+            if (BasicCommandType.fromString(w) != NULL && command == NULL && gameAction == null) {
                     command = BasicCommandType.fromString(w);
-                } else {
-                    return "ERROR - built-in commands cannot have more than " +
-                        "one trigger";
-                }
+            } else if (BasicCommandType.fromString(w) != NULL) {
+                return "ERROR - built-in commands cannot have more than " +
+                    "one trigger";
             // Check if the word is an action trigger word
             } else if (singleTriggerActions.containsKey(w) && command == NULL && (gameAction == null || singleTriggerActions.get(w).contains(gameAction))) {
                 for (GameAction a : singleTriggerActions.get(w)) {
