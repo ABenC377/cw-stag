@@ -512,7 +512,7 @@ public final class GameServer {
     }
     
     private String handleGet(String[] words, Player p, Location l) {
-        int getIndex = findIndex(words, "get");
+        final int getIndex = findIndex(words, "get");
         if (getIndex == -1) {
             return "ERROR - invalid command, too many triggers for " +
                 "get command\n";
@@ -551,7 +551,7 @@ public final class GameServer {
     private int findIndex(String[] words, String toFind) {
         int output = -1;
         int i = 0;
-        for (String w : words) {
+        for (final String w : words) {
             if (w.equals(toFind) && output == -1) {
                 output = i;
             } else if (w.equals(toFind)) {
@@ -563,7 +563,7 @@ public final class GameServer {
     }
     
     private String handleDrop(String[] words, Player p, Location l) throws IOException {
-        int getIndex = findIndex(words, "drop");
+        final int getIndex = findIndex(words, "drop");
         if (getIndex == -1) {
             return "ERROR - invalid command, too many " +
             "triggers for drop command\n";
@@ -571,8 +571,8 @@ public final class GameServer {
         
         Artefact droppedArtefact = null;
         for (int j = getIndex + 1; j < words.length; j++) {
-            String w = words[j];
-            for (GameEntity e : entities) {
+            final String w = words[j];
+            for (final GameEntity e : entities) {
                 if (w.equals(e.getName().toLowerCase())) {
                     if (e instanceof Artefact && droppedArtefact == null) {
                         droppedArtefact = (Artefact)e;
@@ -600,7 +600,7 @@ public final class GameServer {
     }
     
     private String handleGoto(String[] words, Player p, Location l) {
-        int getIndex = findIndex(words, "goto");
+        final int getIndex = findIndex(words, "goto");
         if (getIndex == -1) {
             return "ERROR - invalid command, too many triggers for " +
                         "drop command\n";
@@ -608,8 +608,8 @@ public final class GameServer {
         
         Location gotoLocation = null;
         for (int j = getIndex; j < words.length; j++) {
-            String w = words[j];
-            for (GameEntity e : entities) {
+            final String w = words[j];
+            for (final GameEntity e : entities) {
                 if (w.equals(e.getName().toLowerCase())) {
                     if (e instanceof Location && gotoLocation == null) {
                         gotoLocation = (Location)e;
@@ -642,7 +642,7 @@ public final class GameServer {
     
     private String handleLook(String[] words, Player p, Location l) {
         boolean looked = false;
-        for (String w : words) {
+        for (final String w : words) {
             if ("look".equals(w)) {
                 if (looked) {
                     return "ERROR - invalid command, too many triggers for " +
@@ -652,7 +652,7 @@ public final class GameServer {
                 }
             }
             
-            for (GameEntity e : entities) {
+            for (final GameEntity e : entities) {
                 if (w.equals(e.getName().toLowerCase())) {
                     return "ERROR - look requires no arguments, so the " +
                         "command cannot contain any entity names\n";
@@ -670,6 +670,8 @@ public final class GameServer {
                 if (healthed) {
                     return "ERROR - invalid command, too many triggers for " +
                         "health command";
+                } else {
+                    healthed = true;
                 }
             }
             
