@@ -321,9 +321,7 @@ public final class GameServer {
     
     private String handleInstruction(String inst, Player player,
                                      Location playerLocation) throws IOException {
-        String alphanumericInst = inst.toLowerCase().replaceAll("[^a-zA-Z0-9 ]",
-            "");
-        String[] words = alphanumericInst.split(" ");
+        String[] words = cleanInstructions(inst);
         BasicCommandType command = NULL;
         GameAction gameAction = null;
         
@@ -338,15 +336,13 @@ public final class GameServer {
                         "one trigger";
                 }
             // Check if the word is an action trigger word
-            } else if (singleTriggerActions.containsKey(w)) {
-                if (command == NULL && (gameAction == null || singleTriggerActions.get(w).contains(gameAction))) {
-                    for (GameAction a : singleTriggerActions.get(w)) {
-                        if (a.isDoable(words, player, playerLocation)) {
-                            if (gameAction == null || gameAction == a) {
-                                gameAction = a;
-                            } else {
-                                return "ERROR - ambiguous command\n";
-                            }
+            } else if (singleTriggerActions.containsKey(w) && command == NULL && (gameAction == null || singleTriggerActions.get(w).contains(gameAction))) {
+                for (GameAction a : singleTriggerActions.get(w)) {
+                    if (a.isDoable(words, player, playerLocation)) {
+                        if (gameAction == null || gameAction == a) {
+                            gameAction = a;
+                        } else {
+                            return "ERROR - ambiguous command\n";
                         }
                     }
                 }
@@ -355,7 +351,7 @@ public final class GameServer {
         
         // Handle multi-word triggers
         for (ActionTuple tup : multiTriggerActions) {
-            if (alphanumericInst.contains(tup.getTrigger())) {
+            if (inst.toLowerCase().contains(tup.getTrigger())) {
                 if (command != NULL ||
                     (gameAction != null && !tup.getActions().contains(gameAction))) {
                     return "ERROR = ambiguous command";
@@ -379,6 +375,12 @@ public final class GameServer {
         } else {
             return "ERROR - no valid instruction in that command";
         }
+    }
+    
+    private String[] cleanInstructions(String inst) {
+        String alphanumericInst = inst.toLowerCase().replaceAll("[^a-zA-Z0-9 ]",
+            "");
+        return alphanumericInst.split(" ");
     }
     
     private String handleAction(GameAction a, Player p,
