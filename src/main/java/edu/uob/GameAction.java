@@ -14,19 +14,19 @@ public class GameAction {
         this.produced = new ArrayList<>();
     }
     
-    public void addSubject(String s) {
+    public void addSubject(final String s) {
         subjects.add(s);
     }
     
-    public void addConsumed(String s) {
+    public void addConsumed(final String s) {
         consumed.add(s);
     }
     
-    public void addProduced(String s) {
+    public void addProduced(final String s) {
         produced.add(s);
     }
     
-    public void setNarration(String s) {
+    public void setNarration(final String s) {
         this.narration = s;
     }
     
@@ -43,7 +43,7 @@ public class GameAction {
         return narration;
     }
     
-    public boolean isDoable(String[] words, Player p, Location l) {
+    public boolean isDoable(final String[] words, final Player p, final Location l) {
         boolean subjectSaid = (subjects.isEmpty());
         for (final String sub : subjects) {
             for (final String word : words) {
@@ -57,8 +57,8 @@ public class GameAction {
         return (subjectSaid && arePresent(subjects, p, l) && arePresent(consumed, p, l));
     }
     
-    private boolean arePresent(ArrayList<String> entities, Player p,
-                               Location l) {
+    private boolean arePresent(final ArrayList<String> entities, final Player p,
+                               final Location l) {
         for (final String ent : entities) {
             if (!p.itemHeld(ent) && !l.artefactIsPresent(ent) &&
                 !l.characterIsPresent(ent) && !l.furnitureIsPresent(ent) &&

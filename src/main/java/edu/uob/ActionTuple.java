@@ -6,11 +6,11 @@ public class ActionTuple {
     private final String trigger;
     private final HashSet<GameAction> gameActions = new HashSet<>();
     
-    public ActionTuple(String t) {
+    public ActionTuple(final String t) {
         trigger = t;
     }
     
-    public void addAction(GameAction a) {
+    public void addAction(final GameAction a) {
         gameActions.add(a);
     }
     

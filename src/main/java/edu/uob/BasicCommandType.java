@@ -3,7 +3,7 @@ package edu.uob;
 public enum BasicCommandType {
     INV, GET, DROP, GOTO, LOOK, HEALTH, NULL, ERROR;
     
-    public static BasicCommandType fromString(String s) {
+    public static BasicCommandType fromString(final String s) {
         switch (s.toLowerCase()) {
             case "inventory", "inv" -> {
                 return BasicCommandType.INV;

@@ -32,8 +32,8 @@ public final class GameServer {
     // TODO test multiplayer see the other player in a room
 
     private static final char END_OF_TRANSMISSION = 4;
-    private HashMap<String, HashSet<GameAction>> singleTriggerActions;
-    private ArrayList<ActionTuple> multiTriggerActions = new ArrayList<>();
+    private HashMap<String, HashSet<GameAction>> oneWordActions;
+    private ArrayList<ActionTuple> manyWordActions = new ArrayList<>();
     
     private Location startLocation = null;
     private Location storeRoom;
@@ -65,7 +65,7 @@ public final class GameServer {
     public GameServer(File entitiesFile, File actionsFile) {
         // TODO implement your server logic here
         try {
-            singleTriggerActions = readActionsFile(actionsFile);
+            oneWordActions = readActionsFile(actionsFile);
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -167,16 +167,16 @@ public final class GameServer {
     
     private void addToMultiTriggers(String s, GameAction a) {
         boolean exists = false;
-        for (final ActionTuple multiTriggerAction : multiTriggerActions) {
-            if (multiTriggerAction.getTrigger().equals(s)) {
-                multiTriggerAction.addAction(a);
+        for (final ActionTuple tup : manyWordActions) {
+            if (tup.getTrigger().equals(s)) {
+                tup.addAction(a);
                 exists = true;
             }
         }
         if (!exists) {
             final ActionTuple at = new ActionTuple(s);
             at.addAction(a);
-            multiTriggerActions.add(at);
+            manyWordActions.add(at);
         }
     }
     
@@ -224,9 +224,9 @@ public final class GameServer {
     private void addLocation(Graph g) {
         final String locationName =
             g.getNodes(false).get(0).getId().getId();
-        final String locationDescription =
+        final String description =
             g.getNodes(false).get(0).getAttribute("description");
-        final Location l = new Location(locationName, locationDescription);
+        final Location l = new Location(locationName, description);
         entities.add(l);
         
         final ArrayList<Graph> contents = g.getSubgraphs();
@@ -373,11 +373,11 @@ public final class GameServer {
         // Handle single-word triggers
         for (final String w : words) {
             // Move straight on if word not a trigger
-            if (!singleTriggerActions.containsKey(w)) {
+            if (!oneWordActions.containsKey(w)) {
                 continue;
             }
             
-            for (final GameAction a : singleTriggerActions.get(w)) {
+            for (final GameAction a : oneWordActions.get(w)) {
                 if (a.isDoable(words, p, l) && (output == null || output == a)) {
                     output = a;
                 } else if (a.isDoable(words, p, l)) {
@@ -399,7 +399,7 @@ public final class GameServer {
         final GameAction err = new GameAction();
         err.setNarration("ERROR");
         
-        for (final ActionTuple tup : multiTriggerActions) {
+        for (final ActionTuple tup : manyWordActions) {
             // Move on if trigger not in instruction
             if (!inst.toLowerCase().contains(tup.getTrigger())) {
                 continue;
