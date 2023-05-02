@@ -167,14 +167,14 @@ public final class GameServer {
     
     private void addToMultiTriggers(String s, GameAction a) {
         boolean exists = false;
-        for (ActionTuple multiTriggerAction : multiTriggerActions) {
+        for (final ActionTuple multiTriggerAction : multiTriggerActions) {
             if (multiTriggerAction.getTrigger().equals(s)) {
                 multiTriggerAction.addAction(a);
                 exists = true;
             }
         }
         if (!exists) {
-            ActionTuple at = new ActionTuple(s);
+            final ActionTuple at = new ActionTuple(s);
             at.addAction(a);
             multiTriggerActions.add(at);
         }
@@ -182,31 +182,33 @@ public final class GameServer {
     
     
     private void readEntitiesFile(File file) throws FileNotFoundException, ParseException {
-        Parser parser = new Parser();
-        FileReader reader = new FileReader(file);
+        final Parser parser = new Parser();
+        final FileReader reader = new FileReader(file);
         parser.parse(reader);
-        ArrayList<Graph> graphs = parser.getGraphs().get(0).getSubgraphs();
+        final ArrayList<Graph> graphs =
+            parser.getGraphs().get(0).getSubgraphs();
         
         
         // Get the locations to start with
-        Graph locationsGraph = graphs.get(0);
-        ArrayList<Graph> locationSubGraphs = locationsGraph.getSubgraphs();
-        for (Graph current : locationSubGraphs) {
+        final Graph locationsGraph = graphs.get(0);
+        final ArrayList<Graph> locationSubGraphs =
+            locationsGraph.getSubgraphs();
+        for (final Graph current : locationSubGraphs) {
             addLocation(current);
             
         }
         
         // Then handle paths between them
-        Graph pathsGraph = graphs.get(1);
-        ArrayList<Edge> pathEdges = pathsGraph.getEdges();
-        for (Edge pathEdge : pathEdges) {
-            String startName =
+        final Graph pathsGraph = graphs.get(1);
+        final ArrayList<Edge> pathEdges = pathsGraph.getEdges();
+        for (final Edge pathEdge : pathEdges) {
+            final String startName =
                 pathEdge.getSource().getNode().getId().getId();
-            String endName =
+            final String endName =
                 pathEdge.getTarget().getNode().getId().getId();
             Location start = null;
             Location end = null;
-            for (Location l : locations) {
+            for (final Location l : locations) {
                 if (l.getName().toLowerCase().equals(startName)) {
                     start = l;
                 } else if (l.getName().toLowerCase().equals(endName)) {
@@ -220,16 +222,16 @@ public final class GameServer {
     }
     
     private void addLocation(Graph g) {
-        String locationName =
+        final String locationName =
             g.getNodes(false).get(0).getId().getId();
-        String locationDescription =
+        final String locationDescription =
             g.getNodes(false).get(0).getAttribute("description");
-        Location l = new Location(locationName, locationDescription);
+        final Location l = new Location(locationName, locationDescription);
         entities.add(l);
         
-        ArrayList<Graph> contents = g.getSubgraphs();
+        final ArrayList<Graph> contents = g.getSubgraphs();
         
-        for (Graph content : contents) {
+        for (final Graph content : contents) {
             addEntityToLocation(l, content);
         }
         
@@ -243,13 +245,13 @@ public final class GameServer {
     }
     
     private void addEntityToLocation(Location l, Graph g) {
-        String type = g.getId().getId();
+        final String type = g.getId().getId();
         switch (type) {
             case "artefacts" -> {
-                ArrayList<Node> artefactNodes =
+                final ArrayList<Node> artefactNodes =
                     g.getNodes(false);
-                for (Node artefactNode : artefactNodes) {
-                    Artefact a =
+                for (final Node artefactNode : artefactNodes) {
+                    final Artefact a =
                         new Artefact(artefactNode.getId().getId(),
                             artefactNode.getAttribute("description"));
                     l.addArtefact(a);
@@ -257,10 +259,10 @@ public final class GameServer {
                 }
             }
             case "furniture" -> {
-                ArrayList<Node> furnitureNodes =
+                final ArrayList<Node> furnitureNodes =
                     g.getNodes(false);
-                for (Node furnitureNode : furnitureNodes) {
-                    Furniture f =
+                for (final Node furnitureNode : furnitureNodes) {
+                    final Furniture f =
                         new Furniture(furnitureNode.getId().getId(),
                             furnitureNode.getAttribute(
                                 "description"));
@@ -269,10 +271,10 @@ public final class GameServer {
                 }
             }
             case "characters" -> {
-                ArrayList<Node> characterNodes =
+                final ArrayList<Node> characterNodes =
                     g.getNodes(false);
-                for (Node characterNode : characterNodes) {
-                    GameCharacter c =
+                for (final Node characterNode : characterNodes) {
+                    final GameCharacter c =
                         new GameCharacter(characterNode.getId().getId(),
                             characterNode.getAttribute(
                                 "description"));
@@ -292,9 +294,10 @@ public final class GameServer {
     */
     public String handleCommand(String command) throws IOException {
         // TODO implement your server logic here
-        String[] components = command.split(":", 2);
-        String userName = components[0];
-        String instruction = (components.length == 2) ? components[1] : "";
+        final String[] components = command.split(":", 2);
+        final String userName = components[0];
+        final String instruction = (components.length == 2) ? components[1] :
+            "";
         if ("".equals(instruction)) {
             throw new IOException("ERROR: invalid command format");
         }
@@ -302,9 +305,9 @@ public final class GameServer {
         // Set up player metadata
         Player p = null;
         Location playerLocation = null;
-        for (Location l : locations) {
-            ArrayList<GameCharacter> characters = l.getCharacters();
-            for (GameCharacter c : characters) {
+        for (final Location l : locations) {
+            final ArrayList<GameCharacter> characters = l.getCharacters();
+            for (final GameCharacter c : characters) {
                 if (c.getName().equals(userName)) {
                     p = (Player)c;
                     playerLocation = l;
@@ -324,10 +327,10 @@ public final class GameServer {
     private String handleInstruction(String inst, Player player,
                                      Location playerLocation) throws IOException {
         // Clean and parse command string
-        String[] words = cleanInstructions(inst);
+        final String[] words = cleanInstructions(inst);
         
         // Check for built-in commands and actions
-        BasicCommandType command = checkBasicCommands(words);
+        final BasicCommandType command = checkBasicCommands(words);
         GameAction gameAction = checkSingleTriggerActions(words, player,
             playerLocation);
         gameAction = checkMultiTriggerActions(inst, player, playerLocation,
@@ -351,7 +354,7 @@ public final class GameServer {
     
     private BasicCommandType checkBasicCommands(String[] words) {
         BasicCommandType output = NULL;
-        for (String w : words) {
+        for (final String w : words) {
             if (BasicCommandType.fromString(w) != NULL && output == NULL) {
                 output = BasicCommandType.fromString(w);
             } else if (BasicCommandType.fromString(w) != NULL) {
@@ -364,17 +367,17 @@ public final class GameServer {
     private GameAction checkSingleTriggerActions(String[] words, Player p,
                                                  Location l) {
         GameAction output = null;
-        GameAction err = new GameAction();
+        final GameAction err = new GameAction();
         err.setNarration("ERROR");
         
         // Handle single-word triggers
-        for (String w : words) {
+        for (final String w : words) {
             // Move straight on if word not a trigger
             if (!singleTriggerActions.containsKey(w)) {
                 continue;
             }
             
-            for (GameAction a : singleTriggerActions.get(w)) {
+            for (final GameAction a : singleTriggerActions.get(w)) {
                 if (a.isDoable(words, p, l) && (output == null || output == a)) {
                     output = a;
                 } else if (a.isDoable(words, p, l)) {
@@ -391,18 +394,18 @@ public final class GameServer {
                                                 Location l,
                                                 GameAction current) {
         // Set up variables
-        String[] words = cleanInstructions(inst);
+        final String[] words = cleanInstructions(inst);
         GameAction output = current;
-        GameAction err = new GameAction();
+        final GameAction err = new GameAction();
         err.setNarration("ERROR");
         
-        for (ActionTuple tup : multiTriggerActions) {
+        for (final ActionTuple tup : multiTriggerActions) {
             // Move on if trigger not in instruction
             if (!inst.toLowerCase().contains(tup.getTrigger())) {
                 continue;
             }
             
-            for (GameAction a : tup.getActions()) {
+            for (final GameAction a : tup.getActions()) {
                 // Check action is allowable
                 if (output != null && output != a && a.isDoable(words, p, l)) {
                     return err;
@@ -415,16 +418,17 @@ public final class GameServer {
     }
     
     private String[] cleanInstructions(String inst) {
-        String alphanumericInst = inst.toLowerCase().replaceAll("[^a-zA-Z0-9 ]",
+        final String alphanumericInst = inst.toLowerCase().replaceAll("[^a-zA" +
+                "-Z0-9 ]",
             "");
         return alphanumericInst.split(" ");
     }
     
     private String handleAction(GameAction a, Player p,
                                 Location l) throws IOException {
-        for (String s : a.getConsumed()) {
+        for (final String s : a.getConsumed()) {
             if (p.itemHeld(s)) {
-                Artefact i = p.getItem(s);
+                final Artefact i = p.getItem(s);
                 p.removeItem(i);
                 storeRoom.addArtefact(i);
             } else if (l.artefactIsPresent(s)) {
@@ -436,7 +440,7 @@ public final class GameServer {
             }
         }
         
-        for (String s : a.getProduced()) {
+        for (final String s : a.getProduced()) {
             if ("health".equals(s)) {
                 p.heal();
             } else {
@@ -484,7 +488,7 @@ public final class GameServer {
     
     private String handleInv(String[] words, Player p) {
         boolean invAlreadySeen = false;
-        for (String w : words) {
+        for (final String w : words) {
             if ("inv".equals(w) || "inventory".equals(w)) {
                 if (invAlreadySeen) {
                     return "ERROR - invalid command, too many triggers for " +
@@ -495,8 +499,8 @@ public final class GameServer {
             }
         }
         
-        for (String w : words) {
-            for (GameEntity e : entities) {
+        for (final String w : words) {
+            for (final GameEntity e : entities) {
                 if (e.getName().toLowerCase().equals(w)) {
                     return "ERROR - cannot use entity name as decoration for " +
                         "inventory command\n";
@@ -516,8 +520,8 @@ public final class GameServer {
         
         Artefact gottenArtefact = null;
         for (int j = getIndex + 1; j < words.length; j++) {
-            String w = words[j];
-            for (GameEntity e : entities) {
+            final String w = words[j];
+            for (final GameEntity e : entities) {
                 if (w.equals(e.getName().toLowerCase())) {
                     if (e instanceof Artefact && gottenArtefact == null) {
                         gottenArtefact = (Artefact)e;
