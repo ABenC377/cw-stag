@@ -14,20 +14,20 @@ public class GameAction {
         this.produced = new ArrayList<>();
     }
     
-    public void addSubject(final String s) {
-        subjects.add(s);
+    public void addSubject(final String entityName) {
+        subjects.add(entityName);
     }
     
-    public void addConsumed(final String s) {
-        consumed.add(s);
+    public void addConsumed(final String entityName) {
+        consumed.add(entityName);
     }
     
-    public void addProduced(final String s) {
-        produced.add(s);
+    public void addProduced(final String entityName) {
+        produced.add(entityName);
     }
     
-    public void setNarration(final String s) {
-        this.narration = s;
+    public void setNarration(final String entityName) {
+        this.narration = entityName;
     }
     
     public ArrayList<String> getSubjects() {

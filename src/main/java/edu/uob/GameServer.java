@@ -295,7 +295,6 @@ public final class GameServer {
     public String handleCommand(final String command) throws IOException {
         // TODO implement your server logic here
         final String[] components = command.split(":", 2);
-        final String userName = components[0];
         final String instruction = (components.length == 2) ? components[1] :
             "";
         if ("".equals(instruction)) {
@@ -305,6 +304,7 @@ public final class GameServer {
         // Set up player metadata
         Player p = null;
         Location playerLocation = null;
+        final String userName = components[0];
         for (final Location l : locations) {
             final ArrayList<GameCharacter> characters = l.getCharacters();
             for (final GameCharacter c : characters) {
