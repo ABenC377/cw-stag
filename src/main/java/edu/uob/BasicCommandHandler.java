@@ -4,15 +4,33 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static edu.uob.BasicCommandType.*;
-
+/**
+ * Handler classs for basic commands
+ */
 public class BasicCommandHandler {
-    
+    /**
+     * a List of the entities that exist in the game
+     */
     private final ArrayList<GameEntity> entities;
+    
+    /**
+     * produces a handler object for basic commands, provided with the game
+     * metadata needed to handle the basic commands
+     * @param ents An arrayList of the entities that exist in the game
+     */
     public BasicCommandHandler(final ArrayList<GameEntity> ents) {
         entities = ents;
     }
     
+    /**
+     *
+     * @param command
+     * @param player
+     * @param location
+     * @param words
+     * @return
+     * @throws IOException
+     */
     public String handle(final BasicCommandType command,
                          final Player player,
                          final Location location,

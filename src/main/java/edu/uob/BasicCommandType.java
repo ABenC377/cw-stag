@@ -6,28 +6,30 @@ public enum BasicCommandType {
     INV, GET, DROP, GOTO, LOOK, HEALTH, NULL, ERROR;
     
     public static BasicCommandType fromString(final String string) {
+        BasicCommandType output;
         switch (string.toLowerCase(Locale.ENGLISH)) {
             case "inventory", "inv" -> {
-                return BasicCommandType.INV;
+                output = BasicCommandType.INV;
             }
             case "get" -> {
-                return BasicCommandType.GET;
+                output = BasicCommandType.GET;
             }
             case "drop" -> {
-                return BasicCommandType.DROP;
+                output = BasicCommandType.DROP;
             }
             case "goto" -> {
-                return BasicCommandType.GOTO;
+                output = BasicCommandType.GOTO;
             }
             case "look" -> {
-                return BasicCommandType.LOOK;
+                output = BasicCommandType.LOOK;
             }
             case "health" -> {
-                return BasicCommandType.HEALTH;
+                output = BasicCommandType.HEALTH;
             }
             default -> {
-                return BasicCommandType.NULL;
+                output = BasicCommandType.NULL;
             }
         }
+        return output;
     }
 }
