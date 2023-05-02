@@ -83,8 +83,8 @@ public final class GameServer {
             new HashMap<>();
         final DocumentBuilder builder =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        final Document d = builder.parse(file);
-        final Element actions = d.getDocumentElement();
+        final Document document = builder.parse(file);
+        final Element actions = document.getDocumentElement();
         final NodeList actionNodeList = actions.getChildNodes();
         // Weird for loop, as we only want the odd elements
         for (int i = 1; i < actionNodeList.getLength(); i += 2) {
@@ -113,69 +113,72 @@ public final class GameServer {
         return actionsHashMap;
     }
     
-    private void addSubjects(final Element e, final GameAction a) {
+    private void addSubjects(final Element element, final GameAction action) {
         final Element subElement =
-            (Element)e.getElementsByTagName("subjects").item(0);
+            (Element)element.getElementsByTagName("subjects").item(0);
         final NodeList subjectsNL = subElement.getElementsByTagName(
             "entity");
         for (int i = 0; i < subjectsNL.getLength(); i++) {
             final Element subjectElement = (Element)subjectsNL.item(i);
-            a.addSubject(subjectElement.getTextContent());
+            action.addSubject(subjectElement.getTextContent());
         }
     }
     
-    private void addConsumed(final Element e, final GameAction a) {
+    private void addConsumed(final Element element, final GameAction action) {
         final Element consElement =
-            (Element)e.getElementsByTagName("consumed").item(0);
+            (Element)element.getElementsByTagName("consumed").item(0);
         final NodeList consumedsNL = consElement.getElementsByTagName(
             "entity");
         for (int i = 0; i < consumedsNL.getLength(); i++) {
             final Element consumedElement = (Element)consumedsNL.item(i);
-            a.addConsumed(consumedElement.getTextContent());
+            action.addConsumed(consumedElement.getTextContent());
         }
     }
     
-    private void addProduced(final Element e, final GameAction a) {
+    private void addProduced(final Element element, final GameAction action) {
         final Element prodElement =
-            (Element)e.getElementsByTagName("produced").item(0);
+            (Element)element.getElementsByTagName("produced").item(0);
         final NodeList producedsNL = prodElement.getElementsByTagName(
             "entity");
         for (int i = 0; i < producedsNL.getLength(); i++) {
             final Element producedElement = (Element)producedsNL.item(i);
-            a.addProduced(producedElement.getTextContent());
+            action.addProduced(producedElement.getTextContent());
         }
     }
     
-    private void addActionsByTrigger(final HashMap<String, HashSet<GameAction>> hm,
-                                     final GameAction a, final NodeList nl) {
-        for (int i = 0; i < nl.getLength(); i++) {
-            final Element triggerElement = (Element)nl.item(i);
+    private void addActionsByTrigger(final HashMap<String,
+        HashSet<GameAction>> triggerMap,
+                                     final GameAction action,
+                                     final NodeList nodes) {
+        for (int i = 0; i < nodes.getLength(); i++) {
+            final Element triggerElement = (Element)nodes.item(i);
             final String trigger = triggerElement.getTextContent();
             if (trigger.indexOf(' ') == -1) {
-                if (hm.containsKey(trigger)) {
-                    hm.get(trigger).add(a);
+                if (triggerMap.containsKey(trigger)) {
+                    triggerMap.get(trigger).add(action);
                 } else {
-                    final HashSet<GameAction> hs = new HashSet<>();
-                    hs.add(a);
-                    hm.put(trigger, hs);
+                    final HashSet<GameAction> actionSet = new HashSet<>();
+                    actionSet.add(action);
+                    triggerMap.put(trigger, actionSet);
                 }
             } else {
-                addToMultiTriggers(trigger, a);
+                addToMultiTriggers(trigger, action);
             }
         }
     }
     
-    private void addToMultiTriggers(final String s, final GameAction a) {
+    private void addToMultiTriggers(final String trigger,
+                                    final GameAction action) {
         boolean exists = false;
         for (final ActionTuple tup : manyWordActions) {
-            if (tup.getTrigger().equals(s)) {
-                tup.addAction(a);
+            if (tup.getTrigger().equals(trigger)) {
+                tup.addAction(action);
                 exists = true;
             }
         }
         if (!exists) {
-            final ActionTuple at = new ActionTuple(s);
-            at.addAction(a);
+            final ActionTuple at = new ActionTuple(trigger);
+            at.addAction(action);
             manyWordActions.add(at);
         }
     }

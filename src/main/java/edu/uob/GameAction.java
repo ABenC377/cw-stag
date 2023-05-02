@@ -43,7 +43,8 @@ public class GameAction {
         return narration;
     }
     
-    public boolean isDoable(final String[] words, final Player p, final Location l) {
+    public boolean isDoable(final String[] words, final Player player,
+                            final Location location) {
         boolean subjectSaid = (subjects.isEmpty());
         for (final String sub : subjects) {
             for (final String word : words) {
@@ -54,15 +55,17 @@ public class GameAction {
             }
         }
         
-        return (subjectSaid && arePresent(subjects, p, l) && arePresent(consumed, p, l));
+        return (subjectSaid && arePresent(subjects, player, location) &&
+            arePresent(consumed, player, location));
     }
     
-    private boolean arePresent(final ArrayList<String> entities, final Player p,
-                               final Location l) {
+    private boolean arePresent(final ArrayList<String> entities,
+                               final Player player,
+                               final Location location) {
         for (final String ent : entities) {
-            if (!p.itemHeld(ent) && !l.artefactIsPresent(ent) &&
-                !l.characterIsPresent(ent) && !l.furnitureIsPresent(ent) &&
-                !l.pathToLocationExists(ent) && !"health".equals(ent)) {
+            if (!player.itemHeld(ent) && !location.artefactIsPresent(ent) &&
+                !location.characterIsPresent(ent) && !location.furnitureIsPresent(ent) &&
+                !location.pathToLocationExists(ent) && !"health".equals(ent)) {
                 return false;
             }
         }
