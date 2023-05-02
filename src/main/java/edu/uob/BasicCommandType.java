@@ -1,7 +1,7 @@
 package edu.uob;
 
 public enum BasicCommandType {
-    INV, GET, DROP, GOTO, LOOK, HEALTH, NULL;
+    INV, GET, DROP, GOTO, LOOK, HEALTH, NULL, ERROR;
     
     public static BasicCommandType fromString(String s) {
         switch (s.toLowerCase()) {

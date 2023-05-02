@@ -322,28 +322,16 @@ public final class GameServer {
     private String handleInstruction(String inst, Player player,
                                      Location playerLocation) throws IOException {
         String[] words = cleanInstructions(inst);
-        BasicCommandType command = NULL;
-        GameAction gameAction = null;
+        BasicCommandType command = checkBasicCommands(words, player, playerLocation);
+        GameAction gameAction = checkSingleTriggerActions(words, player,
+            playerLocation);
         
-        // Handle single-word triggers
-        for (String w : words) {
-            // Check if word is a built-in command trigger
-            if (BasicCommandType.fromString(w) != NULL && command == NULL && gameAction == null) {
-                    command = BasicCommandType.fromString(w);
-            } else if (BasicCommandType.fromString(w) != NULL) {
-                return "ERROR - built-in commands cannot have more than " +
-                    "one trigger";
-            // Check if the word is an action trigger word
-            } else if (singleTriggerActions.containsKey(w) && command == NULL && (gameAction == null || singleTriggerActions.get(w).contains(gameAction))) {
-                for (GameAction a : singleTriggerActions.get(w)) {
-                    if (a.isDoable(words, player, playerLocation) && gameAction == null || gameAction == a) {
-                        gameAction = a;
-                    } else if (a.isDoable(words, player, playerLocation)) {
-                        return "ERROR - ambiguous command\n";
-                    }
-                }
-            }
+        // Check for errors
+        if (command == ERROR || (gameAction != null && gameAction.getNarration().equals(
+            "ERROR"))) {
+            return "ERROR - invalid command\n";
         }
+        
         
         // Handle multi-word triggers
         for (ActionTuple tup : multiTriggerActions) {
@@ -371,6 +359,40 @@ public final class GameServer {
         } else {
             return "ERROR - no valid instruction in that command";
         }
+    }
+    
+    private BasicCommandType checkBasicCommands(String[] words, Player p,
+                                                   Location l) {
+        BasicCommandType output = NULL;
+        for (String w : words) {
+            if (BasicCommandType.fromString(w) != NULL && output == NULL) {
+                output = BasicCommandType.fromString(w);
+            } else if (BasicCommandType.fromString(w) != NULL) {
+                output = ERROR;
+            }
+        }
+        return output;
+    }
+    
+    private GameAction checkSingleTriggerActions(String[] words, Player p,
+                                                 Location l) {
+        GameAction output = null;
+        GameAction err = new GameAction();
+        err.setNarration("ERROR");
+        
+        // Handle single-word triggers
+        for (String w : words) {
+            if (singleTriggerActions.containsKey(w) && (output == null || singleTriggerActions.get(w).contains(output))) {
+                for (GameAction a : singleTriggerActions.get(w)) {
+                    if (a.isDoable(words, p, l) && output == null || output == a) {
+                        output = a;
+                    } else if (a.isDoable(words, p, l)) {
+                        return err;
+                    }
+                }
+            }
+        }
+        return output;
     }
     
     private String[] cleanInstructions(String inst) {
