@@ -156,34 +156,34 @@ public class Location extends GameEntity {
         return builder.toString();
     }
     
-    public String lookAround(final Player p) {
+    public String lookAround(final Player player) {
         final StringBuilder builder = new StringBuilder();
         builder.append("You are in ")
             .append(this.getDescription())
             .append(" You can see:\n");
-        for (final Artefact a : artefacts) {
-            builder.append(a.getName())
+        for (final Artefact artefact : artefacts) {
+            builder.append(artefact.getName())
                 .append(": ")
-                .append(a.getDescription())
+                .append(artefact.getDescription())
                 .append(System.lineSeparator());
         }
-        for (final Furniture f : furniture) {
-            builder.append(f.getName())
+        for (final Furniture furn : furniture) {
+            builder.append(furn.getName())
                 .append(": ")
-                .append(f.getDescription())
+                .append(furn.getDescription())
                 .append(System.lineSeparator());
         }
-        for (final GameCharacter c : characters) {
-            if (c != p) {
-                builder.append(c.getName())
+        for (final GameCharacter character : characters) {
+            if (character != player) {
+                builder.append(character.getName())
                     .append(": ")
-                    .append(c.getDescription())
+                    .append(character.getDescription())
                     .append(System.lineSeparator());
             }
         }
         builder.append("You can see from here:\n");
-        for (final Location l : paths) {
-            builder.append(l.getName());
+        for (final Location location : paths) {
+            builder.append(location.getName());
             builder.append(System.lineSeparator());
         }
         return builder.toString();

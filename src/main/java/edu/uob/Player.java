@@ -15,43 +15,45 @@ public class Player extends GameCharacter {
         health = 3;
     }
     
-    public void pickUpItem(final Artefact a) {
-        if (a != null) {
-            heldItems.add(a);
+    public void pickUpItem(final Artefact artefact) {
+        if (artefact != null) {
+            heldItems.add(artefact);
         }
     }
     public void heal() {
         health = min(3, health + 1);
     }
     
-    public void removeItem(final Artefact a) throws IOException {
-        if (heldItems.contains(a)) {
-            heldItems.remove(a);
+    public void removeItem(final Artefact artefact) throws IOException {
+        if (heldItems.contains(artefact)) {
+            heldItems.remove(artefact);
         } else {
             throw new IOException("ERROR: player cannot drop item that they " +
                 "does not already hold");
         }
     }
-    public void removeItem(final String s) {
-        heldItems.removeIf( a -> a.getName().equals(s));
+    public void removeItem(final String name) {
+        heldItems.removeIf(artefact -> artefact.getName().equals(name));
     }
     
-    public Artefact getItem(final String s) {
-        for (final Artefact a : heldItems) {
-            if (a.getName().equals(s)) {
-                return a;
+    public Artefact getItem(final String name) {
+        for (final Artefact artefact : heldItems) {
+            if (artefact.getName().equals(name)) {
+                return artefact;
             }
         }
         return null;
     }
     
-    public String dropItem(final String[] words, final Location l) throws IOException {
-        for (final String s : words) {
-            for (final Artefact a : heldItems) {
-                if (a.getName().equals(s)) {
-                    heldItems.remove(a);
-                    l.addArtefact(a);
-                    return (this.getName() + " dropped " + a.getName() + "\n");
+    public String dropItem(final String[] words,
+                           final Location location) throws IOException {
+        for (final String word : words) {
+            for (final Artefact artefact : heldItems) {
+                if (artefact.getName().equals(word)) {
+                    heldItems.remove(artefact);
+                    location.addArtefact(artefact);
+                    return (this.getName() + " dropped " +
+                        artefact.getName() + "\n");
                 }
             }
         }
@@ -65,16 +67,14 @@ public class Player extends GameCharacter {
     public int getHealth() {
         return health;
     }
-    public int getNumberOfHeldItems() {
-        return heldItems.size();
+    
+    public boolean itemHeld(final Artefact artefact) {
+        return heldItems.contains(artefact);
     }
     
-    public boolean itemHeld(final Artefact a) {
-        return heldItems.contains(a);
-    }
-    public boolean itemHeld(final String s) {
-        for (final Artefact a : heldItems) {
-            if (a.getName().equals(s)) {
+    public boolean itemHeld(final String name) {
+        for (final Artefact artefact : heldItems) {
+            if (artefact.getName().equals(name)) {
                 return true;
             }
         }
@@ -96,7 +96,8 @@ public class Player extends GameCharacter {
         return builder.toString();
     }
     
-    public boolean checkForDeath(final Location current, final Location start) throws IOException {
+    public boolean checkForDeath(final Location current,
+                                 final Location start) throws IOException {
         if (health == 0) {
             final ArrayList<Artefact> toDrop = new ArrayList<>();
             for (final Artefact a : heldItems) {
