@@ -1,6 +1,6 @@
 package edu.uob;
 
-public abstract class GameEntity
+public class GameEntity
 {
     private final String name;
     private final String description;

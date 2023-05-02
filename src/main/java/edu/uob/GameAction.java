@@ -6,14 +6,28 @@ public class GameAction {
     private final ArrayList<String> subjects;
     private final ArrayList<String> consumed;
     private final ArrayList<String> produced;
-    private final String narration;
+    private String narration;
     
-    public GameAction(ArrayList<String> s, ArrayList<String> c,
-                      ArrayList<String> p, String n) {
-        this.subjects = s;
-        this.consumed = c;
-        this.produced = p;
-        this.narration = n;
+    public GameAction() {
+        this.subjects = new ArrayList<>();
+        this.consumed = new ArrayList<>();
+        this.produced = new ArrayList<>();
+    }
+    
+    public void addSubject(String s) {
+        subjects.add(s);
+    }
+    
+    public void addConsumed(String s) {
+        consumed.add(s);
+    }
+    
+    public void addProduced(String s) {
+        produced.add(s);
+    }
+    
+    public void setNarration(String s) {
+        this.narration = s;
     }
     
     public ArrayList<String> getSubjects() {

@@ -91,7 +91,7 @@ public class Player extends GameCharacter {
             builder.append(a.getName())
                 .append(" - ")
                 .append(a.getDescription())
-                .append("\n");
+                .append(System.lineSeparator());
         }
         return builder.toString();
     }

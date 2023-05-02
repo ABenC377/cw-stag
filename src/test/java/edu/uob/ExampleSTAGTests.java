@@ -24,7 +24,7 @@ class ExampleSTAGTests {
       server = new GameServer(entitiesFile, actionsFile);
   }
 
-  String sendCommandToServer(String command) {
+  private String sendCommandToServer(String command) {
       // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
       return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> { return server.handleCommand(command);},
       "Server took too long to respond (probably stuck in an infinite loop)");

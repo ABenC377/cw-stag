@@ -143,26 +143,26 @@ public class Location extends GameEntity {
             builder.append(a.getName())
                 .append(": ")
                 .append(a.getDescription())
-                .append("\n");
+                .append(System.lineSeparator());
         }
         for (Furniture f : furniture) {
             builder.append(f.getName())
                 .append(": ")
                 .append(f.getDescription())
-                .append("\n");
+                .append(System.lineSeparator());
         }
         for (GameCharacter c : characters) {
             if (c != p) {
                 builder.append(c.getName())
                     .append(": ")
                     .append(c.getDescription())
-                    .append("\n");
+                    .append(System.lineSeparator());
             }
         }
         builder.append("You can see from here:\n");
         for (Location l : paths) {
             builder.append(l.getName());
-            builder.append("\n");
+            builder.append(System.lineSeparator());
         }
         return builder.toString();
     }
@@ -176,26 +176,26 @@ public class Location extends GameEntity {
             builder.append(a.getName())
                 .append(": ")
                 .append(a.getDescription())
-                .append("\n");
+                .append(System.lineSeparator());
         }
         for (Furniture f : furniture) {
             builder.append(f.getName())
                 .append(": ")
                 .append(f.getDescription())
-                .append("\n");
+                .append(System.lineSeparator());
         }
         for (GameCharacter c : characters) {
             if (c != p) {
                 builder.append(c.getName())
                     .append(": ")
                     .append(c.getDescription())
-                    .append("\n");
+                    .append(System.lineSeparator());
             }
         }
         builder.append("You can see from here:\n");
         for (Location l : paths) {
             builder.append(l.getName());
-            builder.append("\n");
+            builder.append(System.lineSeparator());
         }
         return builder.toString();
     }

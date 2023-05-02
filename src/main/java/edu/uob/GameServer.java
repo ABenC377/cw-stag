@@ -23,23 +23,30 @@ import com.alexmerz.graphviz.objects.Edge;
 
 /** This class implements the STAG server. */
 public final class GameServer {
+    
+    // TODO add tests for edge case of an action with no subjects - should
+    //  still be able to work even though no subjects given in command
+    
+    // TODO test multiplayer see the other player in a room
 
     private static final char END_OF_TRANSMISSION = 4;
-    HashMap<String, HashSet<GameAction>> singleTriggerActions;
-    ArrayList<ActionTuple> multiTriggerActions = new ArrayList<>();
+    private HashMap<String, HashSet<GameAction>> singleTriggerActions;
+    private ArrayList<ActionTuple> multiTriggerActions = new ArrayList<>();
     
-    Location startLocation;
-    Location storeRoom;
+    private Location startLocation;
+    private Location storeRoom;
     private final ArrayList<Location> locations = new ArrayList<>();
     private final ArrayList<GameEntity> entities = new ArrayList<>();
     
     
     public static void main(String[] args) throws IOException {
-        File entitiesFile = Paths.get("config" + File.separator + "extended" +
+        final File entitiesFile = Paths.get("config" + File.separator +
+            "extended" +
             "-entities.dot").toAbsolutePath().toFile();
-        File actionsFile = Paths.get("config" + File.separator + "extended" +
+        final File actionsFile = Paths.get("config" + File.separator +
+            "extended" +
             "-actions.xml").toAbsolutePath().toFile();
-        GameServer server = new GameServer(entitiesFile, actionsFile);
+        final GameServer server = new GameServer(entitiesFile, actionsFile);
         server.blockingListenOn(8888);
     }
 
@@ -69,7 +76,6 @@ public final class GameServer {
         
     }
     
-    // TODO this is filthy long.  Refactor
     private HashMap<String, HashSet<GameAction>> readActionsFile(File file) throws ParserConfigurationException, IOException, SAXException {
         HashMap<String, HashSet<GameAction>> actionsHashMap = new HashMap<>();
         
@@ -78,82 +84,97 @@ public final class GameServer {
         Document d = builder.parse(file);
         Element actions = d.getDocumentElement();
         NodeList actionNodeList = actions.getChildNodes();
-        for (int i = 0; i < actionNodeList.getLength(); i++) {
-            if ((i&1) == 1) {
-                Element currentAction = (Element)actionNodeList.item(i);
-                ArrayList<String> subjects = new ArrayList<>();
-                ArrayList<String> consumed = new ArrayList<>();
-                ArrayList<String> produced = new ArrayList<>();
-                String narration;
+        // Weird for loop, as we only want the odd elements
+        for (int i = 1; i < actionNodeList.getLength(); i += 2) {
+            Element currentAction = (Element)actionNodeList.item(i);
                 
-                Element subjectsElement =
-                    (Element)currentAction.getElementsByTagName("subjects").item(0);
-                NodeList subjectsNL = subjectsElement.getElementsByTagName(
-                    "entity");
-                for (int j = 0; j < subjectsNL.getLength(); j++) {
-                    Element subjectElement = (Element)subjectsNL.item(j);
-                    subjects.add(subjectElement.getTextContent());
+            GameAction current = new GameAction();
+                
+            addSubjects(currentAction, current);
+            addConsumed(currentAction, current);
+            addProduced(currentAction, current);
+                
+            Element narrationElement =
+                (Element)currentAction.getElementsByTagName("narration").item(0);
+            current.setNarration(narrationElement.getTextContent());
+            
+            Element triggersElement =
+                (Element)currentAction.getElementsByTagName(
+                    "triggers").item(0);
+            NodeList triggers = triggersElement.getElementsByTagName(
+                "keyphrase");
+            
+            addActionsByTrigger(actionsHashMap, current, triggers);
+        }
+        
+        return actionsHashMap;
+    }
+    
+    private void addSubjects(Element e, GameAction a) {
+        Element subElement =
+            (Element)e.getElementsByTagName("subjects").item(0);
+        NodeList subjectsNL = subElement.getElementsByTagName(
+            "entity");
+        for (int i = 0; i < subjectsNL.getLength(); i++) {
+            Element subjectElement = (Element)subjectsNL.item(i);
+            a.addSubject(subjectElement.getTextContent());
+        }
+    }
+    
+    private void addConsumed(Element e, GameAction a) {
+        Element consElement =
+            (Element)e.getElementsByTagName("consumed").item(0);
+        NodeList consumedsNL = consElement.getElementsByTagName(
+            "entity");
+        for (int i = 0; i < consumedsNL.getLength(); i++) {
+            Element consumedElement = (Element)consumedsNL.item(i);
+            a.addConsumed(consumedElement.getTextContent());
+        }
+    }
+    
+    private void addProduced(Element e, GameAction a) {
+        Element prodElement =
+            (Element)e.getElementsByTagName("produced").item(0);
+        NodeList producedsNL = prodElement.getElementsByTagName(
+            "entity");
+        for (int i = 0; i < producedsNL.getLength(); i++) {
+            Element producedElement = (Element)producedsNL.item(i);
+            a.addProduced(producedElement.getTextContent());
+        }
+    }
+    
+    private void addActionsByTrigger(HashMap<String, HashSet<GameAction>> hm,
+        GameAction a, NodeList nl) {
+        for (int i = 0; i < nl.getLength(); i++) {
+            Element triggerElement = (Element)nl.item(i);
+            String trigger = triggerElement.getTextContent();
+            if (trigger.indexOf(' ') == -1) {
+                if (hm.containsKey(trigger)) {
+                    hm.get(trigger).add(a);
+                } else {
+                    HashSet<GameAction> hs = new HashSet<>();
+                    hs.add(a);
+                    hm.put(trigger, hs);
                 }
-                
-                Element consumedsElement =
-                    (Element)currentAction.getElementsByTagName("consumed").item(0);
-                NodeList consumedsNL = consumedsElement.getElementsByTagName(
-                    "entity");
-                for (int j = 0; j < consumedsNL.getLength(); j++) {
-                    Element consumedElement = (Element)consumedsNL.item(j);
-                    consumed.add(consumedElement.getTextContent());
-                }
-                
-                Element producedsElement =
-                    (Element)currentAction.getElementsByTagName("produced").item(0);
-                NodeList producedsNL = producedsElement.getElementsByTagName(
-                    "entity");
-                for (int j = 0; j < producedsNL.getLength(); j++) {
-                    Element producedElement = (Element)producedsNL.item(j);
-                    produced.add(producedElement.getTextContent());
-                }
-                
-                Element narrationElement =
-                    (Element)currentAction.getElementsByTagName("narration").item(0);
-                narration = narrationElement.getTextContent();
-                
-                GameAction current = new GameAction(subjects, consumed, produced,
-                    narration);
-                
-                Element triggersElement =
-                    (Element)currentAction.getElementsByTagName(
-                        "triggers").item(0);
-                NodeList triggers = triggersElement.getElementsByTagName(
-                    "keyphrase");
-                for (int j = 0; j < triggers.getLength(); j++) {
-                    Element triggerElement = (Element)triggers.item(j);
-                    String trigger = triggerElement.getTextContent();
-                    if (trigger.indexOf(' ') == -1) {
-                        if (actionsHashMap.containsKey(trigger)) {
-                            actionsHashMap.get(trigger).add(current);
-                        } else {
-                            HashSet<GameAction> hs = new HashSet<>();
-                            hs.add(current);
-                            actionsHashMap.put(trigger, hs);
-                        }
-                    } else {
-                        boolean exists = false;
-                        for (ActionTuple multiTriggerAction : multiTriggerActions) {
-                            if (multiTriggerAction.getTrigger().equals(trigger)) {
-                                multiTriggerAction.addAction(current);
-                                exists = true;
-                            }
-                        }
-                        if (!exists) {
-                            ActionTuple at = new ActionTuple(trigger);
-                            at.addAction(current);
-                            multiTriggerActions.add(at);
-                        }
-                    }
-                }
+            } else {
+                addToMultiTriggers(trigger, a);
             }
         }
-        return actionsHashMap;
+    }
+    
+    private void addToMultiTriggers(String s, GameAction a) {
+        boolean exists = false;
+        for (ActionTuple multiTriggerAction : multiTriggerActions) {
+            if (multiTriggerAction.getTrigger().equals(s)) {
+                multiTriggerAction.addAction(a);
+                exists = true;
+            }
+        }
+        if (!exists) {
+            ActionTuple at = new ActionTuple(s);
+            at.addAction(a);
+            multiTriggerActions.add(at);
+        }
     }
     
     
@@ -167,9 +188,7 @@ public final class GameServer {
         // Get the locations to start with
         Graph locationsGraph = graphs.get(0);
         ArrayList<Graph> locationSubGraphs = locationsGraph.getSubgraphs();
-        for (int i = 0; i < locationSubGraphs.size(); i++) {
-            Graph current = locationSubGraphs.get(i);
-            
+        for (Graph current : locationSubGraphs) {
             String locationName =
                 current.getNodes(false).get(0).getId().getId();
             String locationDescription =
@@ -282,6 +301,7 @@ public final class GameServer {
         }
         if (p == null) {
             p = new Player(userName);
+            entities.add(p);
             startLocation.addCharacter(p);
             playerLocation = startLocation;
         }
@@ -318,7 +338,6 @@ public final class GameServer {
                     command = BasicCommand.DROP;
                 }
             } else if (w.equals("goto")) {
-                System.out.println("Found goto in the command\n");
                 if (action != null || (command != null && command != BasicCommand.GOTO)) {
                     return "ERROR - ambiguous command";
                 } else {
@@ -392,7 +411,7 @@ public final class GameServer {
                 }
             }
         }
-        if (!present) {
+        if (!present && a.getSubjects().size() > 0) {
             return false;
         }
         
@@ -501,11 +520,11 @@ public final class GameServer {
         int i = 0;
         for (String w : words) {
             if (w.equals("get")) {
-                if (getIndex != -1) {
+                if (getIndex == -1) {
+                    getIndex = i;
+                } else {
                     return "ERROR - invalid command, too many triggers for " +
                         "get command\n";
-                } else {
-                    getIndex = i;
                 }
             }
             i++;
@@ -546,11 +565,11 @@ public final class GameServer {
         int i = 0;
         for (String w : words) {
             if (w.equals("drop")) {
-                if (getIndex != -1) {
+                if (getIndex == -1) {
+                    getIndex = i;
+                } else {
                     return "ERROR - invalid command, too many triggers for " +
                         "drop command\n";
-                } else {
-                    getIndex = i;
                 }
             }
             i++;
@@ -591,11 +610,11 @@ public final class GameServer {
         int i = 0;
         for (String w : words) {
             if (w.equals("goto")) {
-                if (getIndex != -1) {
+                if (getIndex == -1) {
+                    getIndex = i;
+                } else {
                     return "ERROR - invalid command, too many triggers for " +
                         "drop command\n";
-                } else {
-                    getIndex = i;
                 }
             }
             i++;
@@ -631,7 +650,7 @@ public final class GameServer {
             currentLocation.removeCharacter(p);
             return gotoLocation.getArrivalString(p);
         }
-        return (p.getName() + " could not go to " + gotoLocation.getName() +
+        return ("ERROR - " + p.getName() + " could not go to " + gotoLocation.getName() +
             " as no valid path exists\n");
     }
     
