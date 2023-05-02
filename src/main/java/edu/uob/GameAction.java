@@ -1,6 +1,7 @@
 package edu.uob;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * object representing a game-specific action
@@ -9,15 +10,15 @@ public class GameAction {
     /**
      * list of the names of the entities that are requires for the action
      */
-    private final ArrayList<String> subjects;
+    private final List<String> subjects;
     /**
      * list of the names of the entities consumed by the action
      */
-    private final ArrayList<String> consumed;
+    private final List<String> consumed;
     /**
      * list of the names of the entities produced by the action
      */
-    private final ArrayList<String> produced;
+    private final List<String> produced;
     /**
      * the narration that is given on completion of the action
      */
@@ -67,14 +68,14 @@ public class GameAction {
     /**
      * @return list of names of entities that are consumed
      */
-    public ArrayList<String> getConsumed() {
+    public List<String> getConsumed() {
         return consumed;
     }
     
     /**
      * @return list of names of entities that are produced
      */
-    public ArrayList<String> getProduced() {
+    public List<String> getProduced() {
         return produced;
     }
     
@@ -96,7 +97,7 @@ public class GameAction {
     public boolean isDoable(final String[] words,
                             final Player player,
                             final Location location,
-                            final ArrayList<GameEntity> entities) {
+                            final List<GameEntity> entities) {
         boolean subjectSaid = subjects.isEmpty();
         for (final String sub : subjects) {
             for (final String word : words) {
@@ -120,7 +121,7 @@ public class GameAction {
      * @return whether there are extraneous entity names
      */
     private boolean noExtraEntities(final String[] words,
-                                 final ArrayList<GameEntity> entities) {
+                                 final List<GameEntity> entities) {
         for (final String word : words) {
             for (final GameEntity entity : entities) {
                 if (entity.getName().equals(word) &&
@@ -139,7 +140,7 @@ public class GameAction {
      * @param location the location object
      * @return yes/no are the entities here?
      */
-    private boolean arePresent(final ArrayList<String> entities,
+    private boolean arePresent(final List<String> entities,
                                final Player player,
                                final Location location) {
         for (final String ent : entities) {

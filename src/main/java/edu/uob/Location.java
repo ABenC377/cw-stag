@@ -10,19 +10,19 @@ public class Location extends GameEntity {
     /**
      * list of the furniture that are present in the location
      */
-    private final ArrayList<Furniture> furniture;
+    private final List<Furniture> furniture;
     /**
      * a list of the artefacts that are present in the location
      */
-    private final ArrayList<Artefact> artefacts;
+    private final List<Artefact> artefacts;
     /**
      * a list of the characters that are present in the location
      */
-    private final ArrayList<GameCharacter> characters;
+    private final List<GameCharacter> characters;
     /**
      * a list of the locations that are directly accessible from the location
      */
-    private final ArrayList<Location> paths;
+    private final List<Location> paths;
     
     /**
      * produces a location object with empty entity lists
@@ -214,7 +214,7 @@ public class Location extends GameEntity {
      * gives the list of characters in this location
      * @return the list of character objects
      */
-    public ArrayList<GameCharacter> getCharacters() {
+    public List<GameCharacter> getCharacters() {
         return characters;
     }
     

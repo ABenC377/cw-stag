@@ -1,7 +1,7 @@
 package edu.uob;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -11,14 +11,14 @@ public class BasicCommandHandler {
     /**
      * a List of the entities that exist in the game
      */
-    private final ArrayList<GameEntity> entities;
+    private final List<GameEntity> entities;
     
     /**
      * produces a handler object for basic commands, provided with the game
      * metadata needed to handle the basic commands
      * @param ents An arrayList of the entities that exist in the game
      */
-    public BasicCommandHandler(final ArrayList<GameEntity> ents) {
+    public BasicCommandHandler(final List<GameEntity> ents) {
         entities = ents;
     }
     

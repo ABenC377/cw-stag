@@ -1,10 +1,7 @@
 package edu.uob;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
+import java.util.*;
 
 import static edu.uob.BasicCommandType.ERROR;
 import static edu.uob.BasicCommandType.NULL;
@@ -17,11 +14,11 @@ public class CommandHandler {
      * a hashmap with single-word triggers as key, and an arraylist of
      * correspodning action objects as value
      */
-    private final HashMap<String, HashSet<GameAction>> oneWordActions;
+    private final Map<String, Set<GameAction>> oneWordActions;
     /**
      * list of tuples for actions that have triggers of more than one word
      */
-    private final ArrayList<ActionTuple> manyWordActions;
+    private final List<ActionTuple> manyWordActions;
     /**
      * location object for where a player starts the game
      */
@@ -29,11 +26,11 @@ public class CommandHandler {
     /**
      * list of all the locations in the game
      */
-    private final ArrayList<Location> locations;
+    private final List<Location> locations;
     /**
      * list of all the entities in the game
      */
-    private final ArrayList<GameEntity> entities;
+    private final List<GameEntity> entities;
     /**
      * an object for dealing with built-in commands
      */
@@ -53,10 +50,10 @@ public class CommandHandler {
      */
     public CommandHandler(final Location start,
                           final Location store,
-                          final ArrayList<Location> locs,
-                          final ArrayList<GameEntity> ents,
-                          final HashMap<String, HashSet<GameAction>> oneWord,
-                          final ArrayList<ActionTuple> manyWord) {
+                          final List<Location> locs,
+                          final List<GameEntity> ents,
+                          final Map<String, Set<GameAction>> oneWord,
+                          final List<ActionTuple> manyWord) {
         startLocation = start;
         locations = locs;
         entities = ents;
@@ -86,7 +83,7 @@ public class CommandHandler {
         Location playerLocation = null;
         final String userName = components[0];
         for (final Location location : locations) {
-            final ArrayList<GameCharacter> characters =
+            final List<GameCharacter> characters =
                 location.getCharacters();
             for (final GameCharacter c : characters) {
                 if (c.getName().equals(userName)) {
@@ -126,8 +123,8 @@ public class CommandHandler {
             gameAction);
         
         // Check for errors
-        if (command == ERROR || gameAction != null && gameAction.getNarration().equals(
-            "ERROR")) {
+        if ((command == ERROR) || ((gameAction != null) &&
+            "ERROR".equals(gameAction.getNarration()))) {
             return "ERROR - invalid/ambiguous command\n";
         }
         

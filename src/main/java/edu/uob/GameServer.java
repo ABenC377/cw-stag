@@ -12,10 +12,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
+import java.util.*;
 
 import com.alexmerz.graphviz.Parser;
 import com.alexmerz.graphviz.ParseException;
@@ -32,12 +29,12 @@ public final class GameServer {
     // TODO test multiplayer see the other player in a room
 
     private static final char END_OF_TRANSMISSION = 4;
-    private final ArrayList<ActionTuple> manyWordActions = new ArrayList<>();
+    private final List<ActionTuple> manyWordActions = new ArrayList<>();
     
     private Location startLocation = null;
     private Location storeRoom;
-    private final ArrayList<Location> initialLocations = new ArrayList<>();
-    private final ArrayList<GameEntity> initialEntities = new ArrayList<>();
+    private final List<Location> initialLocations = new ArrayList<>();
+    private final List<GameEntity> initialEntities = new ArrayList<>();
     private final CommandHandler handler;
     
     
@@ -63,7 +60,7 @@ public final class GameServer {
     *
     */
     public GameServer(final File entitiesFile, final File actionsFile) {
-        HashMap<String, HashSet<GameAction>> oneWordActions;
+        Map<String, Set<GameAction>> oneWordActions;
         try {
             oneWordActions = readActionsFile(actionsFile);
         } catch (ParserConfigurationException | SAXException | IOException e) {
@@ -81,8 +78,8 @@ public final class GameServer {
             manyWordActions);
     }
     
-    private HashMap<String, HashSet<GameAction>> readActionsFile(final File file) throws ParserConfigurationException, IOException, SAXException {
-        final HashMap<String, HashSet<GameAction>> actionsHashMap =
+    private Map<String, Set<GameAction>> readActionsFile(final File file) throws ParserConfigurationException, IOException, SAXException {
+        final Map<String, Set<GameAction>> actionsMap =
             new HashMap<>();
         final DocumentBuilder builder =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -111,10 +108,10 @@ public final class GameServer {
             final NodeList triggers = triggersElement.getElementsByTagName(
                 "keyphrase");
             
-            addActionsByTrigger(actionsHashMap, current, triggers);
+            addActionsByTrigger(actionsMap, current, triggers);
         }
         
-        return actionsHashMap;
+        return actionsMap;
     }
     
     private void addSubjects(final Element element, final GameAction action) {
@@ -150,8 +147,7 @@ public final class GameServer {
         }
     }
     
-    private void addActionsByTrigger(final HashMap<String,
-        HashSet<GameAction>> triggerMap,
+    private void addActionsByTrigger(final Map<String, Set<GameAction>> triggerMap,
                                      final GameAction action,
                                      final NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -161,7 +157,7 @@ public final class GameServer {
                 if (triggerMap.containsKey(trigger)) {
                     triggerMap.get(trigger).add(action);
                 } else {
-                    final HashSet<GameAction> actionSet = new HashSet<>();
+                    final Set<GameAction> actionSet = new HashSet<>();
                     actionSet.add(action);
                     triggerMap.put(trigger, actionSet);
                 }

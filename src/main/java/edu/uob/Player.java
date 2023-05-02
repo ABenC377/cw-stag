@@ -2,6 +2,7 @@ package edu.uob;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Math.min;
 
@@ -12,7 +13,7 @@ public class Player extends GameCharacter {
     /**
      * a list of the artefacts held by the player
      */
-    private final ArrayList<Artefact> heldItems;
+    private final List<Artefact> heldItems;
     /**
      * the player's health (0-3)
      */
