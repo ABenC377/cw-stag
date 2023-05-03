@@ -3,11 +3,10 @@ package edu.uob;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static edu.uob.BasicCommandType.*;
+import static edu.uob.BasicCommandType.ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BasicCommandHandlerTests {
@@ -20,7 +19,7 @@ public class BasicCommandHandlerTests {
     }
     
     @Test
-    public void invalidCommandTypeTest() throws IOException {
+    public void invalidCommandTypeTest() {
         String[] words = "a b c".split(" ");
         String output = handler.handle(ERROR, null, null, words);
         assertEquals("ERROR - not a valid basic command type", output);
