@@ -307,4 +307,16 @@ class ExtendedTests {
         String response1 = sendCommandToServer("Alex: drink potion");
         assertEquals("You drink the potion and your health improves", response1);
     }
+    
+    @Test
+    public void testAmbiguousMultiWordTriggers() {
+        String response1 = sendCommandToServer("Alex: make music");
+        assertEquals("ERROR - invalid/ambiguous command\n", response1);
+    }
+    
+    @Test
+    public void testAmbiguousSingleWordTriggers() {
+        String response1 = sendCommandToServer("Alex: random");
+        assertEquals("ERROR - invalid/ambiguous command\n", response1);
+    }
 }

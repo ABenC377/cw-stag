@@ -121,6 +121,7 @@
     <gameAction>
         <triggers>
             <keyphrase>sing</keyphrase>
+            <keyphrase>make music</keyphrase>
         </triggers>
         <subjects>
         </subjects>
@@ -129,6 +130,49 @@
         <produced>
         </produced>
         <narration>You sing a sweet song</narration>
+    </gameAction>
+
+
+    <gameAction>
+        <triggers>
+            <keyphrase>make music</keyphrase>
+        </triggers>
+        <subjects>
+        </subjects>
+        <consumed>
+        </consumed>
+        <produced>
+        </produced>
+        <narration>You hum a catchy tune</narration>
+    </gameAction>
+
+
+    <gameAction>
+        <triggers>
+            <keyphrase>random</keyphrase>
+        </triggers>
+        <subjects>
+        </subjects>
+        <consumed>
+        </consumed>
+        <produced>
+        </produced>
+        <narration>You swap the feet that you are wearing your shoes
+        on</narration>
+    </gameAction>
+
+
+    <gameAction>
+        <triggers>
+            <keyphrase>random</keyphrase>
+        </triggers>
+        <subjects>
+        </subjects>
+        <consumed>
+        </consumed>
+        <produced>
+        </produced>
+        <narration>you eat a stick of lip salve</narration>
     </gameAction>
 
     <gameAction>
