@@ -78,6 +78,10 @@ public class CommandHandler {
             return "ERROR: invalid command format";
         }
         
+        if (userNameInvalid(components[0])) {
+            return "ERROR: invalid username";
+        }
+        
         // Set up player metadata
         Player player = null;
         Location playerLocation = null;
@@ -100,6 +104,16 @@ public class CommandHandler {
         }
         
         return handleInstruction(instruction, player, playerLocation);
+    }
+    
+    /**
+     * checks whether the provided username consists of only valid characters
+     * @param username the proposed username
+     * @return yes/no
+     */
+    private boolean userNameInvalid(String username) {
+        final boolean matches = username.matches(".*[^ a-zA-Z1-9'-].*");
+        return matches;
     }
     
     /**

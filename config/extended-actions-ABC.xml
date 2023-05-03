@@ -108,7 +108,7 @@
             <keyphrase>burn</keyphrase>
         </triggers>
         <subjects>
-            <entity>clearing</entity>
+            <entity>riverbank</entity>
         </subjects>
         <consumed>
             <entity>clearing</entity>

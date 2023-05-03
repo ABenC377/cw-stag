@@ -258,8 +258,8 @@ class ExtendedTests {
         sendCommandToServer("Alex: get log");
         sendCommandToServer("Alex: goto riverbank");
         sendCommandToServer("Alex: bridge river");
-        String response7 = sendCommandToServer("Alex: burn down route to " +
-            "clearing");
+        String response7 = sendCommandToServer("Alex: burn down route from " +
+            "riverbank");
         assertEquals("You burn down the bridge", response7);
     }
     

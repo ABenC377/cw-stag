@@ -144,7 +144,7 @@ public class GameAction {
         for (final String ent : entities) {
             if (!player.itemHeld(ent) && !location.artefactIsPresent(ent) &&
                 !location.characterIsPresent(ent) && !location.furnitureIsPresent(ent) &&
-                !location.pathToLocationExists(ent) && !"health".equals(ent)) {
+                !location.getName().equals(ent) && !"health".equals(ent)) {
                 return false;
             }
         }

@@ -134,4 +134,11 @@ public class CommandFormatTests {
         String response1 = sendCommandToServer("Alex: goto: forest");
         assertEquals("ERROR: invalid command format", response1);
     }
+    
+    @Test
+    
+    public void invalidUsername() {
+        String response1 = sendCommandToServer("Al_ex: look");
+        assertEquals("ERROR: invalid username", response1);
+    }
 }
