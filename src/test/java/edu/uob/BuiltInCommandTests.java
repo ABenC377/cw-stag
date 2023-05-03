@@ -102,6 +102,12 @@ public class BuiltInCommandTests {
     }
     
     @Test
+    public void invalidGetTest4() {
+        String response1 = sendCommandToServer("Simon: get axe and potion");
+        assertEquals("ERROR - get command requires only one argument", response1);
+    }
+    
+    @Test
     public void validDropTest1() {
         sendCommandToServer("Sion: get potion");
         String response2 = sendCommandToServer("Sion: drop potion");
@@ -152,6 +158,14 @@ public class BuiltInCommandTests {
     }
     
     @Test
+    public void invalidDropTest3() {
+        sendCommandToServer("Neill: get axe");
+        sendCommandToServer("Neill: get potion");
+        String response1 = sendCommandToServer("Neill: drop potion and axe");
+        assertEquals("ERROR - drop requires one artefact as its argument", response1);
+    }
+    
+    @Test
     public void validGotoTest1() {
         String response1 = sendCommandToServer("Alex: goto forest");
         assertEquals("""
@@ -173,6 +187,22 @@ public class BuiltInCommandTests {
     @Test
     public void invalidGotoTest2() {
         String response1 = sendCommandToServer("Sion: goto axe");
+        assertEquals("ERROR - goto requires one location as its argument", response1);
+    }
+    
+    @Test
+    public void invalidGotoTest3() {
+        String response1 = sendCommandToServer("Sion:  axe goto");
+        assertEquals("ERROR - goto command requires a location name as an argument", response1);
+    }
+    
+    @Test
+    public void invalidGotoTest4() {
+        sendCommandToServer("Simon: goto forest");
+        sendCommandToServer("Simon: get key");
+        sendCommandToServer("Simon: goto cabin");
+        sendCommandToServer("Simon: unlock trapdoor");
+        String response1 = sendCommandToServer("Simon: goto forest or cellar");
         assertEquals("ERROR - goto requires one location as its argument", response1);
     }
     

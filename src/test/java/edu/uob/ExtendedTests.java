@@ -292,4 +292,20 @@ class ExtendedTests {
         String response1 = sendCommandToServer("Alex: random");
         assertEquals("ERROR - invalid/ambiguous command\n", response1);
     }
+    
+    @Test
+    public void testRemovingOneOfManyCharacters() {
+        sendCommandToServer("Ollie: goto forest");
+        sendCommandToServer("Ollie: get key");
+        sendCommandToServer("Ollie: goto riverbank");
+        sendCommandToServer("Ollie: get horn");
+        sendCommandToServer("Ollie: goto forest");
+        sendCommandToServer("Ollie: goto cabin");
+        sendCommandToServer("Ollie: open trapdoor");
+        sendCommandToServer("Ollie: goto cellar");
+        sendCommandToServer("Ollie: blow horn");
+        sendCommandToServer("Ollie: goto cabin");
+        String response1 = sendCommandToServer("Ollie: blow horn");
+        assertEquals("You blow the horn and as if by magic, a lumberjack appears !", response1);
+    }
 }

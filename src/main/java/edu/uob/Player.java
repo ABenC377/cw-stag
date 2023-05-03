@@ -33,9 +33,7 @@ public class Player extends GameCharacter {
      * @param artefact the artefact object
      */
     public void pickUpItem(final Artefact artefact) {
-        if (artefact != null) {
-            heldItems.add(artefact);
-        }
+        heldItems.add(artefact);
     }
     
     /**

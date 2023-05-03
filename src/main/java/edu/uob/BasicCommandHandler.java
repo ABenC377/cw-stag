@@ -208,7 +208,10 @@ public class BasicCommandHandler {
         int output = -1;
         int index = 0;
         for (final String word : words) {
-            if (word.equals(toFind) && output == -1) {
+            if (output != -1) {
+                break;
+            }
+            if (word.equals(toFind)) {
                 output = index;
             }
             index++;
