@@ -228,7 +228,7 @@ public class Location extends GameEntity {
      * @return the string to send to the client
      */
     public String getArrivalString(final Player player) {
-        String output = lookAround(player);
+        final String output = lookAround(player);
         return output.replace("are in", "arrive in");
     }
     

@@ -71,21 +71,16 @@ public class CommandHandler {
      * @throws IOException self-explanatory
      */
     public String handle(final String command) throws IOException {
-        final String[] components = command.split(":");
-        final String instruction = (components.length == 2) ? components[1] :
-            "";
-        if ("".equals(instruction)) {
-            return "ERROR: invalid command format";
-        }
+        final String[] components = command.split(":", 2);
         
-        if (userNameInvalid(components[0])) {
+        final String userName = components[0];
+        if (userNameInvalid(userName)) {
             return "ERROR: invalid username";
         }
         
         // Set up player metadata
         Player player = null;
         Location playerLocation = null;
-        final String userName = components[0];
         for (final Location location : locations) {
             final List<GameCharacter> characters =
                 location.getCharacters();
@@ -103,6 +98,8 @@ public class CommandHandler {
             playerLocation = startLocation;
         }
         
+        
+        final String instruction = components[1];
         return handleInstruction(instruction, player, playerLocation);
     }
     
@@ -111,9 +108,8 @@ public class CommandHandler {
      * @param username the proposed username
      * @return yes/no
      */
-    private boolean userNameInvalid(String username) {
-        final boolean matches = username.matches(".*[^ a-zA-Z1-9'-].*");
-        return matches;
+    private boolean userNameInvalid(final String username) {
+        return username.matches(".*[^ a-zA-Z1-9'-].*");
     }
     
     /**

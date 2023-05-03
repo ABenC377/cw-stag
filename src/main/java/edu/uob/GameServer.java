@@ -198,7 +198,11 @@ public final class GameServer {
             locationsGraph.getSubgraphs();
         for (final Graph current : locationSubGraphs) {
             addLocation(current);
-            
+        }
+        
+        if (storeRoom == null) {
+            storeRoom = new Location("storeroom",
+                "Storage for any entities not placed in the game");
         }
         
         // Then handle paths between them

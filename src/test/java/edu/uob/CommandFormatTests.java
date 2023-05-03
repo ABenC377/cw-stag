@@ -132,7 +132,12 @@ public class CommandFormatTests {
     @Test
     public void tooManyColons() {
         String response1 = sendCommandToServer("Alex: goto: forest");
-        assertEquals("ERROR: invalid command format", response1);
+        assertEquals("You arrive in A deep dark forest You can see:\n" +
+            "key: A rusty old key\n" +
+            "tree: A tall pine tree\n" +
+            "You can see from here:\n" +
+            "cabin\n" +
+            "riverbank\n", response1);
     }
     
     @Test
