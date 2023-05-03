@@ -38,3 +38,5 @@
 /target/surefire-reports/TEST-edu.uob.BasicCommandHandlerTests.xml
 /target/surefire-reports/TEST-edu.uob.CommandFormatTests.xml
 /target/surefire-reports/TEST-edu.uob.InnerClassTests.xml
+/target/surefire-reports/edu.uob.DifferentConfigFileTests.txt
+/target/surefire-reports/TEST-edu.uob.DifferentConfigFileTests.xml
