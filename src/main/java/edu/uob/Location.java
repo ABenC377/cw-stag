@@ -132,13 +132,16 @@ public class Location extends GameEntity {
      * furniture of the given name
      */
     public Furniture removeFurniture(final String name) {
+        Furniture output = null;
         for (final Furniture furn : furniture) {
             if (furn.getName().equals(name)) {
-                furniture.remove(furn);
-                return furn;
+                output = furn;
             }
         }
-        return null;
+        if (output != null) {
+            furniture.remove(output);
+        }
+        return output;
     }
     
     /**
@@ -156,13 +159,16 @@ public class Location extends GameEntity {
      * artefact of the given name
      */
     public Artefact removeArtefact(final String name) {
+        Artefact output = null;
         for (final Artefact artefact : artefacts) {
             if (artefact.getName().equals(name)) {
-                artefacts.remove(artefact);
-                return artefact;
+                output = artefact;
             }
         }
-        return null;
+        if (output != null) {
+            artefacts.remove(output);
+        }
+        return output;
     }
     
     /**
@@ -180,13 +186,16 @@ public class Location extends GameEntity {
      * character of the given name
      */
     public GameCharacter removeCharacter(final String name) {
+        GameCharacter output = null;
         for (final GameCharacter character : characters) {
             if (character.getName().equals(name)) {
-                characters.remove(character);
-                return character;
+                output = character;
             }
         }
-        return null;
+        if (output != null) {
+            characters.remove(output);
+        }
+        return output;
     }
     
     /**
@@ -194,10 +203,14 @@ public class Location extends GameEntity {
      * @param name the name of the location to be removed
      */
     public void removePath(final String name) {
+        Location toRemove = null;
         for (final Location destination : paths) {
             if (destination.getName().equals(name)) {
-                paths.remove(destination);
+                toRemove = destination;
             }
+        }
+        if (toRemove != null) {
+            paths.remove(toRemove);
         }
     }
     

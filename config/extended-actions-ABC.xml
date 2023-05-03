@@ -2,6 +2,7 @@
 <actions>
     <gameAction>
         <triggers>
+            <keyphrase>use</keyphrase>
             <keyphrase>open</keyphrase>
             <keyphrase>unlock</keyphrase>
         </triggers>
@@ -37,9 +38,27 @@
         <narration>You cut down the tree with the axe</narration>
     </gameAction>
 
+
+    <gameAction>
+        <triggers>
+            <keyphrase>cut down</keyphrase>
+        </triggers>
+        <subjects>
+            <entity>lumberjack</entity>
+            <entity>axe</entity>
+        </subjects>
+        <consumed>
+        </consumed>
+        <produced>
+        </produced>
+        <narration>You are unable to cut down the lumberjack,
+            because they are too burly</narration>
+    </gameAction>
+
     <gameAction>
         <triggers>
             <keyphrase>drink</keyphrase>
+            <keyphrase>use</keyphrase>
         </triggers>
         <subjects>
             <entity>potion</entity>

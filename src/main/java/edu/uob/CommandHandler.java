@@ -71,11 +71,11 @@ public class CommandHandler {
      * @throws IOException self-explanatory
      */
     public String handle(final String command) throws IOException {
-        final String[] components = command.split(":", 2);
+        final String[] components = command.split(":");
         final String instruction = (components.length == 2) ? components[1] :
             "";
         if ("".equals(instruction)) {
-            throw new IOException("ERROR: invalid command format");
+            return "ERROR: invalid command format";
         }
         
         // Set up player metadata

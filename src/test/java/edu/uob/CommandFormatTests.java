@@ -1,5 +1,6 @@
 package edu.uob;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -115,5 +116,11 @@ public class CommandFormatTests {
             "trapdoor: A locked wooden trapdoor in the floor\n" +
             "You can see from here:\n" +
             "forest\n", response1);
+    }
+    
+    @Test
+    public void tooManyColons() {
+        String response1 = sendCommandToServer("Alex: goto: forest");
+        assertEquals("ERROR: invalid command format", response1);
     }
 }

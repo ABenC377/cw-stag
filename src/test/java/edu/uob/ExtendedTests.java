@@ -17,7 +17,7 @@ class ExtendedTests {
         File entitiesFile = Paths.get("config" + File.separator + "extended" +
             "-entities.dot").toAbsolutePath().toFile();
         File actionsFile = Paths.get("config" + File.separator + "extended" +
-            "-actions.xml").toAbsolutePath().toFile();
+            "-actions-ABC.xml").toAbsolutePath().toFile();
         server = new GameServer(entitiesFile, actionsFile);
     }
     
@@ -249,5 +249,62 @@ class ExtendedTests {
             "You can see from here:\n" +
             "forest\n" +
             "cellar\n", response10);
+    }
+    
+    @Test
+    public void testCallingLumberjack() {
+        String response1 = sendCommandToServer("Alex: goto forest");
+        String response2 = sendCommandToServer("Alex: goto riverbank");
+        String response3 = sendCommandToServer("Alex: get horn");
+        String response4 = sendCommandToServer("Alex: blow horn");
+        assertEquals("You blow the horn and as if by magic, a lumberjack appears !", response4);
+    }
+    
+    @Test
+    public void testCuttingTree() {
+        String response1 = sendCommandToServer("Alex: get axe");
+        String response2 = sendCommandToServer("Alex: goto forest");
+        String response3 = sendCommandToServer("Alex: cut tree");
+        assertEquals("You cut down the tree with the axe", response3);
+    }
+    
+    @Test
+    public void testGrowingTree() {
+        String response1 = sendCommandToServer("Alex: get axe");
+        String response2 = sendCommandToServer("Alex: goto forest");
+        String response3 = sendCommandToServer("Alex: cut tree");
+        String response4 = sendCommandToServer("Alex: grow seed");
+        assertEquals("You grow a tree", response4);
+    }
+    
+    @Test
+    public void testBurningBridge() {
+        String response1 = sendCommandToServer("Alex: get axe");
+        String response2 = sendCommandToServer("Alex: goto forest");
+        String response3 = sendCommandToServer("Alex: cut tree");
+        String response4 = sendCommandToServer("Alex: get log");
+        String response5 = sendCommandToServer("Alex: goto riverbank");
+        String response6 = sendCommandToServer("Alex: bridge river");
+        String response7 = sendCommandToServer("Alex: burn down route to " +
+            "clearing");
+        assertEquals("You burn down the bridge", response7);
+    }
+    
+    @Test
+    public void testSinging() {
+        String response1 = sendCommandToServer("Alex: sing");
+        assertEquals("You sing a sweet song", response1);
+    }
+    
+    @Test
+    public void testInvalidAction() {
+        String response1 = sendCommandToServer("Alex: blow horn");
+        assertEquals("ERROR - no valid instruction in that command", response1);
+    }
+    
+    @Test
+    public void testDrinkPotion() {
+        String response1 = sendCommandToServer("Alex: drink potion");
+        assertEquals("You drink the potion and your health improves", response1);
     }
 }
