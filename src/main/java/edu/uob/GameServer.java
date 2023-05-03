@@ -128,10 +128,10 @@ public final class GameServer {
     private void addConsumed(final Element element, final GameAction action) {
         final Element consElement =
             (Element)element.getElementsByTagName("consumed").item(0);
-        final NodeList consumedsNL = consElement.getElementsByTagName(
+        final NodeList consumedNL = consElement.getElementsByTagName(
             "entity");
-        for (int i = 0; i < consumedsNL.getLength(); i++) {
-            final Element consumedElement = (Element)consumedsNL.item(i);
+        for (int i = 0; i < consumedNL.getLength(); i++) {
+            final Element consumedElement = (Element)consumedNL.item(i);
             action.addConsumed(consumedElement.getTextContent());
         }
     }
@@ -139,10 +139,10 @@ public final class GameServer {
     private void addProduced(final Element element, final GameAction action) {
         final Element prodElement =
             (Element)element.getElementsByTagName("produced").item(0);
-        final NodeList producedsNL = prodElement.getElementsByTagName(
+        final NodeList producedNL = prodElement.getElementsByTagName(
             "entity");
-        for (int i = 0; i < producedsNL.getLength(); i++) {
-            final Element producedElement = (Element)producedsNL.item(i);
+        for (int i = 0; i < producedNL.getLength(); i++) {
+            final Element producedElement = (Element)producedNL.item(i);
             action.addProduced(producedElement.getTextContent());
         }
     }

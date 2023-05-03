@@ -12,7 +12,7 @@ import static edu.uob.BasicCommandType.NULL;
 public class CommandHandler {
     /**
      * a hashmap with single-word triggers as key, and an arraylist of
-     * correspodning action objects as value
+     * corresponding action objects as value
      */
     private final Map<String, Set<GameAction>> oneWordActions;
     /**
@@ -42,7 +42,7 @@ public class CommandHandler {
     
     /**
      * @param start game start location
-     * @param store the storeroom where currently non-existant entities live
+     * @param store the storeroom where currently non-existent entities live
      * @param locs list of locations in the game
      * @param ents list of entities in the game
      * @param oneWord hashmap of trigger and actions for one-word triggers

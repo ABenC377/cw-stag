@@ -153,7 +153,7 @@ public class Location extends GameEntity {
     }
     
     /**
-     * remvoes an artefact object from the list of artefacts at this location
+     * removes an artefact object from the list of artefacts at this location
      * @param name the name of the  artefact to be removed
      * @return the artefact object being removed, or null if there is no
      * artefact of the given name
@@ -180,7 +180,7 @@ public class Location extends GameEntity {
     }
     
     /**
-     * remvoes an character object from the list of characters at this location
+     * removes a character object from the list of characters at this location
      * @param name the name of the  character to be removed
      * @return the character object being removed, or null if there is no
      * character of the given name
@@ -228,36 +228,8 @@ public class Location extends GameEntity {
      * @return the string to send to the client
      */
     public String getArrivalString(final Player player) {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("You arrive in ")
-            .append(this.getDescription())
-            .append(" You can see:\n");
-        for (final Artefact artefact : artefacts) {
-            builder.append(artefact.getName())
-                .append(": ")
-                .append(artefact.getDescription())
-                .append(System.lineSeparator());
-        }
-        for (final Furniture furn : furniture) {
-            builder.append(furn.getName())
-                .append(": ")
-                .append(furn.getDescription())
-                .append(System.lineSeparator());
-        }
-        for (final GameCharacter character : characters) {
-            if (!character.equals(player)) {
-                builder.append(character.getName())
-                    .append(": ")
-                    .append(character.getDescription())
-                    .append(System.lineSeparator());
-            }
-        }
-        builder.append("You can see from here:\n");
-        for (final Location location : paths) {
-            builder.append(location.getName());
-            builder.append(System.lineSeparator());
-        }
-        return builder.toString();
+        String output = lookAround(player);
+        return output.replace("are in", "arrive in");
     }
     
     /**

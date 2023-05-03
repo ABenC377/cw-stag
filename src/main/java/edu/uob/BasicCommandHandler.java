@@ -1,11 +1,10 @@
 package edu.uob;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 /**
- * Handler classs for basic commands
+ * Handler class for basic commands
  */
 public class BasicCommandHandler {
     /**
@@ -28,35 +27,20 @@ public class BasicCommandHandler {
      * @param location the current location of the player
      * @param words the words of the user's command
      * @return the string that is to be passed back to client
-     * @throws IOException self-explanatory
      */
     public String handle(final BasicCommandType command,
                          final Player player,
                          final Location location,
-                         final String[] words) throws IOException {
+                         final String[] words) {
         String output;
         switch (command) {
-            case INV -> {
-                output = handleInv(words, player);
-            }
-            case GET -> {
-                output = handleGet(words, player, location);
-            }
-            case DROP -> {
-                output = handleDrop(words, player, location);
-            }
-            case GOTO -> {
-                output = handleGoto(words, player, location);
-            }
-            case LOOK -> {
-                output = handleLook(words, player, location);
-            }
-            case HEALTH -> {
-                output = handleHealth(words, player);
-            }
-            default -> {
-                output = "ERROR - not a valid basic command type";
-            }
+            case INV -> output = handleInv(words, player);
+            case GET -> output = handleGet(words, player, location);
+            case DROP -> output = handleDrop(words, player, location);
+            case GOTO -> output = handleGoto(words, player, location);
+            case LOOK -> output = handleLook(words, player, location);
+            case HEALTH -> output = handleHealth(words, player);
+            default -> output = "ERROR - not a valid basic command type";
         }
         return output;
     }
@@ -114,11 +98,10 @@ public class BasicCommandHandler {
      * @param player the player object
      * @param location the player's current location object
      * @return the string to be passed back to the client
-     * @throws IOException self-explanatory
      */
     private String handleDrop(final String[] words,
                               final Player player,
-                              final Location location) throws IOException {
+                              final Location location) {
         final int dropIndex = findIndex(words, "drop");
         
         final Artefact droppedArtefact = findSingleArtefact(words, dropIndex);
@@ -183,12 +166,7 @@ public class BasicCommandHandler {
     private String handleLook(final String[] words,
                               final Player player,
                               final Location location) {
-        boolean looked = false;
         for (final String word : words) {
-            if ("look".equals(word)) {
-                looked = true;
-            }
-            
             for (final GameEntity entity : entities) {
                 if (word.equals(entity.getName().toLowerCase(Locale.ENGLISH))) {
                     return "ERROR - look requires no arguments, so the " +
@@ -208,12 +186,7 @@ public class BasicCommandHandler {
      */
     private String handleHealth(final String[] words,
                                 final Player player) {
-        boolean healthed = false;
         for (final String word : words) {
-            if ("health".equals(word)) {
-                healthed = true;
-            }
-            
             for (final GameEntity entity : entities) {
                 if (word.equals(entity.getName().toLowerCase(Locale.ENGLISH))) {
                     return "ERROR - health requires no arguments, so the " +

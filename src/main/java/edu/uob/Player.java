@@ -1,6 +1,5 @@
 package edu.uob;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,12 +47,10 @@ public class Player extends GameCharacter {
     
     /**
      * removes an artefact from the player's inventory
-     * @param artefact the artefact opbject being removed
+     * @param artefact the artefact object being removed
      */
     public void removeItem(final Artefact artefact) {
-        if (heldItems.contains(artefact)) {
-            heldItems.remove(artefact);
-        }
+        heldItems.remove(artefact);
     }
     
     /**
@@ -139,10 +136,9 @@ public class Player extends GameCharacter {
      * @param current the location object for where the player currently is
      * @param start the location object for the start of the game
      * @return yes/no
-     * @throws IOException self-evident
      */
     public boolean checkForDeath(final Location current,
-                                 final Location start) throws IOException {
+                                 final Location start) {
         if (health == 0) {
             final ArrayList<Artefact> toDrop = new ArrayList<>(heldItems);
             for (final Artefact a : toDrop) {

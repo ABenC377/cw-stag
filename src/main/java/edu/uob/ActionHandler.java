@@ -1,6 +1,5 @@
 package edu.uob;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -45,11 +44,10 @@ public class ActionHandler {
      * @param player the player object that represents the client
      * @param location the location of the player in the game
      * @return returns the string that is to be passed to the client
-     * @throws IOException self-explanatory
      */
     public String handle(final GameAction action,
                          final Player player,
-                         final Location location) throws IOException {
+                         final Location location) {
         for (final String name : action.getConsumed()) {
             consumeEntity(name, player, location);
         }
