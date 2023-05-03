@@ -1,14 +1,13 @@
 package edu.uob;
 
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ExtendedTests {
     private GameServer server;
@@ -214,5 +213,20 @@ class ExtendedTests {
         String response5 = sendCommandToServer("test: open trapdoor with key " +
             "and potion");
         assertTrue(response5.contains("ERROR"));
+    }
+    
+    @Test
+    public void testHealing() {
+        String response1 = sendCommandToServer("Alex: get potion");
+        String response2 = sendCommandToServer("Alex: goto forest");
+        String response3 = sendCommandToServer("Alex: get key");
+        String response4 = sendCommandToServer("Alex: goto cabin");
+        String response5 = sendCommandToServer("Alex: open key");
+        String response6 = sendCommandToServer("Alex: goto cellar");
+        String response7 = sendCommandToServer("Alex: hit elf");
+        String response8 = sendCommandToServer("Alex: hit elf");
+        String response9 = sendCommandToServer("Alex: drink potion");
+        String response10 = sendCommandToServer("Alex: health");
+        assertEquals("Alex's health is at 2", response10);
     }
 }

@@ -49,14 +49,10 @@ public class Player extends GameCharacter {
     /**
      * removes an artefact from the player's inventory
      * @param artefact the artefact opbject being removed
-     * @throws IOException self-evident
      */
-    public void removeItem(final Artefact artefact) throws IOException {
+    public void removeItem(final Artefact artefact) {
         if (heldItems.contains(artefact)) {
             heldItems.remove(artefact);
-        } else {
-            throw new IOException("ERROR: player cannot drop item that they " +
-                "does not already hold");
         }
     }
     

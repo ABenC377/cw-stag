@@ -68,18 +68,6 @@ public class BasicCommandHandler {
      * @return the string that is to be passed back to the client
      */
     private String handleInv(final String[] words, final Player player) {
-        boolean invAlreadySeen = false;
-        for (final String word : words) {
-            if ("inv".equals(word) || "inventory".equals(word)) {
-                if (invAlreadySeen) {
-                    return "ERROR - invalid command, too many triggers for " +
-                        "inventory command\n";
-                } else {
-                    invAlreadySeen = true;
-                }
-            }
-        }
-        
         for (final String word : words) {
             for (final GameEntity entity : entities) {
                 if (entity.getName().toLowerCase(Locale.ENGLISH).equals(word)) {
@@ -104,10 +92,6 @@ public class BasicCommandHandler {
                              final Location location) {
         
         final int getIndex = findIndex(words, "get");
-        if (getIndex == -1) {
-            return "ERROR - invalid command, too many triggers for " +
-                "get command\n";
-        }
         
         final Artefact gottenArtefact = findSingleArtefact(words, getIndex);
         if (gottenArtefact == null) {
@@ -116,11 +100,6 @@ public class BasicCommandHandler {
         
         if ("ERROR".equals(gottenArtefact.getName())) {
             return "ERROR - get command requires only one argument";
-        }
-        
-        if (!location.artefactIsPresent(gottenArtefact)) {
-            return "ERROR - " + gottenArtefact.getName() + " is not present " +
-                    "in " + location.getName() + "\n";
         }
         
         location.removeArtefact(gottenArtefact);
@@ -141,10 +120,6 @@ public class BasicCommandHandler {
                               final Player player,
                               final Location location) throws IOException {
         final int dropIndex = findIndex(words, "drop");
-        if (dropIndex == -1) {
-            return "ERROR - invalid command, too many " +
-                "triggers for drop command\n";
-        }
         
         final Artefact droppedArtefact = findSingleArtefact(words, dropIndex);
         if ("ERROR".equals(droppedArtefact.getName())) {
@@ -174,10 +149,6 @@ public class BasicCommandHandler {
                               final Player player,
                               final Location location) {
         final int getIndex = findIndex(words, "goto");
-        if (getIndex == -1) {
-            return "ERROR - invalid command, too many triggers for " +
-                "drop command\n";
-        }
         
         Location gotoLocation = null;
         for (int j = getIndex; j < words.length; j++) {
@@ -215,12 +186,7 @@ public class BasicCommandHandler {
         boolean looked = false;
         for (final String word : words) {
             if ("look".equals(word)) {
-                if (looked) {
-                    return "ERROR - invalid command, too many triggers for " +
-                        "look command\n";
-                } else {
-                    looked = true;
-                }
+                looked = true;
             }
             
             for (final GameEntity entity : entities) {
@@ -245,12 +211,7 @@ public class BasicCommandHandler {
         boolean healthed = false;
         for (final String word : words) {
             if ("health".equals(word)) {
-                if (healthed) {
-                    return "ERROR - invalid command, too many triggers for " +
-                        "health command";
-                } else {
-                    healthed = true;
-                }
+                healthed = true;
             }
             
             for (final GameEntity entity : entities) {
@@ -276,8 +237,6 @@ public class BasicCommandHandler {
         for (final String word : words) {
             if (word.equals(toFind) && output == -1) {
                 output = index;
-            } else if (word.equals(toFind)) {
-                return -1;
             }
             index++;
         }

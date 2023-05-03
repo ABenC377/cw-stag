@@ -28,7 +28,13 @@
 /.idea/misc.xml
 /.idea/modules.xml
 *.class
-/target/surefire-reports/edu.uob.builtInCommandTests.txt
+/target/surefire-reports/edu.uob.BuiltInCommandTests.txt
 /target/surefire-reports/edu.uob.MultiPlayerTests.txt
-/target/surefire-reports/TEST-edu.uob.builtInCommandTests.xml
+/target/surefire-reports/TEST-edu.uob.BuiltInCommandTests.xml
 /target/surefire-reports/TEST-edu.uob.MultiPlayerTests.xml
+/target/surefire-reports/edu.uob.BasicCommandHandlerTests.txt
+/target/surefire-reports/edu.uob.CommandFormatTests.txt
+/target/surefire-reports/edu.uob.PlayerClassTests.txt
+/target/surefire-reports/TEST-edu.uob.BasicCommandHandlerTests.xml
+/target/surefire-reports/TEST-edu.uob.CommandFormatTests.xml
+/target/surefire-reports/TEST-edu.uob.PlayerClassTests.xml
