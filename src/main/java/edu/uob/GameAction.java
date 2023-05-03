@@ -108,10 +108,8 @@ public class GameAction {
             }
         }
 
-        
-        return noExtraEntities(words, entities) &&
-            subjectSaid && arePresent(subjects, player, location) &&
-            arePresent(consumed, player, location);
+        return noExtraEntities(words, entities) && subjectSaid &&
+            arePresent(subjects, player, location);
     }
     
     /**

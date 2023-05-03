@@ -280,16 +280,16 @@ public class Location extends GameEntity {
         for (final Location l : locations) {
             if (l.getName().equals(entityName)) {
                 paths.add(l);
-            }
-            if (l.characterIsPresent(entityName)) {
+                break;
+            } else if (l.characterIsPresent(entityName)) {
                 characters.add(l.removeCharacter(entityName));
-                return;
+                break;
             } else if (l.furnitureIsPresent(entityName)) {
                 furniture.add(l.removeFurniture(entityName));
-                return;
+                break;
             } else if (l.artefactIsPresent(entityName)) {
                 artefacts.add(l.removeArtefact(entityName));
-                return;
+                break;
             }
         }
     }

@@ -308,4 +308,53 @@ class ExtendedTests {
         String response1 = sendCommandToServer("Ollie: blow horn");
         assertEquals("You blow the horn and as if by magic, a lumberjack appears !", response1);
     }
+    
+    @Test
+    public void testNotAmbiguousSharedtrigger() {
+        sendCommandToServer("Kate: goto forest");
+        sendCommandToServer("Kate: get key");
+        sendCommandToServer("Kate: goto cabin");
+        String response1 = sendCommandToServer("Kate: use key");
+        assertEquals("You unlock the door and see steps leading down into a cellar", response1);
+    }
+    
+    @Test
+    public void testDoubleTrigger() {
+        sendCommandToServer("Chris: get axe");
+        sendCommandToServer("Chris: goto forest");
+        String response1 = sendCommandToServer("Chris: chop cut tree");
+        assertEquals("You cut down the tree with the axe", response1);
+    }
+    
+    @Test
+    public void testAmbiguousMultiWordTrigger() {
+        String response1 = sendCommandToServer("Gus: make music");
+        assertEquals("ERROR - invalid/ambiguous command\n", response1);
+    }
+    
+    @Test
+    public void testCommandActionCombo() {
+        String response1 = sendCommandToServer("Jake: look for potion to " +
+            "drink");
+        assertEquals("ERROR - look requires no arguments, so the command " +
+            "cannot contain any entity names\n", response1);
+    }
+    
+    @Test
+    public void testImpossibleMultiWordTrigger() {
+        String response1 = sendCommandToServer("Sion: flirt with lumberjack");
+        assertEquals("ERROR - no valid instruction in that command", response1);
+    }
+    
+    @Test
+    public void testNoSubjectMentioned() {
+        String response1 = sendCommandToServer("Cesca: drink");
+        assertEquals("ERROR - no valid instruction in that command", response1);
+    }
+    
+    @Test
+    public void testConsumedButNotSubject() {
+        String response1 = sendCommandToServer("Eamon: pointless");
+        assertEquals("You blow the horn and as if by magic, a lumberjack appears !", response1);
+    }
 }

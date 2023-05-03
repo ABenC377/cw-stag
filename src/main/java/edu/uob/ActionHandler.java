@@ -82,7 +82,7 @@ public class ActionHandler {
             storeRoom.addFurniture(location.removeFurniture(name));
         } else if (location.pathToLocationExists(name)) {
             location.removePath(name);
-        } else if ("health".equals(name)) {
+        } else {
             player.takeDamage();
         }
     }

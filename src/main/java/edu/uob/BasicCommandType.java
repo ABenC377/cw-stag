@@ -15,14 +15,21 @@ public enum BasicCommandType {
      */
     public static BasicCommandType fromString(final String string) {
         BasicCommandType output;
-        switch (string.toLowerCase(Locale.ENGLISH)) {
-            case "inventory", "inv" -> output = BasicCommandType.INV;
-            case "get" -> output = BasicCommandType.GET;
-            case "drop" -> output = BasicCommandType.DROP;
-            case "goto" -> output = BasicCommandType.GOTO;
-            case "look" -> output = BasicCommandType.LOOK;
-            case "health" -> output = BasicCommandType.HEALTH;
-            default -> output = BasicCommandType.NULL;
+        if ("inventory".equals(string.toLowerCase(Locale.ENGLISH)) ||
+            "inv".equals(string.toLowerCase(Locale.ENGLISH))) {
+            output = BasicCommandType.INV;
+        } else if ("get".equals(string.toLowerCase(Locale.ENGLISH))) {
+            output = BasicCommandType.GET;
+        } else if ("drop".equals(string.toLowerCase(Locale.ENGLISH))) {
+            output = BasicCommandType.DROP;
+        } else if ("goto".equals(string.toLowerCase(Locale.ENGLISH))) {
+            output = BasicCommandType.GOTO;
+        } else if ("look".equals(string.toLowerCase(Locale.ENGLISH))) {
+            output = BasicCommandType.LOOK;
+        } else if ("health".equals(string.toLowerCase(Locale.ENGLISH))) {
+            output = BasicCommandType.HEALTH;
+        } else {
+            output = BasicCommandType.NULL;
         }
         return output;
     }

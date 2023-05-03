@@ -202,11 +202,12 @@ public class CommandHandler {
             
             for (final GameAction action : tuple.getActions()) {
                 // Check action is allowable
-                if (output != null && !output.equals(action) &&
-                    action.isDoable(words, player, location, entities)) {
-                    return err;
-                } else if (action.isDoable(words, player, location, entities)) {
-                    output = action;
+                if (action.isDoable(words, player, location, entities)) {
+                    if (output != null && !output.equals(action)) {
+                        return err;
+                    } else {
+                        output = action;
+                    }
                 }
             }
         }

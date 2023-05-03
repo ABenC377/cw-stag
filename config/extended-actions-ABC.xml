@@ -120,6 +120,20 @@
 
     <gameAction>
         <triggers>
+            <keyphrase>flirt with</keyphrase>
+        </triggers>
+        <subjects>
+            <entity>lumberjack</entity>
+        </subjects>
+        <consumed>
+        </consumed>
+        <produced>
+        </produced>
+        <narration>they're into it</narration>
+    </gameAction>
+
+    <gameAction>
+        <triggers>
             <keyphrase>sing</keyphrase>
             <keyphrase>make music</keyphrase>
         </triggers>
@@ -131,7 +145,6 @@
         </produced>
         <narration>You sing a sweet song</narration>
     </gameAction>
-
 
     <gameAction>
         <triggers>
@@ -230,6 +243,7 @@
     <gameAction>
         <triggers>
             <keyphrase>blow</keyphrase>
+            <keyphrase>use</keyphrase>
         </triggers>
         <subjects>
             <entity>horn</entity>
@@ -238,6 +252,20 @@
         </consumed>
         <produced>
             <entity>lumberjack</entity>
+        </produced>
+        <narration>You blow the horn and as if by magic, a lumberjack appears !</narration>
+    </gameAction>
+
+    <gameAction>
+        <triggers>
+            <keyphrase>pointless</keyphrase>
+        </triggers>
+        <subjects>
+        </subjects>
+        <consumed>
+            <entity>potion</entity>
+        </consumed>
+        <produced>
         </produced>
         <narration>You blow the horn and as if by magic, a lumberjack appears !</narration>
     </gameAction>
