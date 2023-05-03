@@ -1,14 +1,13 @@
 package edu.uob;
 
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.nio.file.Paths;
-import java.io.IOException;
 import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ExampleSTAGTests {
 
@@ -16,7 +15,7 @@ class ExampleSTAGTests {
 
   // Create a new server _before_ every @Test
   @BeforeEach
-  void setup() throws IOException {
+  void setup() {
       File entitiesFile = Paths.get("config" + File.separator + "extended" +
           "-entities.dot").toAbsolutePath().toFile();
       File actionsFile = Paths.get("config" + File.separator + "extended" +
@@ -25,8 +24,8 @@ class ExampleSTAGTests {
   }
 
   private String sendCommandToServer(String command) {
-      // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
-      return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> { return server.handleCommand(command);},
+      // Try to send a command to the server - this call will time out if it takes too long (in case the server enters an infinite loop)
+      return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> server.handleCommand(command),
       "Server took too long to respond (probably stuck in an infinite loop)");
   }
 

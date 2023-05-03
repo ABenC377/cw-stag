@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
 
@@ -15,7 +14,7 @@ public class BuiltInCommandTests {
     private GameServer server;
     
     @BeforeEach
-    void setup() throws IOException {
+    void setup() {
         File entitiesFile = Paths.get("config" + File.separator + "extended" +
             "-entities.dot").toAbsolutePath().toFile();
         File actionsFile = Paths.get("config" + File.separator + "extended" +
@@ -24,8 +23,8 @@ public class BuiltInCommandTests {
     }
     
     private String sendCommandToServer(String command) {
-        // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
-        return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> { return server.handleCommand(command);},
+        // Try to send a command to the server - this call will time out if it takes too long (in case the server enters an infinite loop)
+        return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> server.handleCommand(command),
             "Server took too long to respond (probably stuck in an infinite loop)");
     }
     
@@ -37,20 +36,24 @@ public class BuiltInCommandTests {
     
     @Test
     public void validInvTest2() {
-        String response1 = sendCommandToServer("Simon: get potion");
+        sendCommandToServer("Simon: get potion");
         String response2 = sendCommandToServer("Simon: inv");
-        assertEquals("You are currently holding:\n" +
-            "potion - A bottle of magic potion\n", response2);
+        assertEquals("""
+            You are currently holding:
+            potion - A bottle of magic potion
+            """, response2);
     }
     
     @Test
     public void validInvTest3() {
-        String response1 = sendCommandToServer("Simon: get potion");
-        String response2 = sendCommandToServer("Simon: get axe");
+        sendCommandToServer("Simon: get potion");
+        sendCommandToServer("Simon: get axe");
         String response3 = sendCommandToServer("Simon: inv");
-        assertEquals("You are currently holding:\n" +
-            "potion - A bottle of magic potion\n" +
-            "axe - A razor sharp axe\n", response3);
+        assertEquals("""
+            You are currently holding:
+            potion - A bottle of magic potion
+            axe - A razor sharp axe
+            """, response3);
     }
     
     @Test
@@ -74,7 +77,7 @@ public class BuiltInCommandTests {
     
     @Test
     public void validGetTest2() {
-        String response1 = sendCommandToServer("Simon: get axe");
+        sendCommandToServer("Simon: get axe");
         String response2 = sendCommandToServer("Sion: get coin");
         assertEquals("Sion picked up coin\n", response2);
     }
@@ -100,35 +103,39 @@ public class BuiltInCommandTests {
     
     @Test
     public void validDropTest1() {
-        String response1 = sendCommandToServer("Sion: get potion");
+        sendCommandToServer("Sion: get potion");
         String response2 = sendCommandToServer("Sion: drop potion");
         assertEquals("Sion dropped potion\n", response2);
     }
     
     @Test
     public void validDropTest2() {
-        String response1 = sendCommandToServer("Sion: get potion");
+        sendCommandToServer("Sion: get potion");
         String response2 = sendCommandToServer("Sion: inv");
-        assertEquals("You are currently holding:\n" +
-            "potion - A bottle of magic potion\n", response2);
-        String response3 = sendCommandToServer("Sion: drop potion");
+        assertEquals("""
+            You are currently holding:
+            potion - A bottle of magic potion
+            """, response2);
+        sendCommandToServer("Sion: drop potion");
         String response4 = sendCommandToServer("Sion: inv");
         assertEquals("You are not currently holding any items\n", response4);
     }
     
     @Test
     public void validDropTest3() {
-        String response1 = sendCommandToServer("Sion: get potion");
-        String response2 = sendCommandToServer("Sion: goto forest");
-        String response3 = sendCommandToServer("Sion: drop potion");
+        sendCommandToServer("Sion: get potion");
+        sendCommandToServer("Sion: goto forest");
+        sendCommandToServer("Sion: drop potion");
         String response4 = sendCommandToServer("Sion: look");
-        assertEquals("You are in A deep dark forest You can see:\n" +
-            "key: A rusty old key\n" +
-            "potion: A bottle of magic potion\n" +
-            "tree: A tall pine tree\n" +
-            "You can see from here:\n" +
-            "cabin\n" +
-            "riverbank\n", response4);
+        assertEquals("""
+            You are in A deep dark forest You can see:
+            key: A rusty old key
+            potion: A bottle of magic potion
+            tree: A tall pine tree
+            You can see from here:
+            cabin
+            riverbank
+            """, response4);
     }
     
     @Test
@@ -147,12 +154,14 @@ public class BuiltInCommandTests {
     @Test
     public void validGotoTest1() {
         String response1 = sendCommandToServer("Alex: goto forest");
-        assertEquals("You arrive in A deep dark forest You can see:\n" +
-            "key: A rusty old key\n" +
-            "tree: A tall pine tree\n" +
-            "You can see from here:\n" +
-            "cabin\n" +
-            "riverbank\n", response1);
+        assertEquals("""
+            You arrive in A deep dark forest You can see:
+            key: A rusty old key
+            tree: A tall pine tree
+            You can see from here:
+            cabin
+            riverbank
+            """, response1);
     }
     
     @Test
@@ -170,13 +179,15 @@ public class BuiltInCommandTests {
     @Test
     public void validLookTest1() {
         String response1 = sendCommandToServer("Neill: look around");
-        assertEquals("You are in A log cabin in the woods You can see:\n" +
-            "potion: A bottle of magic potion\n" +
-            "axe: A razor sharp axe\n" +
-            "coin: A silver coin\n" +
-            "trapdoor: A locked wooden trapdoor in the floor\n" +
-            "You can see from here:\n" +
-            "forest\n", response1);
+        assertEquals("""
+            You are in A log cabin in the woods You can see:
+            potion: A bottle of magic potion
+            axe: A razor sharp axe
+            coin: A silver coin
+            trapdoor: A locked wooden trapdoor in the floor
+            You can see from here:
+            forest
+            """, response1);
     }
     
     @Test
