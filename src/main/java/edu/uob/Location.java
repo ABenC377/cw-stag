@@ -85,15 +85,6 @@ public class Location extends GameEntity {
     
     /**
      * checks whether an artefact is present in this location
-     * @param artefact the artefact object
-     * @return yes/no
-     */
-    public boolean artefactIsPresent(final Artefact artefact) {
-        return artefacts.contains(artefact);
-    }
-    
-    /**
-     * checks whether an artefact is present in this location
      * @param name the name of the artefact
      * @return yes/no
      */

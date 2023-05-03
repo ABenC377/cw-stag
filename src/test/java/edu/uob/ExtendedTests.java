@@ -229,4 +229,25 @@ class ExtendedTests {
         String response10 = sendCommandToServer("Alex: health");
         assertEquals("Alex's health is at 2", response10);
     }
+    
+    @Test
+    public void testDeath() {
+        String response0 = sendCommandToServer("Alex: get axe");
+        String response1 = sendCommandToServer("Alex: get potion");
+        String response2 = sendCommandToServer("Alex: goto forest");
+        String response3 = sendCommandToServer("Alex: get key");
+        String response4 = sendCommandToServer("Alex: goto cabin");
+        String response5 = sendCommandToServer("Alex: open key");
+        String response6 = sendCommandToServer("Alex: goto cellar");
+        String response7 = sendCommandToServer("Alex: hit elf");
+        String response8 = sendCommandToServer("Alex: hit elf");
+        String response9 = sendCommandToServer("Alex: hit elf");
+        String response10 = sendCommandToServer("Alex: look");
+        assertEquals("You are in A log cabin in the woods You can see:\n" +
+            "coin: A silver coin\n" +
+            "trapdoor: A locked wooden trapdoor in the floor\n" +
+            "You can see from here:\n" +
+            "forest\n" +
+            "cellar\n", response10);
+    }
 }
