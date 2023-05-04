@@ -187,7 +187,7 @@ class ExtendedTests {
     }
     
     @Test
-    public void testHealing() {
+    void testHealing() {
         sendCommandToServer("Alex: get potion");
         sendCommandToServer("Alex: goto forest");
         sendCommandToServer("Alex: get key");
@@ -202,7 +202,7 @@ class ExtendedTests {
     }
     
     @Test
-    public void testDeath() {
+    void testDeath() {
         sendCommandToServer("Alex: get axe");
         sendCommandToServer("Alex: get potion");
         sendCommandToServer("Alex: goto forest");
@@ -225,7 +225,7 @@ class ExtendedTests {
     }
     
     @Test
-    public void testCallingLumberjack() {
+    void testCallingLumberjack() {
         sendCommandToServer("Alex: goto forest");
         sendCommandToServer("Alex: goto riverbank");
         sendCommandToServer("Alex: get horn");
@@ -234,7 +234,7 @@ class ExtendedTests {
     }
     
     @Test
-    public void testCuttingTree() {
+    void testCuttingTree() {
         sendCommandToServer("Alex: get axe");
         sendCommandToServer("Alex: goto forest");
         String response3 = sendCommandToServer("Alex: cut tree");
@@ -242,7 +242,7 @@ class ExtendedTests {
     }
     
     @Test
-    public void testGrowingTree() {
+    void testGrowingTree() {
         sendCommandToServer("Alex: get axe");
         sendCommandToServer("Alex: goto forest");
         sendCommandToServer("Alex: cut tree");
@@ -251,7 +251,7 @@ class ExtendedTests {
     }
     
     @Test
-    public void testBurningBridge() {
+    void testBurningBridge() {
         sendCommandToServer("Alex: get axe");
         sendCommandToServer("Alex: goto forest");
         sendCommandToServer("Alex: cut tree");
@@ -264,37 +264,37 @@ class ExtendedTests {
     }
     
     @Test
-    public void testSinging() {
+    void testSinging() {
         String response1 = sendCommandToServer("Alex: sing");
         assertEquals("You sing a sweet song", response1);
     }
     
     @Test
-    public void testInvalidAction() {
+    void testInvalidAction() {
         String response1 = sendCommandToServer("Alex: blow horn");
         assertEquals("ERROR - no valid instruction in that command", response1);
     }
     
     @Test
-    public void testDrinkPotion() {
+    void testDrinkPotion() {
         String response1 = sendCommandToServer("Alex: drink potion");
         assertEquals("You drink the potion and your health improves", response1);
     }
     
     @Test
-    public void testAmbiguousMultiWordTriggers() {
+    void testAmbiguousMultiWordTriggers() {
         String response1 = sendCommandToServer("Alex: make music");
         assertEquals("ERROR - invalid/ambiguous command\n", response1);
     }
     
     @Test
-    public void testAmbiguousSingleWordTriggers() {
+    void testAmbiguousSingleWordTriggers() {
         String response1 = sendCommandToServer("Alex: random");
         assertEquals("ERROR - invalid/ambiguous command\n", response1);
     }
     
     @Test
-    public void testRemovingOneOfManyCharacters() {
+    void testRemovingOneOfManyCharacters() {
         sendCommandToServer("Ollie: goto forest");
         sendCommandToServer("Ollie: get key");
         sendCommandToServer("Ollie: goto riverbank");
@@ -310,7 +310,7 @@ class ExtendedTests {
     }
     
     @Test
-    public void testNotAmbiguousSharedtrigger() {
+    void testNotAmbiguousSharedtrigger() {
         sendCommandToServer("Kate: goto forest");
         sendCommandToServer("Kate: get key");
         sendCommandToServer("Kate: goto cabin");
@@ -319,7 +319,7 @@ class ExtendedTests {
     }
     
     @Test
-    public void testDoubleTrigger() {
+    void testDoubleTrigger() {
         sendCommandToServer("Chris: get axe");
         sendCommandToServer("Chris: goto forest");
         String response1 = sendCommandToServer("Chris: chop cut tree");
@@ -327,13 +327,13 @@ class ExtendedTests {
     }
     
     @Test
-    public void testAmbiguousMultiWordTrigger() {
+    void testAmbiguousMultiWordTrigger() {
         String response1 = sendCommandToServer("Gus: make music");
         assertEquals("ERROR - invalid/ambiguous command\n", response1);
     }
     
     @Test
-    public void testCommandActionCombo() {
+    void testCommandActionCombo() {
         String response1 = sendCommandToServer("Jake: look for potion to " +
             "drink");
         assertEquals("ERROR - look requires no arguments, so the command " +
@@ -341,19 +341,19 @@ class ExtendedTests {
     }
     
     @Test
-    public void testImpossibleMultiWordTrigger() {
+    void testImpossibleMultiWordTrigger() {
         String response1 = sendCommandToServer("Sion: flirt with lumberjack");
         assertEquals("ERROR - no valid instruction in that command", response1);
     }
     
     @Test
-    public void testNoSubjectMentioned() {
+    void testNoSubjectMentioned() {
         String response1 = sendCommandToServer("Cesca: drink");
         assertEquals("ERROR - no valid instruction in that command", response1);
     }
     
     @Test
-    public void testConsumedButNotSubject() {
+    void testConsumedButNotSubject() {
         String response1 = sendCommandToServer("Eamon: pointless");
         assertEquals("You blow the horn and as if by magic, a lumberjack appears !", response1);
     }

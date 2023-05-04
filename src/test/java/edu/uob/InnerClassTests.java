@@ -8,30 +8,30 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class InnerClassTests {
+class InnerClassTests {
     @Test
-    public void testPlayerGetItem() {
+    void testPlayerGetItem() {
         Player player = new Player("Alex");
         Artefact output = player.getItem("axe");
         assertNull(output);
     }
     
     @Test
-    public void testLocationRemoveFurniture() {
+    void testLocationRemoveFurniture() {
         Location location = new Location("test", "a test space");
         Furniture output = location.removeFurniture("test");
         assertNull(output);
     }
     
     @Test
-    public void testLocationRemoveArtefact() {
+    void testLocationRemoveArtefact() {
         Location location = new Location("test", "a test space");
         Artefact output = location.removeArtefact("test");
         assertNull(output);
     }
     
     @Test
-    public void testLocationRemoveCharacter() {
+    void testLocationRemoveCharacter() {
         Location location = new Location("test", "a test space");
         location.removePath("test");
         GameCharacter output = location.removeCharacter("test");
@@ -39,7 +39,7 @@ public class InnerClassTests {
     }
     
     @Test
-    public void testProduceWithEmptyLocationList() {
+    void testProduceWithEmptyLocationList() {
         List<Location> locations = new ArrayList<>();
         Location testLocation = new Location("test", "test description");
         testLocation.produce("test", locations);

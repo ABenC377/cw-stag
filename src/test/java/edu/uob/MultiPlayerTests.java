@@ -9,7 +9,7 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MultiPlayerTests {
+class MultiPlayerTests {
     private GameServer server;
     
     @BeforeEach
@@ -28,7 +28,7 @@ public class MultiPlayerTests {
     }
     
     @Test
-    public void testTwoPlayersSimple1() {
+    void testTwoPlayersSimple1() {
         String sionResponse1 = sendCommandToServer("Sion: look");
         assertEquals("You are in A log cabin in the woods You can see:\n" +
             "potion: A bottle of magic potion\n" +
@@ -40,7 +40,7 @@ public class MultiPlayerTests {
     }
     
     @Test
-    public void testTwoPlayersSimple2() {
+    void testTwoPlayersSimple2() {
         String sionResponse1 = sendCommandToServer("Sion: look");
         String simonResponse1 = sendCommandToServer("Simon: look");
         assertEquals("You are in A log cabin in the woods You can see:\n" +
