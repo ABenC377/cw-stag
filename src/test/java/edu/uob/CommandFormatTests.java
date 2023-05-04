@@ -157,9 +157,55 @@ class CommandFormatTests {
     }
     
     @Test
-    void invalidUsername() {
+    void invalidUsername1() {
         final String response1 = sendCommandToServer("Al_ex: look");
         assertEquals("ERROR: invalid username", response1,
             "usernames cannot contain _");
+    }
+    
+    @Test
+    void invalidUsername2() {
+        final String response1 = sendCommandToServer("@Alex: look");
+        assertEquals("ERROR: invalid username", response1,
+            "usernames cannot contain @");
+    }
+    
+    @Test
+    void validUsername1() {
+        final String response1 =
+            sendCommandToServer(("Alex cockrean: goto forest"));
+        assertEquals("You arrive in A deep dark forest You can see:\n" +
+                    "key: A rusty old key\n" +
+                    "tree: A tall pine tree\n" +
+                    "You can see from here:\n" +
+                    "cabin\n" +
+                    "riverbank\n", response1,
+                "spaces are allowed in ");
+    }
+    
+    @Test
+    void validUsername2() {
+        final String response1 =
+            sendCommandToServer(("Alex o'cockrean: goto forest"));
+        assertEquals("You arrive in A deep dark forest You can see:\n" +
+                "key: A rusty old key\n" +
+                "tree: A tall pine tree\n" +
+                "You can see from here:\n" +
+                "cabin\n" +
+                "riverbank\n", response1,
+            "apostrophes are allowed in ");
+    }
+    
+    @Test
+    void validUsername3() {
+        final String response1 =
+            sendCommandToServer(("Alex-cockrean: goto forest"));
+        assertEquals("You arrive in A deep dark forest You can see:\n" +
+                "key: A rusty old key\n" +
+                "tree: A tall pine tree\n" +
+                "You can see from here:\n" +
+                "cabin\n" +
+                "riverbank\n", response1,
+            "hyphens are allowed in ");
     }
 }
