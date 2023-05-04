@@ -65,7 +65,7 @@ public final class GameServer {
         
         try {
             readEntitiesFile(entitiesFile);
-        } catch (FileNotFoundException | ParseException e) {
+        } catch (ParseException | IOException e) {
             throw new RuntimeException(e);
         }
         
@@ -247,7 +247,7 @@ public final class GameServer {
      * @throws FileNotFoundException self-explanatory
      * @throws ParseException self-explanatory
      */
-    private void readEntitiesFile(final File file) throws FileNotFoundException, ParseException {
+    private void readEntitiesFile(final File file) throws IOException, ParseException {
         final Parser parser = new Parser();
         final FileReader reader = new FileReader(file);
         parser.parse(reader);
@@ -295,9 +295,14 @@ public final class GameServer {
      * adds a location from the file to the locations arraylist
      * @param graph the .dot element containing the location
      */
-    private void addLocation(final Graph graph) {
+    private void addLocation(final Graph graph) throws IOException {
         final String locationName =
             graph.getNodes(false).get(0).getId().getId();
+        if (isInvalidTrigger(locationName)) {
+            throw new IOException("ERROR - entities file contains a location " +
+                "with a reserved-word as a name");
+        }
+        
         final String description =
             graph.getNodes(false).get(0).getAttribute("description");
         final Location location = new Location(locationName, description);
@@ -324,7 +329,7 @@ public final class GameServer {
      * @param graph the .dot graph element containing the entity
      */
     private void addEntityToLocation(final Location location,
-                                     final Graph graph) {
+                                     final Graph graph) throws IOException {
         final String type = graph.getId().getId();
         switch (type) {
             case "artefacts" -> {
@@ -334,6 +339,10 @@ public final class GameServer {
                     final Artefact artefact =
                         new Artefact(artefactNode.getId().getId(),
                             artefactNode.getAttribute("description"));
+                    if (isInvalidTrigger(artefact.getName())) {
+                        throw new IOException("ERROR - entities file contains" +
+                            " an artefact with a reserved word as a name");
+                    }
                     location.addArtefact(artefact);
                     initialEntities.add(artefact);
                 }
@@ -346,6 +355,10 @@ public final class GameServer {
                         new Furniture(furnitureNode.getId().getId(),
                             furnitureNode.getAttribute(
                                 "description"));
+                    if (isInvalidTrigger(furniture.getName())) {
+                        throw new IOException("ERROR - entities file contains" +
+                            " an artefact with a reserved word as a name");
+                    }
                     location.addFurniture(furniture);
                     initialEntities.add(furniture);
                 }
@@ -358,6 +371,10 @@ public final class GameServer {
                         new GameCharacter(characterNode.getId().getId(),
                             characterNode.getAttribute(
                                 "description"));
+                    if (isInvalidTrigger(character.getName())) {
+                        throw new IOException("ERROR - entities file contains" +
+                            " an artefact with a reserved word as a name");
+                    }
                     location.addCharacter(character);
                     initialEntities.add(character);
                 }
