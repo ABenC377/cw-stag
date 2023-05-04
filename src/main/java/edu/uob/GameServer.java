@@ -24,12 +24,6 @@ import static edu.uob.BasicCommandType.*;
 
 /** This class implements the STAG server. */
 public final class GameServer {
-    
-    // TODO add tests for edge case of an action with no subjects - should
-    //  still be able to work even though no subjects given in command
-    
-    // TODO test multiplayer see the other player in a room
-
     private static final char END_OF_TRANSMISSION = 4;
     private final List<ActionTuple> manyWordActions = new ArrayList<>();
     
@@ -80,6 +74,14 @@ public final class GameServer {
             manyWordActions);
     }
     
+    /**
+     * returns actions datastructure from xml file
+     * @param file the xml file object
+     * @return the hashmap data structure
+     * @throws ParserConfigurationException self-explanatory
+     * @throws IOException self-explanatory
+     * @throws SAXException self-explanatory
+     */
     private Map<String, Set<GameAction>> readActionsFile(final File file) throws ParserConfigurationException, IOException, SAXException {
         final Map<String, Set<GameAction>> actionsMap =
             new HashMap<>();
@@ -88,8 +90,8 @@ public final class GameServer {
         final Document document = builder.parse(file);
         final Element actions = document.getDocumentElement();
         final NodeList actionNodeList = actions.getChildNodes();
-        // Weird for loop, as we only want the odd elements
         final GameActionBuilder actionBuilder = new GameActionBuilder();
+        
         for (int i = 1; i < actionNodeList.getLength(); i += 2) {
             final Element currentAction = (Element)actionNodeList.item(i);
                 
@@ -116,6 +118,12 @@ public final class GameServer {
         return actionsMap;
     }
     
+    /**
+     * gets the subject entities from an XML element and adds them to an action
+     * object
+     * @param element the XML element this action
+     * @param action the action object to be populated
+     */
     private void addSubjects(final Element element, final GameAction action) {
         final Element subElement =
             (Element)element.getElementsByTagName("subjects").item(0);
@@ -127,6 +135,12 @@ public final class GameServer {
         }
     }
     
+    /**
+     * gets the consumed entities from an XML element and adds them to an
+     * action object
+     * @param element the XML element for this action
+     * @param action the action object to be populated
+     */
     private void addConsumed(final Element element, final GameAction action) {
         final Element consElement =
             (Element)element.getElementsByTagName("consumed").item(0);
@@ -138,6 +152,12 @@ public final class GameServer {
         }
     }
     
+    /**
+     * gets the produced entities from an XML element and adds them to an
+     * action object
+     * @param element the XML element for this action
+     * @param action the action object to be populated
+     */
     private void addProduced(final Element element, final GameAction action) {
         final Element prodElement =
             (Element)element.getElementsByTagName("produced").item(0);
@@ -149,6 +169,13 @@ public final class GameServer {
         }
     }
     
+    /**
+     * adds action objects to the trigger-action list hash map
+     * @param triggerMap the hash map to be populated
+     * @param action the action to be added
+     * @param nodes the XML node-list containing the trigger phrase
+     * @throws IOException
+     */
     private void addActionsByTrigger(final Map<String, Set<GameAction>> triggerMap,
                                      final GameAction action,
                                      final NodeList nodes) throws IOException {
@@ -193,6 +220,11 @@ public final class GameServer {
         return false;
     }
     
+    /**
+     * separate method for multi-word triggers
+     * @param trigger the trigger string
+     * @param action the action object to be added
+     */
     private void addToMultiTriggers(final String trigger,
                                     final GameAction action) {
         boolean exists = false;
@@ -209,7 +241,12 @@ public final class GameServer {
         }
     }
     
-    
+    /**
+     * reads an entities .dot file
+     * @param file the file object
+     * @throws FileNotFoundException self-explanatory
+     * @throws ParseException self-explanatory
+     */
     private void readEntitiesFile(final File file) throws FileNotFoundException, ParseException {
         final Parser parser = new Parser();
         final FileReader reader = new FileReader(file);
@@ -254,6 +291,10 @@ public final class GameServer {
         }
     }
     
+    /**
+     * adds a location from the file to the locations arraylist
+     * @param graph the .dot element containing the location
+     */
     private void addLocation(final Graph graph) {
         final String locationName =
             graph.getNodes(false).get(0).getId().getId();
@@ -277,6 +318,11 @@ public final class GameServer {
         }
     }
     
+    /**
+     * adds an entity from the .dot file to a location object
+     * @param location the location object being populated
+     * @param graph the .dot graph element containing the entity
+     */
     private void addEntityToLocation(final Location location,
                                      final Graph graph) {
         final String type = graph.getId().getId();
