@@ -430,4 +430,25 @@ class ExtendedTests {
             "appears !", response1,
             "action with no subjects can still consume an entity");
     }
+    
+    @Test
+    void testImpossibleSubject() {
+        final String response1 = sendCommandToServer("Bala: boomerang");
+        assertEquals("ERROR - no valid instruction in that command", response1, "Should not be able to perform this " +
+            "action as subject does not exist in the game");
+    }
+    
+    @Test
+    void testImpossibleConsumed() {
+        final String response1 = sendCommandToServer("Harry: bottle");
+        assertEquals("This shouldn't be possible", response1, "Should not be able to perform this " +
+            "action as consumeddoes not exist in the game");
+    }
+    
+    @Test
+    void testImpossibleProduced() {
+        final String response1 = sendCommandToServer("Ed: MacBook");
+        assertEquals("ERROR - no valid instruction in that command", response1, "Should not be able to perform this " +
+            "action as produced does not exist in the game");
+    }
 }

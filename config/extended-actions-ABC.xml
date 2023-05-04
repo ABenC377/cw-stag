@@ -270,4 +270,46 @@
         <narration>You blow the horn and as if by magic, a lumberjack appears !</narration>
     </gameAction>
 
+    <gameAction>
+        <triggers>
+            <keyphrase>boomerang</keyphrase>
+        </triggers>
+        <subjects>
+            <entity>boomerang</entity>
+        </subjects>
+        <consumed>
+        </consumed>
+        <produced>
+        </produced>
+        <narration>This shouldn't be possible</narration>
+    </gameAction>
+
+    <gameAction>
+        <triggers>
+            <keyphrase>bottle</keyphrase>
+        </triggers>
+        <subjects>
+        </subjects>
+        <consumed>
+            <entity>bottle</entity>
+        </consumed>
+        <produced>
+        </produced>
+        <narration>This shouldn't be possible</narration>
+    </gameAction>
+
+    <gameAction>
+        <triggers>
+            <keyphrase>MacBook</keyphrase>
+        </triggers>
+        <subjects>
+            <entity>MacBook</entity>
+        </subjects>
+        <consumed>
+        </consumed>
+        <produced>
+        </produced>
+        <narration>This shouldn't be possible</narration>
+    </gameAction>
+
 </actions>
