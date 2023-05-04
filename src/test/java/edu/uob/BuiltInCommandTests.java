@@ -10,7 +10,7 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
-public class BuiltInCommandTests {
+class BuiltInCommandTests {
     private GameServer server;
     
     @BeforeEach
@@ -29,13 +29,13 @@ public class BuiltInCommandTests {
     }
     
     @Test
-    public void validInvTest1() {
+    void validInvTest1() {
         String response1 = sendCommandToServer("Simon: inv");
         assertEquals("You are not currently holding any items\n", response1);
     }
     
     @Test
-    public void validInvTest2() {
+    void validInvTest2() {
         sendCommandToServer("Simon: get potion");
         String response2 = sendCommandToServer("Simon: inv");
         assertEquals("""
@@ -45,7 +45,7 @@ public class BuiltInCommandTests {
     }
     
     @Test
-    public void validInvTest3() {
+    void validInvTest3() {
         sendCommandToServer("Simon: get potion");
         sendCommandToServer("Simon: get axe");
         String response3 = sendCommandToServer("Simon: inv");
@@ -57,65 +57,65 @@ public class BuiltInCommandTests {
     }
     
     @Test
-    public void invalidInvTest1() {
+    void invalidInvTest1() {
         String response1 = sendCommandToServer("Sion: inv inventory");
         assertEquals("ERROR - invalid/ambiguous command\n", response1);
     }
     
     @Test
-    public void invalidInvTest2() {
+    void invalidInvTest2() {
         String response1 = sendCommandToServer("Simon: is potion in my " +
             "inventory?");
         assertEquals("ERROR - cannot use entity name as decoration for inventory command\n", response1);
     }
     
     @Test
-    public void validGetTest1() {
+    void validGetTest1() {
         String response1 = sendCommandToServer("Simon: get axe");
         assertEquals("Simon picked up axe\n", response1);
     }
     
     @Test
-    public void validGetTest2() {
+    void validGetTest2() {
         sendCommandToServer("Simon: get axe");
         String response2 = sendCommandToServer("Sion: get coin");
         assertEquals("Sion picked up coin\n", response2);
     }
     
     @Test
-    public void invalidGetTest1() {
+    void invalidGetTest1() {
         String response1 = sendCommandToServer("Sion: Get the potion, get it " +
             "quickly");
         assertEquals("ERROR - invalid/ambiguous command\n", response1);
     }
     
     @Test
-    public void invalidGetTest2() {
+    void invalidGetTest2() {
         String response1 = sendCommandToServer("Simon: get the trapdoor");
         assertEquals("ERROR - get command requires only one argument", response1);
     }
     
     @Test
-    public void invalidGetTest3() {
+    void invalidGetTest3() {
         String response1 = sendCommandToServer("Sion: get flute");
         assertEquals("ERROR - cannot get artefact as it is not in this location", response1);
     }
     
     @Test
-    public void invalidGetTest4() {
+    void invalidGetTest4() {
         String response1 = sendCommandToServer("Simon: get axe and potion");
         assertEquals("ERROR - get command requires only one argument", response1);
     }
     
     @Test
-    public void validDropTest1() {
+    void validDropTest1() {
         sendCommandToServer("Sion: get potion");
         String response2 = sendCommandToServer("Sion: drop potion");
         assertEquals("Sion dropped potion\n", response2);
     }
     
     @Test
-    public void validDropTest2() {
+    void validDropTest2() {
         sendCommandToServer("Sion: get potion");
         String response2 = sendCommandToServer("Sion: inv");
         assertEquals("""
@@ -128,7 +128,7 @@ public class BuiltInCommandTests {
     }
     
     @Test
-    public void validDropTest3() {
+    void validDropTest3() {
         sendCommandToServer("Sion: get potion");
         sendCommandToServer("Sion: goto forest");
         sendCommandToServer("Sion: drop potion");
@@ -145,20 +145,20 @@ public class BuiltInCommandTests {
     }
     
     @Test
-    public void invalidDropTest1() {
+    void invalidDropTest1() {
         String response1 = sendCommandToServer("Simon: drop trapdoor");
         assertEquals("ERROR - drop requires one artefact as its argument", response1);
     }
     
     @Test
-    public void invalidDropTest2() {
+    void invalidDropTest2() {
         String response1 = sendCommandToServer("Sion: drop axe");
         assertEquals("ERROR - cannot drop axe as it is not in your " +
             "inventory\n", response1);
     }
     
     @Test
-    public void invalidDropTest3() {
+    void invalidDropTest3() {
         sendCommandToServer("Neill: get axe");
         sendCommandToServer("Neill: get potion");
         String response1 = sendCommandToServer("Neill: drop potion and axe");
@@ -166,7 +166,7 @@ public class BuiltInCommandTests {
     }
     
     @Test
-    public void validGotoTest1() {
+    void validGotoTest1() {
         String response1 = sendCommandToServer("Alex: goto forest");
         assertEquals("""
             You arrive in A deep dark forest You can see:
@@ -179,25 +179,25 @@ public class BuiltInCommandTests {
     }
     
     @Test
-    public void invalidGotoTest1() {
+    void invalidGotoTest1() {
         String response1 = sendCommandToServer("Joe: goto next location");
         assertEquals("ERROR - goto command requires a location name as an argument", response1);
     }
     
     @Test
-    public void invalidGotoTest2() {
+    void invalidGotoTest2() {
         String response1 = sendCommandToServer("Sion: goto axe");
         assertEquals("ERROR - goto requires one location as its argument", response1);
     }
     
     @Test
-    public void invalidGotoTest3() {
+    void invalidGotoTest3() {
         String response1 = sendCommandToServer("Sion:  axe goto");
         assertEquals("ERROR - goto command requires a location name as an argument", response1);
     }
     
     @Test
-    public void invalidGotoTest4() {
+    void invalidGotoTest4() {
         sendCommandToServer("Simon: goto forest");
         sendCommandToServer("Simon: get key");
         sendCommandToServer("Simon: goto cabin");
@@ -207,7 +207,7 @@ public class BuiltInCommandTests {
     }
     
     @Test
-    public void validLookTest1() {
+    void validLookTest1() {
         String response1 = sendCommandToServer("Neill: look around");
         assertEquals("""
             You are in A log cabin in the woods You can see:
@@ -221,25 +221,25 @@ public class BuiltInCommandTests {
     }
     
     @Test
-    public void invalidLookTest1() {
+    void invalidLookTest1() {
         String response1 = sendCommandToServer("Joe: look look");
         assertEquals("ERROR - invalid/ambiguous command\n", response1);
     }
     
     @Test
-    public void invalidLookTest2() {
+    void invalidLookTest2() {
         String response1 = sendCommandToServer("Neill: look for axe");
         assertEquals("ERROR - look requires no arguments, so the command cannot contain any entity names\n", response1);
     }
     
     @Test
-    public void validHealthTest1() {
+    void validHealthTest1() {
         String response1 = sendCommandToServer("Simon: health");
         assertEquals("Simon's health is at 3", response1);
     }
     
     @Test
-    public void invalidHealthTest1() {
+    void invalidHealthTest1() {
         String response1 = sendCommandToServer("Sion: health after potion");
         assertEquals("ERROR - health requires no arguments, so the command cannot contain any entity names\n", response1);
     }

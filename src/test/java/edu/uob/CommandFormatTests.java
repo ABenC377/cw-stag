@@ -10,7 +10,7 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
-public class CommandFormatTests {
+class CommandFormatTests {
     private GameServer server;
     
     @BeforeEach
@@ -30,7 +30,7 @@ public class CommandFormatTests {
     }
     
     @Test
-    public void lowerCaseTest() {
+    void lowerCaseTest() {
         String response1 = sendCommandToServer("Neill: look");
         assertEquals("""
             You are in A log cabin in the woods You can see:
@@ -44,7 +44,7 @@ public class CommandFormatTests {
     }
     
     @Test
-    public void upperCaseTest() {
+    void upperCaseTest() {
         String response1 = sendCommandToServer("Neill: LOOK");
         assertEquals("""
             You are in A log cabin in the woods You can see:
@@ -58,7 +58,7 @@ public class CommandFormatTests {
     }
     
     @Test
-    public void mixedCaseTest() {
+    void mixedCaseTest() {
         String response1 = sendCommandToServer("Neill: LooK");
         assertEquals("""
             You are in A log cabin in the woods You can see:
@@ -72,7 +72,7 @@ public class CommandFormatTests {
     }
     
     @Test
-    public void decoratedTest1() {
+    void decoratedTest1() {
         String response1 = sendCommandToServer("Neill: Look around");
         assertEquals("""
             You are in A log cabin in the woods You can see:
@@ -86,13 +86,13 @@ public class CommandFormatTests {
     }
     
     @Test
-    public void decoratedTest2() {
+    void decoratedTest2() {
         String response1 = sendCommandToServer("Neill: go and get that axe");
         assertEquals("Neill picked up axe\n", response1);
     }
     
     @Test
-    public void decoratedTest3() {
+    void decoratedTest3() {
         sendCommandToServer("Sion: go and get that axe");
         String response2 = sendCommandToServer("Sion: goto the forest");
         assertEquals("""
@@ -106,7 +106,7 @@ public class CommandFormatTests {
     }
     
     @Test
-    public void decoratedTest4() {
+    void decoratedTest4() {
         sendCommandToServer("Sion: go and get that axe");
         sendCommandToServer("Sion: goto the forest");
         String response3 = sendCommandToServer("Sion: with that axe, cut down" +
@@ -115,7 +115,7 @@ public class CommandFormatTests {
     }
     
     @Test
-    public void punctuationTest1() {
+    void punctuationTest1() {
         String response1 = sendCommandToServer("Neill: Look here, there, and " +
             "everywhere");
         assertEquals("""
@@ -130,7 +130,7 @@ public class CommandFormatTests {
     }
     
     @Test
-    public void tooManyColons() {
+    void tooManyColons() {
         String response1 = sendCommandToServer("Alex: goto: forest");
         assertEquals("You arrive in A deep dark forest You can see:\n" +
             "key: A rusty old key\n" +
@@ -141,8 +141,7 @@ public class CommandFormatTests {
     }
     
     @Test
-    
-    public void invalidUsername() {
+    void invalidUsername() {
         String response1 = sendCommandToServer("Al_ex: look");
         assertEquals("ERROR: invalid username", response1);
     }

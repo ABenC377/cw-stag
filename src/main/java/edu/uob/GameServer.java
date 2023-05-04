@@ -331,11 +331,12 @@ public final class GameServer {
     private void addEntityToLocation(final Location location,
                                      final Graph graph) throws IOException {
         final String type = graph.getId().getId();
+        final ArrayList<Node> entityNodes =
+            graph.getNodes(false);
+        
         switch (type) {
             case "artefacts" -> {
-                final ArrayList<Node> artefactNodes =
-                    graph.getNodes(false);
-                for (final Node artefactNode : artefactNodes) {
+                for (final Node artefactNode : entityNodes) {
                     final Artefact artefact =
                         new Artefact(artefactNode.getId().getId(),
                             artefactNode.getAttribute("description"));
@@ -348,9 +349,7 @@ public final class GameServer {
                 }
             }
             case "furniture" -> {
-                final ArrayList<Node> furnitureNodes =
-                    graph.getNodes(false);
-                for (final Node furnitureNode : furnitureNodes) {
+                for (final Node furnitureNode : entityNodes) {
                     final Furniture furniture =
                         new Furniture(furnitureNode.getId().getId(),
                             furnitureNode.getAttribute(
@@ -364,9 +363,7 @@ public final class GameServer {
                 }
             }
             case "characters" -> {
-                final ArrayList<Node> characterNodes =
-                    graph.getNodes(false);
-                for (final Node characterNode : characterNodes) {
+                for (final Node characterNode : entityNodes) {
                     final GameCharacter character =
                         new GameCharacter(characterNode.getId().getId(),
                             characterNode.getAttribute(

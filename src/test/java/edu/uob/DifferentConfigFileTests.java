@@ -9,7 +9,7 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
-public class DifferentConfigFileTests {
+class DifferentConfigFileTests {
     GameServer server;
     
     private String sendCommandToServer(String command) {
@@ -20,7 +20,7 @@ public class DifferentConfigFileTests {
     }
     
     @Test
-    public void testNoStoreroom1() {
+    void testNoStoreroom1() {
         File entitiesFile = Paths.get("config" + File.separator + "extended" +
             "-entities-no-storeroom.dot").toAbsolutePath().toFile();
         File actionsFile = Paths.get("config" + File.separator + "extended" +
@@ -37,7 +37,7 @@ public class DifferentConfigFileTests {
     }
     
     @Test
-    public void testNoStoreroom2() {
+    void testNoStoreroom2() {
         File entitiesFile = Paths.get("config" + File.separator + "extended" +
             "-entities-no-storeroom.dot").toAbsolutePath().toFile();
         File actionsFile = Paths.get("config" + File.separator + "extended" +

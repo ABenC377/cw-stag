@@ -9,7 +9,7 @@ import java.util.List;
 import static edu.uob.BasicCommandType.ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BasicCommandHandlerTests {
+class BasicCommandHandlerTests {
     private BasicCommandHandler handler;
     
     @BeforeEach
@@ -19,7 +19,7 @@ public class BasicCommandHandlerTests {
     }
     
     @Test
-    public void invalidCommandTypeTest() {
+    void invalidCommandTypeTest() {
         String[] words = "a b c".split(" ");
         String output = handler.handle(ERROR, null, null, words);
         assertEquals("ERROR - not a valid basic command type", output);
