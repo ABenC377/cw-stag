@@ -279,6 +279,25 @@ class ExtendedTests {
     }
     
     @Test
+    void testProducingArtefactFromCharacter() {
+        sendCommandToServer("Alex: get axe");
+        sendCommandToServer("Alex: goto forest");
+        sendCommandToServer("Alex: cut tree");
+        sendCommandToServer("Alex: get log");
+        sendCommandToServer("Alex: grow seed");
+        sendCommandToServer("Alex: cut tree");
+        final String response8 = sendCommandToServer("Alex: look");
+        assertEquals("You are in A deep dark forest You can see:\n" +
+                "key: A rusty old key\n" +
+                "log: A heavy wooden log\n" +
+                "You can see from here:\n" +
+                "cabin\n" +
+                "riverbank\n", response8,
+            "producing an artefact that is held by a player should take it " +
+                "from the player's inventory and bring it to the location");
+    }
+    
+    @Test
     void testBurningBridge() {
         sendCommandToServer("Alex: get axe");
         sendCommandToServer("Alex: goto forest");

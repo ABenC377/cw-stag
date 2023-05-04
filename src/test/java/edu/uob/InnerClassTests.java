@@ -50,7 +50,8 @@ class InnerClassTests {
     void testProduceWithEmptyLocationList() {
         final List<Location> locations = new ArrayList<>();
         final Location testLocation = new Location("test", "test description");
-        testLocation.produce("test", locations);
+        final Player testPlayer = new Player("name");
+        testLocation.produce("test", locations, testPlayer);
         assertNotNull(testLocation, "producing an item that is not in the " +
             "locations should return null");
     }

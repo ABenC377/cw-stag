@@ -56,7 +56,7 @@ public class ActionHandler {
             if ("health".equals(name)) {
                 player.heal();
             } else {
-                location.produce(name, locations);
+                location.produce(name, locations, player);
             }
         }
         

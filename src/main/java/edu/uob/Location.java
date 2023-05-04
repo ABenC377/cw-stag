@@ -276,7 +276,13 @@ public class Location extends GameEntity {
      * @param locations a list of all the locations in the game
      */
     public void produce(final String entityName,
-                        final List<Location> locations) {
+                        final List<Location> locations,
+                        final Player player) {
+        if (player.isHolding(entityName)) {
+            artefacts.add(player.getItem(entityName));
+            player.removeItem(entityName);
+            return;
+        }
         for (final Location l : locations) {
             if (l.getName().equals(entityName)) {
                 paths.add(l);

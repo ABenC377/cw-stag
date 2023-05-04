@@ -159,4 +159,18 @@ public class Player extends GameCharacter {
     public String reportHealth() {
         return this.getName() + "'s health is at " + this.getHealth();
     }
+    
+    /**
+     * checks whether player is holding an item
+     * @param name the name of the item
+     * @return yes/no
+     */
+    public boolean isHolding(final String name) {
+        for (Artefact artefact : heldItems) {
+            if (artefact.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
