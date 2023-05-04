@@ -8,6 +8,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+/**
+ * test class for making sure the inner runnings of some of the classes are
+ * working as intended
+ */
 class InnerClassTests {
     @Test
     void testPlayerGetItem() {

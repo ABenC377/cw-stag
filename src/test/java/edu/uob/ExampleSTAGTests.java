@@ -9,8 +9,13 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * test class for some very preliminary gameplay tests
+ */
 class ExampleSTAGTests {
-
+    /**
+     * server object through which the tests are run
+     */
   private GameServer server;
 
   // Create a new server _before_ every @Test
@@ -24,12 +29,14 @@ class ExampleSTAGTests {
   }
 
   private String sendCommandToServer(final String command) {
-      // Try to send a command to the server - this call will time out if it takes too long (in case the server enters an infinite loop)
+      // Try to send a command to the server - this call will time out if it
+      // takes too long (in case the server enters an infinite loop)
       return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> server.handleCommand(command),
       "Server took too long to respond (probably stuck in an infinite loop)");
   }
 
-  // A lot of tests will probably check the game state using 'look' - so we better make sure 'look' works well !
+  // A lot of tests will probably check the game state using 'look' -
+  // so we better make sure 'look' works well !
   @Test
   void testLook() {
       String response = sendCommandToServer("simon: look");
@@ -55,7 +62,8 @@ class ExampleSTAGTests {
       assertFalse(response.contains("potion"), "Potion is still present in the room after an attempt was made to get it");
   }
 
-  // Test that we can goto a different location (we won't get very far if we can't move around the game !)
+  // Test that we can goto a different location
+  // (we won't get very far if we can't move around the game !)
   @Test
   void testGoto()
   {

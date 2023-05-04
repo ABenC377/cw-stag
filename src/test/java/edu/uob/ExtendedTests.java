@@ -8,7 +8,14 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * test class which runs a large number of gameplay tests based on an
+ * extended actions file
+ */
 class ExtendedTests {
+    /**
+     * server object through which the tests are run
+     */
     private GameServer server;
     
     @BeforeEach

@@ -14,6 +14,9 @@ import com.alexmerz.graphviz.objects.Edge;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * test class to make sure that entity files are read in correctly
+ */
 final class EntitiesFileTests {
 
   // Test to make sure that the basic entities file is readable

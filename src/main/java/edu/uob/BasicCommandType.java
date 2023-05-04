@@ -15,6 +15,9 @@ public enum BasicCommandType {
     NULL ("null"),
     ERROR ("error");
     
+    /**
+     * Name of the enum, needed for checking it versus strings
+     */
     private final String name;
     
     /**

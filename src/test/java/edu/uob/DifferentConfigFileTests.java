@@ -9,7 +9,14 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
+/**
+ * test class to make sure that different types of configuration file (both
+ * valid and invalid) are correctly handled
+ */
 class DifferentConfigFileTests {
+    /**
+     * server object, through which the tests are run
+     */
     private GameServer server;
     
     private String sendCommandToServer(final String command) {

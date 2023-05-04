@@ -10,7 +10,13 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
+/**
+ * test class for built-in commands
+ */
 class BuiltInCommandTests {
+    /**
+     * server object that the tests are run through
+     */
     private GameServer server;
     
     @BeforeEach
@@ -25,7 +31,8 @@ class BuiltInCommandTests {
     }
     
     private String sendCommandToServer(final String command) {
-        // Try to send a command to the server - this call will time out if it takes too long (in case the server enters an infinite loop)
+        // Try to send a command to the server - this call will time out if
+        // it takes too long (in case the server enters an infinite loop)
         return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> server.handleCommand(command),
             "Server took too long to respond (probably stuck in an infinite loop)");
     }

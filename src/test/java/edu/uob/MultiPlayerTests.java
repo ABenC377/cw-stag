@@ -9,7 +9,13 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * test class for ensuring that multiplayer functionality is as desired
+ */
 class MultiPlayerTests {
+    /**
+     * server object through which the tests are run
+     */
     private GameServer server;
     
     @BeforeEach
@@ -22,7 +28,8 @@ class MultiPlayerTests {
     }
     
     private String sendCommandToServer(final String command) {
-        // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
+        // Try to send a command to the server - this call will timeout if it
+        // takes too long (in case the server enters an infinite loop)
         return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> { return server.handleCommand(command);},
             "Server took too long to respond (probably stuck in an infinite loop)");
     }

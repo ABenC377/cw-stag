@@ -10,7 +10,14 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
+/**
+ * test class for making sure that the formatting of commands are handled
+ * correctly
+ */
 class CommandFormatTests {
+    /**
+     * server object which the tests are run through
+     */
     private GameServer server;
     
     @BeforeEach
