@@ -213,7 +213,7 @@ public final class GameServer {
      */
     private boolean isInvalidTrigger(final String trigger) {
         final String[] triggerWords =
-            trigger.replace("[^a-zA-Z0-9 ]", "").split(" ");
+            trigger.replace("[^a-zA-Z0-9_ ]", "").split(" ");
         for (final BasicCommandType type : values()) {
             for (final String word : triggerWords) {
                 if ((word.equals(type.toString()) ||
