@@ -15,14 +15,14 @@ class CommandFormatTests {
     
     @BeforeEach
     void setup() {
-        File entitiesFile = Paths.get("config" + File.separator + "extended" +
+        final File entitiesFile = Paths.get("config" + File.separator + "extended" +
             "-entities.dot").toAbsolutePath().toFile();
-        File actionsFile = Paths.get("config" + File.separator + "extended" +
+        final File actionsFile = Paths.get("config" + File.separator + "extended" +
             "-actions.xml").toAbsolutePath().toFile();
         server = new GameServer(entitiesFile, actionsFile);
     }
     
-    private String sendCommandToServer(String command) {
+    private String sendCommandToServer(final String command) {
         // Try to send a command to the server - this call will time out if
         // it takes too long (in case the server enters an infinite loop)
         return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> server.handleCommand(command),
@@ -31,7 +31,7 @@ class CommandFormatTests {
     
     @Test
     void lowerCaseTest() {
-        String response1 = sendCommandToServer("Neill: look");
+        final String response1 = sendCommandToServer("Neill: look");
         assertEquals("""
             You are in A log cabin in the woods You can see:
             potion: A bottle of magic potion
@@ -40,12 +40,13 @@ class CommandFormatTests {
             trapdoor: A locked wooden trapdoor in the floor
             You can see from here:
             forest
-            """, response1);
+            """, response1,
+            "command should work if lower case");
     }
     
     @Test
     void upperCaseTest() {
-        String response1 = sendCommandToServer("Neill: LOOK");
+        final String response1 = sendCommandToServer("Neill: LOOK");
         assertEquals("""
             You are in A log cabin in the woods You can see:
             potion: A bottle of magic potion
@@ -54,12 +55,13 @@ class CommandFormatTests {
             trapdoor: A locked wooden trapdoor in the floor
             You can see from here:
             forest
-            """, response1);
+            """, response1,
+            "command should work if upper case");
     }
     
     @Test
     void mixedCaseTest() {
-        String response1 = sendCommandToServer("Neill: LooK");
+        final String response1 = sendCommandToServer("Neill: LooK");
         assertEquals("""
             You are in A log cabin in the woods You can see:
             potion: A bottle of magic potion
@@ -68,12 +70,13 @@ class CommandFormatTests {
             trapdoor: A locked wooden trapdoor in the floor
             You can see from here:
             forest
-            """, response1);
+            """, response1,
+            "command should work if mixed case");
     }
     
     @Test
     void decoratedTest1() {
-        String response1 = sendCommandToServer("Neill: Look around");
+        final String response1 = sendCommandToServer("Neill: Look around");
         assertEquals("""
             You are in A log cabin in the woods You can see:
             potion: A bottle of magic potion
@@ -82,19 +85,21 @@ class CommandFormatTests {
             trapdoor: A locked wooden trapdoor in the floor
             You can see from here:
             forest
-            """, response1);
+            """, response1,
+            "command that takes no arguments should work with decoration");
     }
     
     @Test
     void decoratedTest2() {
-        String response1 = sendCommandToServer("Neill: go and get that axe");
-        assertEquals("Neill picked up axe\n", response1);
+        final String response1 = sendCommandToServer("Neill: go and get that axe");
+        assertEquals("Neill picked up axe\n", response1,
+            "command that takes one argument should work with decoration");
     }
     
     @Test
     void decoratedTest3() {
         sendCommandToServer("Sion: go and get that axe");
-        String response2 = sendCommandToServer("Sion: goto the forest");
+        final String response2 = sendCommandToServer("Sion: goto the forest");
         assertEquals("""
             You arrive in A deep dark forest You can see:
             key: A rusty old key
@@ -102,21 +107,23 @@ class CommandFormatTests {
             You can see from here:
             cabin
             riverbank
-            """, response2);
+            """, response2,
+            "commands should work with decoration");
     }
     
     @Test
     void decoratedTest4() {
         sendCommandToServer("Sion: go and get that axe");
         sendCommandToServer("Sion: goto the forest");
-        String response3 = sendCommandToServer("Sion: with that axe, cut down" +
+        final String response3 = sendCommandToServer("Sion: with that axe, cut down" +
             " the tree");
-        assertEquals("You cut down the tree with the axe", response3);
+        assertEquals("You cut down the tree with the axe", response3,
+            "commands and actions should work with decoration");
     }
     
     @Test
     void punctuationTest1() {
-        String response1 = sendCommandToServer("Neill: Look here, there, and " +
+        final String response1 = sendCommandToServer("Neill: Look here, there, and " +
             "everywhere");
         assertEquals("""
             You are in A log cabin in the woods You can see:
@@ -126,23 +133,26 @@ class CommandFormatTests {
             trapdoor: A locked wooden trapdoor in the floor
             You can see from here:
             forest
-            """, response1);
+            """, response1,
+            "punctuation should not affect the handling of a command");
     }
     
     @Test
     void tooManyColons() {
-        String response1 = sendCommandToServer("Alex: goto: forest");
+        final String response1 = sendCommandToServer("Alex: goto: forest");
         assertEquals("You arrive in A deep dark forest You can see:\n" +
             "key: A rusty old key\n" +
             "tree: A tall pine tree\n" +
             "You can see from here:\n" +
             "cabin\n" +
-            "riverbank\n", response1);
+            "riverbank\n", response1,
+            "extra colons should not affect the handling of a command");
     }
     
     @Test
     void invalidUsername() {
-        String response1 = sendCommandToServer("Al_ex: look");
-        assertEquals("ERROR: invalid username", response1);
+        final String response1 = sendCommandToServer("Al_ex: look");
+        assertEquals("ERROR: invalid username", response1,
+            "usernames cannot contain _");
     }
 }

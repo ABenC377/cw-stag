@@ -17,7 +17,11 @@ public enum BasicCommandType {
     
     private final String name;
     
-    private BasicCommandType(final String name) {
+    /**
+     * construtore for enum to give them a string name
+     * @param name the string corresponding to the enum
+     */
+    BasicCommandType(final String name) {
         this.name = name;
     }
     

@@ -69,6 +69,13 @@ public final class GameServer {
             throw new RuntimeException(e);
         }
         
+        for (final GameEntity entity : initialEntities) {
+            if (isInvalidTrigger(entity.getName())) {
+                throw new RuntimeException("entities file contains an entity with " +
+                    "a name that is a reserved word");
+            }
+        }
+        
         handler = new CommandHandler(startLocation, storeRoom,
             initialLocations, initialEntities, oneWordActions,
             manyWordActions);
@@ -207,8 +214,8 @@ public final class GameServer {
     private boolean isInvalidTrigger(final String trigger) {
         final String[] triggerWords =
             trigger.replace("[^a-zA-Z0-9 ]", "").split(" ");
-        for (BasicCommandType type : BasicCommandType.values()) {
-            for (String word : triggerWords) {
+        for (final BasicCommandType type : values()) {
+            for (final String word : triggerWords) {
                 if ((word.equals(type.toString()) ||
                     "inventory".equals(word)) &&
                     type != NULL &&
@@ -334,16 +341,13 @@ public final class GameServer {
         final ArrayList<Node> entityNodes =
             graph.getNodes(false);
         
+        // Add the entities
         switch (type) {
             case "artefacts" -> {
                 for (final Node artefactNode : entityNodes) {
                     final Artefact artefact =
                         new Artefact(artefactNode.getId().getId(),
-                            artefactNode.getAttribute("description"));
-                    if (isInvalidTrigger(artefact.getName())) {
-                        throw new IOException("ERROR - entities file contains" +
-                            " an artefact with a reserved word as a name");
-                    }
+                        artefactNode.getAttribute("description"));
                     location.addArtefact(artefact);
                     initialEntities.add(artefact);
                 }
@@ -354,10 +358,6 @@ public final class GameServer {
                         new Furniture(furnitureNode.getId().getId(),
                             furnitureNode.getAttribute(
                                 "description"));
-                    if (isInvalidTrigger(furniture.getName())) {
-                        throw new IOException("ERROR - entities file contains" +
-                            " an artefact with a reserved word as a name");
-                    }
                     location.addFurniture(furniture);
                     initialEntities.add(furniture);
                 }
@@ -368,10 +368,6 @@ public final class GameServer {
                         new GameCharacter(characterNode.getId().getId(),
                             characterNode.getAttribute(
                                 "description"));
-                    if (isInvalidTrigger(character.getName())) {
-                        throw new IOException("ERROR - entities file contains" +
-                            " an artefact with a reserved word as a name");
-                    }
                     location.addCharacter(character);
                     initialEntities.add(character);
                 }

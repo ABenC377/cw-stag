@@ -16,14 +16,14 @@ class ExampleSTAGTests {
   // Create a new server _before_ every @Test
   @BeforeEach
   void setup() {
-      File entitiesFile = Paths.get("config" + File.separator + "extended" +
+      final File entitiesFile = Paths.get("config" + File.separator + "extended" +
           "-entities.dot").toAbsolutePath().toFile();
-      File actionsFile = Paths.get("config" + File.separator + "extended" +
+      final File actionsFile = Paths.get("config" + File.separator + "extended" +
           "-actions.xml").toAbsolutePath().toFile();
       server = new GameServer(entitiesFile, actionsFile);
   }
 
-  private String sendCommandToServer(String command) {
+  private String sendCommandToServer(final String command) {
       // Try to send a command to the server - this call will time out if it takes too long (in case the server enters an infinite loop)
       return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> server.handleCommand(command),
       "Server took too long to respond (probably stuck in an infinite loop)");
@@ -32,13 +32,13 @@ class ExampleSTAGTests {
   // A lot of tests will probably check the game state using 'look' - so we better make sure 'look' works well !
   @Test
   void testLook() {
-    String response = sendCommandToServer("simon: look");
-    response = response.toLowerCase();
-    assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
-    assertTrue(response.contains("log cabin"), "Did not see a description of the room in response to look");
-    assertTrue(response.contains("magic potion"), "Did not see a description of artifacts in response to look");
-    assertTrue(response.contains("wooden trapdoor"), "Did not see description of furniture in response to look");
-    assertTrue(response.contains("forest"), "Did not see available paths in response to look");
+      String response = sendCommandToServer("simon: look");
+      response = response.toLowerCase();
+      assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
+      assertTrue(response.contains("log cabin"), "Did not see a description of the room in response to look");
+      assertTrue(response.contains("magic potion"), "Did not see a description of artifacts in response to look");
+      assertTrue(response.contains("wooden trapdoor"), "Did not see description of furniture in response to look");
+      assertTrue(response.contains("forest"), "Did not see available paths in response to look");
   }
 
   // Test that we can pick something up and that it appears in our inventory

@@ -11,38 +11,43 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class InnerClassTests {
     @Test
     void testPlayerGetItem() {
-        Player player = new Player("Alex");
-        Artefact output = player.getItem("axe");
-        assertNull(output);
+        final Player player = new Player("Alex");
+        final Artefact output = player.getItem("axe");
+        assertNull(output, "geting an item not in inventory should return " +
+            "null");
     }
     
     @Test
     void testLocationRemoveFurniture() {
-        Location location = new Location("test", "a test space");
-        Furniture output = location.removeFurniture("test");
-        assertNull(output);
+        final Location location = new Location("test", "a test space");
+        final Furniture output = location.removeFurniture("test");
+        assertNull(output, "removing furniture not at a location should " +
+            "return null");
     }
     
     @Test
     void testLocationRemoveArtefact() {
-        Location location = new Location("test", "a test space");
-        Artefact output = location.removeArtefact("test");
-        assertNull(output);
+        final Location location = new Location("test", "a test space");
+        final Artefact output = location.removeArtefact("test");
+        assertNull(output, "removing artefact not at a location should " +
+            "return null");
     }
     
     @Test
     void testLocationRemoveCharacter() {
-        Location location = new Location("test", "a test space");
+        final Location location = new Location("test", "a test space");
         location.removePath("test");
-        GameCharacter output = location.removeCharacter("test");
-        assertNull(output);
+        final GameCharacter output = location.removeCharacter("test");
+        assertNull(output, "removing character not at a location should " +
+            "return null");
     }
     
     @Test
     void testProduceWithEmptyLocationList() {
-        List<Location> locations = new ArrayList<>();
-        Location testLocation = new Location("test", "test description");
+        final List<Location> locations = new ArrayList<>();
+        final Location testLocation = new Location("test", "test description");
         testLocation.produce("test", locations);
-        assertNotNull(testLocation);
+        assertNotNull(testLocation, "producing an item that is not in the " +
+            "locations should return null");
     }
 }

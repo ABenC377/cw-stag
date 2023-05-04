@@ -20,27 +20,27 @@ final class EntitiesFileTests {
   @Test
   void testBasicEntitiesFileIsReadable() {
       try {
-          Parser parser = new Parser();
-          FileReader reader = new FileReader("config" + File.separator + "basic-entities.dot");
+          final Parser parser = new Parser();
+          final FileReader reader = new FileReader("config" + File.separator + "basic-entities.dot");
           parser.parse(reader);
-          Graph wholeDocument = parser.getGraphs().get(0);
-          ArrayList<Graph> sections = wholeDocument.getSubgraphs();
+          final Graph wholeDocument = parser.getGraphs().get(0);
+          final ArrayList<Graph> sections = wholeDocument.getSubgraphs();
 
           // The locations will always be in the first subgraph
-          ArrayList<Graph> locations = sections.get(0).getSubgraphs();
-          Graph firstLocation = locations.get(0);
-          Node locationDetails = firstLocation.getNodes(false).get(0);
+          final ArrayList<Graph> locations = sections.get(0).getSubgraphs();
+          final Graph firstLocation = locations.get(0);
+          final Node locationDetails = firstLocation.getNodes(false).get(0);
           // Yes, you do need to get the ID twice !
-          String locationName = locationDetails.getId().getId();
+          final String locationName = locationDetails.getId().getId();
           assertEquals("cabin", locationName, "First location should have been 'cabin'");
 
           // The paths will always be in the second subgraph
-          ArrayList<Edge> paths = sections.get(1).getEdges();
-          Edge firstPath = paths.get(0);
-          Node fromLocation = firstPath.getSource().getNode();
-          String fromName = fromLocation.getId().getId();
-          Node toLocation = firstPath.getTarget().getNode();
-          String toName = toLocation.getId().getId();
+          final ArrayList<Edge> paths = sections.get(1).getEdges();
+          final Edge firstPath = paths.get(0);
+          final Node fromLocation = firstPath.getSource().getNode();
+          final String fromName = fromLocation.getId().getId();
+          final Node toLocation = firstPath.getTarget().getNode();
+          final String toName = toLocation.getId().getId();
           assertEquals("cabin", fromName, "First path should have been from 'cabin'");
           assertEquals("forest", toName, "First path should have been to 'forest'");
 
