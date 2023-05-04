@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,7 +41,7 @@ class ExampleSTAGTests {
   @Test
   void testLook() {
       String response = sendCommandToServer("simon: look");
-      response = response.toLowerCase();
+      response = response.toLowerCase(Locale.ENGLISH);
       assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
       assertTrue(response.contains("log cabin"), "Did not see a description of the room in response to look");
       assertTrue(response.contains("magic potion"), "Did not see a description of artifacts in response to look");
@@ -55,10 +56,10 @@ class ExampleSTAGTests {
       String response;
       sendCommandToServer("simon: get potion");
       response = sendCommandToServer("simon: inv");
-      response = response.toLowerCase();
+      response = response.toLowerCase(Locale.ENGLISH);
       assertTrue(response.contains("potion"), "Did not see the potion in the inventory after an attempt was made to get it");
       response = sendCommandToServer("simon: look");
-      response = response.toLowerCase();
+      response = response.toLowerCase(Locale.ENGLISH);
       assertFalse(response.contains("potion"), "Potion is still present in the room after an attempt was made to get it");
   }
 
@@ -69,7 +70,7 @@ class ExampleSTAGTests {
   {
       sendCommandToServer("simon: goto forest");
       String response = sendCommandToServer("simon: look");
-      response = response.toLowerCase();
+      response = response.toLowerCase(Locale.ENGLISH);
       assertTrue(response.contains("key"), "Failed attempt to use 'goto' command to move to the forest - there is no key in the current location");
   }
 
