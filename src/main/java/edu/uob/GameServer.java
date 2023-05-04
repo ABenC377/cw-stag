@@ -20,6 +20,8 @@ import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
 import com.alexmerz.graphviz.objects.Edge;
 
+import static edu.uob.BasicCommandType.*;
+
 /** This class implements the STAG server. */
 public final class GameServer {
     
@@ -149,10 +151,13 @@ public final class GameServer {
     
     private void addActionsByTrigger(final Map<String, Set<GameAction>> triggerMap,
                                      final GameAction action,
-                                     final NodeList nodes) {
+                                     final NodeList nodes) throws IOException {
         for (int i = 0; i < nodes.getLength(); i++) {
             final Element triggerElement = (Element)nodes.item(i);
             final String trigger = triggerElement.getTextContent();
+            if (isInvalidTrigger(trigger)) {
+                throw new IOException("ERROR - trigger contains reserved word");
+            }
             if (trigger.indexOf(' ') == -1) {
                 if (triggerMap.containsKey(trigger)) {
                     triggerMap.get(trigger).add(action);
@@ -165,6 +170,27 @@ public final class GameServer {
                 addToMultiTriggers(trigger, action);
             }
         }
+    }
+    
+    /**
+     * checks whether the trigger phrase contains a reserved word
+     * @param trigger the trigger string
+     * @return yes/no
+     */
+    private boolean isInvalidTrigger(final String trigger) {
+        final String[] triggerWords =
+            trigger.replace("[^a-zA-Z0-9 ]", "").split(" ");
+        for (BasicCommandType type : BasicCommandType.values()) {
+            for (String word : triggerWords) {
+                if ((word.equals(type.toString()) ||
+                    "inventory".equals(word)) &&
+                    type != NULL &&
+                    type != ERROR) {
+                        return true;
+                }
+            }
+        }
+        return false;
     }
     
     private void addToMultiTriggers(final String trigger,

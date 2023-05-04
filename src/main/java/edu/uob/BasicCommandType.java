@@ -6,7 +6,25 @@ import java.util.Locale;
  * enum for the different types of built-in command
  */
 public enum BasicCommandType {
-    INV, GET, DROP, GOTO, LOOK, HEALTH, NULL, ERROR;
+    INV ("inv"),
+    GET ("get"),
+    DROP ("drop"),
+    GOTO ("goto"),
+    LOOK ("look"),
+    HEALTH ("health"),
+    NULL ("null"),
+    ERROR ("error");
+    
+    private final String name;
+    
+    private BasicCommandType(final String name) {
+        this.name = name;
+    }
+    
+    @Override
+    public String toString() {
+        return this.name;
+    }
     
     /**
      * Static method for getting the enum type from its string(s)
